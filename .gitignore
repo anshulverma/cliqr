@@ -1,0 +1,16 @@
+# Temporary files
+*~
+*#*
+
+# Log files
+*.log
+
+# IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Ruby gem
+*.gem
+Gemfile.lock
