@@ -14,10 +14,12 @@ module Cliqr
     # @return [Cliqr::DSL]
     def build(*args, &block)
       base = new(*args)
-      delegator_klass = const_get('DSLDelegator')
-      delegator = delegator_klass.new(base)
-      delegator.instance_eval(&block)
-      base
+      if block_given?
+        delegator_klass = const_get('DSLDelegator')
+        delegator = delegator_klass.new(base)
+        delegator.instance_eval(&block)
+      end
+      base.finalize
     end
 
     # Delegates all DSL methods to the base class. Can be used to keep DSL

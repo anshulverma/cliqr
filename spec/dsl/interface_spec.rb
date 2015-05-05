@@ -7,7 +7,7 @@ describe Cliqr do
     end
 
     expect(cli.usage).to eq <<-EOS
-        USAGE: tinbox
-      EOS
+USAGE: tinbox
+EOS
   end
 end
