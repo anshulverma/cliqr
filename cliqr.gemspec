@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
 
   # development dependencies
   {
-      :bundler => '~> 1.7',
+      :bundler => '~> 1.6',
       :rake => '~> 10.0',
       :rspec => '~> 3.2'
   }.each { |dependency, version| spec.add_development_dependency dependency.to_s, version }
