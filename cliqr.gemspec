@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
                        EOS
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0")
+  spec.files         = Dir['Rakefile', '{lib,spec}/**/*', 'README*', 'LICENSE*', 'CHANGELOG*']
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
@@ -29,12 +29,10 @@ Gem::Specification.new do |spec|
   # runtime dependencies
   {
       :log4r => '~> 1.1'
-  }.each { |dependency, version| spec.add_runtime_dependency dependency.to_s, version }
+  }.each { |dependency, version| spec.add_dependency dependency.to_s, version }
 
   # development dependencies
   {
-      :bundler => '~> 1.6',
-      :rake => '~> 10.0',
-      :rspec => '~> 3.2'
+      :bundler => '~> 1.6'
   }.each { |dependency, version| spec.add_development_dependency dependency.to_s, version }
 end
