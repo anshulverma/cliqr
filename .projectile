@@ -17,3 +17,6 @@ Gemfile.lock
 *.iml
 *.ipr
 *.iws
+
+# Documentation
+doc/
