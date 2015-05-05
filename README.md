@@ -1,5 +1,6 @@
 # Cliqr
 
+[![Build Status](https://travis-ci.org/anshulverma/cliqr.svg?branch=master)](https://travis-ci.org/anshulverma/cliqr)
 [![Gem Version](https://badge.fury.io/rb/cliqr.svg)](http://badge.fury.io/rb/cliqr)
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
