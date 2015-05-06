@@ -7,3 +7,7 @@ group :development do
   gem 'rake', '~> 10.4'
   gem 'rspec', '~> 3.2'
 end
+
+group :test do
+  gem 'codeclimate-test-reporter'
+end

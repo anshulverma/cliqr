@@ -27,3 +27,6 @@ branches:
   only: master
 notifications:
   email: false
+env:
+  global:
+    - secure: fas+p17YULj0EWfJEmcVBRimncqaAubPJeriROmPBIZmwSyGr3ldjSj5f+n9NNobD6BZ3kIredBDcBqlkCGKYVsvM/ULVxkjxLGa9VA28m1wgOgtGlKRD6C7YPP5+Hw74K7G5XF4bspSG6VOfLOiPPtfbCMXymmjKdGzbhKJ594=
