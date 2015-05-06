@@ -1,9 +1,13 @@
+# enable code climate
 require 'codeclimate-test-reporter'
-
 CodeClimate::TestReporter.configure do |config|
   config.logger.level = Logger::WARN
 end
 CodeClimate::TestReporter.start
+
+# enable coveralls
+require 'coveralls'
+Coveralls.wear!
 
 require 'bundler/setup'
 Bundler.setup

@@ -9,5 +9,6 @@ group :development do
 end
 
 group :test do
-  gem 'codeclimate-test-reporter', '~> 0.4'
+  gem 'codeclimate-test-reporter', '~> 0.4', require: false
+  gem 'coveralls', '~> 0.8', require: false
 end
