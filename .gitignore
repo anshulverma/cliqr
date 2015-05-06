@@ -17,3 +17,6 @@ Gemfile.lock
 
 # Documentation
 doc/
+
+# Coverage report
+coverage/

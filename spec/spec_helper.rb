@@ -1,14 +1,14 @@
-require 'bundler/setup'
-Bundler.setup
-
-require 'cliqr'
 require 'codeclimate-test-reporter'
 
 CodeClimate::TestReporter.configure do |config|
   config.logger.level = Logger::WARN
 end
-
 CodeClimate::TestReporter.start
+
+require 'bundler/setup'
+Bundler.setup
+
+require 'cliqr'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|

@@ -9,5 +9,5 @@ group :development do
 end
 
 group :test do
-  gem 'codeclimate-test-reporter'
+  gem 'codeclimate-test-reporter', '~> 0.4'
 end
