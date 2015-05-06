@@ -8,10 +8,11 @@
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
-- [Cliqr](#cliqr)
+- [cliqr](#cliqr)
     - [Summary](#summary)
+    - [Examples](#examples)
+        - [Simple CLI app with basename and description](#simple-cli-app-with-basename-and-description)
     - [Installation](#installation)
-    - [Usage](#usage)
     - [Contributing](#contributing)
 
 <!-- markdown-toc end -->
