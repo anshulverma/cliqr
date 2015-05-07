@@ -20,3 +20,8 @@ Gemfile.lock
 
 # Documentation
 doc/
+.yardoc/
+
+# Metric reports
+coverage/
+.metrics/

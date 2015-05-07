@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 
@@ -7,10 +5,13 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-task default: [:spec]
+FileList['tasks/*.rake'].each(&method(:import))
 
-desc 'Run all specs on CI'
-task ci: [:spec]
+desc 'default rake task'
+task default: [:spec, :verify_measurements]
+
+desc 'run CI tasks'
+task ci: [:default]
 
 desc 'Load gem inside irb console'
 task :console do
