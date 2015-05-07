@@ -19,8 +19,7 @@ Gemfile.lock
 *.iws
 
 # Documentation
-doc/
-.yardoc/
+.doc/
 
 # Metric reports
 coverage/
