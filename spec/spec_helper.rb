@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # enable code climate
 require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.configure do |config|

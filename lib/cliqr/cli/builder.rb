@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'cliqr/cli/validator'
 
 module Cliqr

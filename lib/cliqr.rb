@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'cliqr/version'
 require 'cliqr/error'
 

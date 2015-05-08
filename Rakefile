@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'rake/clean'
@@ -9,7 +11,7 @@ end
 FileList['tasks/*.rake'].each(&method(:import))
 
 desc 'default rake task'
-task default: [:clean, :spec, :verify_measurements, :yardstick_measure]
+task default: [:clean, :spec, :rubocop, :verify_measurements, :yardstick_measure]
 
 desc 'run CI tasks'
 task ci: [:default]

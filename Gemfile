@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 source 'https://rubygems.org'
 
 # Specify your gem's dependencies in cliqr.gemspec
@@ -12,6 +14,7 @@ end
 group :test do
   gem 'codeclimate-test-reporter', '~> 0.4', require: false
   gem 'coveralls', '~> 0.8', require: false
+  gem 'rubocop', '~> 0.31', require: false
 end
 
 group :metrics do
