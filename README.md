@@ -15,6 +15,7 @@
     - [Examples](#examples)
         - [Simple CLI app with basename and description](#simple-cli-app-with-basename-and-description)
     - [Installation](#installation)
+    - [Building](#building)
     - [Contributing](#contributing)
 
 <!-- markdown-toc end -->
@@ -67,6 +68,23 @@ And then execute:
 Or install it yourself as:
 
     $ gem install cliqr
+
+## Building
+
+There are various metric with different thresholds settings that needed
+to be satisfied for a successful build. Here is a list:
+
+- `rubocop` to make sure the code style checks are maintained
+- `yardstick` to measure document coverage
+- `codeclimate` to make we ship quality code
+- `coveralls` to measure code coverage
+- `rdoc` to build and measure documentation
+
+To run all of the above, simply run:
+
+```bash
+$ rake
+```
 
 ## Contributing
 
