@@ -4,8 +4,10 @@
 [![Coverage](http://img.shields.io/codeclimate/coverage/github/anshulverma/cliqr.svg?style=flat-square)](https://codeclimate.com/github/anshulverma/cliqr)
 [![Quality](http://img.shields.io/codeclimate/github/anshulverma/cliqr.svg?style=flat-square)](https://codeclimate.com/github/anshulverma/cliqr)
 [![Dependencies](http://img.shields.io/gemnasium/anshulverma/cliqr.svg?style=flat-square)](https://gemnasium.com/anshulverma/cliqr)
-[![Downloads](http://img.shields.io/gem/dtv/cliqr.svg?style=flat-square)](https://rubygems.org/gems/cliqr)
+[![Inline docs](http://inch-ci.org/github/anshulverma/cliqr.svg)](http://inch-ci.org/github/anshulverma/cliqr)
+
 [![Version](http://img.shields.io/gem/v/cliqr.svg?style=flat-square)](https://rubygems.org/gems/cliqr)
+[![Downloads](http://img.shields.io/gem/dtv/cliqr.svg?style=flat-square)](https://rubygems.org/gems/cliqr)
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
