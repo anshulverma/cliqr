@@ -1,15 +1,25 @@
 # encoding: utf-8
 
-# enable code climate
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.configure do |config|
-  config.logger.level = Logger::WARN
-end
-CodeClimate::TestReporter.start
+if ENV['CI']
+  # enable code climate
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.configure do |config|
+    config.logger.level = Logger::WARN
+  end
+  CodeClimate::TestReporter.start
 
-# enable coveralls
-require 'coveralls'
-Coveralls.wear!
+  # enable coveralls
+  require 'coveralls'
+  Coveralls.wear!
+end
+
+# enable simplecov for code coverage
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start do
+    SimpleCov.minimum_coverage 100
+  end
+end
 
 require 'bundler/setup'
 Bundler.setup

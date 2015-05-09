@@ -10,11 +10,20 @@ end
 
 FileList['tasks/*.rake'].each(&method(:import))
 
+desc 'run code coverage checker'
+task :coverage do
+  ENV['COVERAGE'] = 'true'
+  Rake::Task['spec'].execute
+end
+
 desc 'default rake task'
-task default: [:clean, :spec, :rubocop, :verify_measurements, :yardstick_measure]
+task default: [:clean, :spec, :rubocop, :coverage, :verify_measurements, :yardstick_measure]
 
 desc 'run CI tasks'
-task ci: [:default]
+task :ci do
+  ENV['CI'] = 'true'
+  Rake::Task['default'].execute
+end
 
 desc 'Load gem inside irb console'
 task :console do
