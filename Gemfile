@@ -14,7 +14,10 @@ end
 group :test do
   gem 'codeclimate-test-reporter', '~> 0.4', require: false
   gem 'coveralls', '~> 0.8', require: false
-  gem 'rubocop', '~> 0.31', require: false
+
+  if RUBY_VERSION >= '1.9.3'
+    gem 'rubocop', '~> 0.31', require: false
+  end
 end
 
 group :metrics do
