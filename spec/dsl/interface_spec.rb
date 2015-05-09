@@ -11,6 +11,9 @@ describe Cliqr do
 
     expect(cli.usage).to eq <<-EOS
 my-command -- a command used to test cliqr
+
+USAGE:
+    my-command
     EOS
   end
 end

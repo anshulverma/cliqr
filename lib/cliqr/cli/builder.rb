@@ -27,6 +27,9 @@ module Cliqr
       def usage
         <<-EOS
 #{@basename} -- #{@description}
+
+USAGE:
+    #{@basename}
 EOS
       end
     end
