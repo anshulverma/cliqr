@@ -10,8 +10,12 @@ end
 
 FileList['tasks/*.rake'].each(&method(:import))
 
+default_task_list = [:clean, :spec, :verify_measurements, :yardstick_measure]
+
+default_task_list << :rubocop if RUBY_VERSION >= '1.9.3'
+
 desc 'default rake task'
-task default: [:clean, :spec, :rubocop, :verify_measurements, :yardstick_measure]
+task default: default_task_list
 
 desc 'run CI tasks'
 task ci: [:default]
