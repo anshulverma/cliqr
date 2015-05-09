@@ -16,6 +16,7 @@ module Cliqr
       def initialize(config)
         CLI::Validator.validate config
         @basename = config[:basename]
+        @description = config[:description]
       end
 
       # Get usage information of this command line interface instance
@@ -25,7 +26,7 @@ module Cliqr
       # @api public
       def usage
         <<-EOS
-USAGE: #{@basename}
+#{@basename} -- #{@description}
 EOS
       end
     end

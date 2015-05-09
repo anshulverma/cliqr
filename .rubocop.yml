@@ -8,3 +8,7 @@ AllCops:
 
 Style/Encoding:
   Enabled: true
+
+Metrics/LineLength:
+  Exclude:
+    - 'spec/**/*_spec.rb'

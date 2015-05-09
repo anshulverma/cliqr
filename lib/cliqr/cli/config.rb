@@ -30,7 +30,8 @@ module Cliqr
       # @return [Hash]
       def finalize
         {
-          basename: ''
+          basename: '',
+          description: ''
         }.merge(@config)
       end
 
@@ -42,6 +43,14 @@ module Cliqr
         #   name of the top level command
         def basename(basename)
           set_config :basename, basename
+        end
+
+        # Set short description for the base command
+        #
+        # @param [String] description
+        #   short description for the base command
+        def description(description)
+          set_config :description, description
         end
       end
     end
