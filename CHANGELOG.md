@@ -1,4 +1,17 @@
 
+0.0.3 / 2015-05-08
+==================
+
+  * add simplecov to make sure test coverage stays at 100 percent
+  * don't allow failure on ruby 2.2
+  * bump required version to 1.9.3
+  * add inch ci badge
+  * don't include rubocop in gemfile for ruby version less than 1.9.3
+  * disable rubocop for ruby 1.9.2
+  * we don't support ruby 1.9.2 anymore
+  * adding build section to readme
+  * added rubocop for code style checking
+
 0.0.2 / 2015-05-07
 ==================
 
