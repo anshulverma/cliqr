@@ -16,4 +16,17 @@ USAGE:
     my-command
     EOS
   end
+
+  it 'allows description to be optional' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command
+    EOS
+  end
 end

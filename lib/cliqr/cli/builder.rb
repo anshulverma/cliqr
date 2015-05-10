@@ -8,15 +8,14 @@ module Cliqr
     class Builder
       # Start building a command line interface
       #
-      # @param [Hash] config
+      # @param [Cliqr::CLI::Config] config
       #   the configuration options for the interface (validated using
       #   CLI::Validator)
       #
       # @return [Cliqr::CLI::Builder]
       def initialize(config)
         CLI::Validator.validate config
-        @basename = config[:basename]
-        @description = config[:description]
+        @config = config
       end
 
       # Get usage information of this command line interface instance
@@ -25,12 +24,9 @@ module Cliqr
       #
       # @api public
       def usage
-        <<-EOS
-#{@basename} -- #{@description}
-
-USAGE:
-    #{@basename}
-EOS
+        template_file_path = File.expand_path('../../../../templates/usage.erb', __FILE__)
+        template = ERB.new(File.new(template_file_path).read, nil, '%')
+        template.result(@config.instance_eval { binding })
       end
     end
   end

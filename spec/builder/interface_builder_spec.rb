@@ -8,6 +8,8 @@ describe Cliqr::CLI::Builder do
   end
 
   it 'does not allow empty basename' do
-    expect { Cliqr::CLI::Builder.new(basename: '') }.to raise_error(Cliqr::Error::BasenameNotDefined)
+    config = Cliqr::CLI::Config.new
+    config.basename = ''
+    expect { Cliqr::CLI::Builder.new(config) }.to raise_error(Cliqr::Error::BasenameNotDefined)
   end
 end

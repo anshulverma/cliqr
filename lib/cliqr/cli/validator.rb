@@ -8,7 +8,7 @@ module Cliqr
     class Validator
       def self.validate(config)
         fail Cliqr::Error::ConfigNotFound, 'config is nil' if config.nil?
-        fail Cliqr::Error::BasenameNotDefined, 'basename is not defined' if config[:basename].empty?
+        fail Cliqr::Error::BasenameNotDefined, 'basename is not defined' if config.basename.empty?
       end
     end
   end

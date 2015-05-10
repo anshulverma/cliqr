@@ -22,6 +22,7 @@ module Cliqr
         delegator.instance_eval(&block)
       end
       base.finalize
+      base
     end
 
     # Delegates all DSL methods to the base class. Can be used to keep DSL

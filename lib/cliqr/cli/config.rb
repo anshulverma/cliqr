@@ -8,8 +8,21 @@ module Cliqr
     class Config
       extend Cliqr::DSL
 
+      UNSET = Object.new
+
+      attr_accessor :basename
+
+      attr_accessor :description
+
       def initialize
-        @config = {}
+        @basename = UNSET
+        @description = UNSET
+      end
+
+      # Finalize config by adding default values for unset values.
+      def finalize
+        @basename = '' if @basename == UNSET
+        @description = '' if @description == UNSET
       end
 
       # Set value for a config option
@@ -22,17 +35,7 @@ module Cliqr
       #
       # @return [String] value that was set for the parameter
       def set_config(name, value)
-        @config[name.to_sym] = value
-      end
-
-      # Finalize config by adding default values for unset values.
-      #
-      # @return [Hash]
-      def finalize
-        {
-          basename: '',
-          description: ''
-        }.merge(@config)
+        public_send("#{name}=", value)
       end
 
       # dsl methods
