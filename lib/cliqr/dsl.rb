@@ -9,16 +9,15 @@ module Cliqr
   module DSL
     # Entry point for invoking dsl methods
     #
-    # @param args Arguments to be used to build the DSL instance
+    # @param [Hash] args Arguments to be used to build the DSL instance
     #
-    # @param block The block to evaluate the DSL
+    # @param [Function] block The block to evaluate the DSL
     #
     # @return [Cliqr::DSL]
     def build(*args, &block)
       base = new(*args)
       if block_given?
-        delegator_klass = const_get('DSLDelegator')
-        delegator = delegator_klass.new(base)
+        delegator = DSLDelegator.new(base)
         delegator.instance_eval(&block)
       end
       base.finalize
@@ -26,37 +25,29 @@ module Cliqr
     end
 
     # Delegates all DSL methods to the base class. Can be used to keep DSL
-    # methods separate from non-dsl methods.
-    #
-    # @param block Block containing all dsl methods
-    #
-    # Allows separating dsl methods as:
+    # methods separate from non-dsl methods. All implementing subclasses will
+    # have to implement a set_config method as described below
     #
     #     class MyDSLClass
     #       extends Cliqr::DSL
     #
-    #       def set_value(value)
-    #         @value = value
+    #       def set_config(name, value, &block)
+    #         # handle config value for attribute "name"
     #       end
-    #
-    #       # ... other non-dsl methods ...
-    #
-    #       dsl do
-    #         def value(value)
-    #           set_value value
-    #         end
-    #       end
-    #
     #     end
     #
     # This will be invoked as:
     #
-    #    MyDSLClass.build do
-    #      value 'some-value'
-    #    end
-    def dsl(&block)
-      delegator_klass = Class.new(SimpleDelegator, &block)
-      const_set('DSLDelegator', delegator_klass)
+    #     MyDSLClass.build do
+    #       attribute 'some-value'
+    #     end
+    class DSLDelegator < SimpleDelegator
+      # All dsl methods are handled dynamically by this method_missing block.
+      # Essentially, this method acts as a proxy for subclass' set_config
+      # method.
+      def method_missing(name, *args, &block)
+        __getobj__.set_config name, args[0], &block
+      end
     end
   end
 end

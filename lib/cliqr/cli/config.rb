@@ -39,14 +39,17 @@ module Cliqr
       #
       # @return [String] value that was set for the parameter
       def set_config(name, value)
-        public_send("#{name}=", value)
+        handle_config name, value
       end
 
-      dsl do
-        # dsl methods are handled dynamically by this method_missing block
-        def method_missing(name, *args, &block)
-          __getobj__.set_config name, args[0], &block
-        end
+      private
+
+      # Set value for config option without evaluating a block
+      #
+      # @param [Symbol] name Name of the config option
+      # @param [Object] value Value for the config option
+      def handle_config(name, value)
+        public_send("#{name}=", value)
       end
     end
   end
