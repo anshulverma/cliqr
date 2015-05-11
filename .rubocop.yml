@@ -4,11 +4,12 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   Exclude:
-    - 'tasks/**/*'
+    - 'templates/**/*'
 
 Style/Encoding:
   Enabled: true
 
 Metrics/LineLength:
+  Max: 100
   Exclude:
     - 'spec/**/*_spec.rb'

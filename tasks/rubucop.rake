@@ -6,7 +6,7 @@ begin
     task.patterns = ['lib/**/*.rb', 'spec/**/*.rb']
     # abort rake on failure
     task.fail_on_error = true
-    end
+  end
 rescue
   # do nothing
 end
