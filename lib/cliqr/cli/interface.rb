@@ -21,7 +21,10 @@ module Cliqr
       def usage
         template_file_path = File.expand_path('../../../../templates/usage.erb', __FILE__)
         template = ERB.new(File.new(template_file_path).read, nil, '%')
-        template.result(@config.instance_eval { binding })
+        result = template.result(@config.instance_eval { binding })
+
+        # remove multiple newlines from the end of usage
+        "#{result.strip}\n"
       end
 
       def execute(output: :default)

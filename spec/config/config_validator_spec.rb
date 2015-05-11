@@ -28,4 +28,13 @@ describe Cliqr::CLI::Validator do
     config.finalize
     expect { Cliqr::CLI::Builder.new(config).build }.to raise_error(Cliqr::Error::InvalidCommandHandler)
   end
+
+  it 'expects that config options should not be nil' do
+    config = Cliqr::CLI::Config.new
+    config.basename = 'my-command'
+    config.handler = TestCommand
+    config.options = nil
+    config.finalize
+    expect { Cliqr::CLI::Builder.new(config).build }.to raise_error(Cliqr::Error::OptionsNotDefinedException)
+  end
 end

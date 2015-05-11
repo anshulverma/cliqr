@@ -15,7 +15,7 @@
 - [cliqr](#cliqr)
     - [Summary](#summary)
     - [Examples](#examples)
-        - [Simple CLI app with basename and description](#simple-cli-app-with-basename-and-description)
+        - [Simple CLI app example](#simple-cli-app-example)
     - [Installation](#installation)
     - [Building](#building)
     - [Contributing](#contributing)
@@ -38,7 +38,7 @@ line application. Features include:
 The DSL provides several helper methods to build interfaces of different
 styles. Here are some examples.
 
-### Simple CLI app with basename and description
+### Simple CLI app example
 
 Here is a simple hello-world example for using Cliqr.
 
@@ -56,6 +56,11 @@ cli = Cliqr.interface do
   basename 'my-command'
   description 'this is an awesome command...try it out'
   handler MyCommandHandler
+
+  option 'an-option' do
+    short 'a'
+    description 'this is a option'
+  end
 end
 
 puts cli.usage
@@ -63,6 +68,10 @@ puts cli.usage
 #>
 #> USAGE:
 #>     my-command
+#>
+#> Available options:
+#>
+#>     --an-option, -a  :  this is a option
 
 cli.execute
 #> executing my awesome command

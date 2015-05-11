@@ -32,5 +32,8 @@ module Cliqr
 
     # Error to signify that a command's runner is not available
     class UnknownCommandRunnerException < CliqrError; end
+
+    # Raised if config's option array is nil
+    class OptionsNotDefinedException < CliqrError; end
   end
 end

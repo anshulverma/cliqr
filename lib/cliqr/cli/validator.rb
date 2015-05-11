@@ -12,9 +12,13 @@ module Cliqr
       def self.validate(config)
         fail Cliqr::Error::ConfigNotFound, 'config is nil' if config.nil?
         fail Cliqr::Error::BasenameNotDefined, 'basename is not defined' if config.basename.empty?
+
         fail Cliqr::Error::HandlerNotDefined, 'command handler not defined' if config.handler.nil?
         fail Cliqr::Error::InvalidCommandHandler,
              'command handler must extend from Cliqr::CLI::Command' unless config.handler < Command
+
+        fail Cliqr::Error::OptionsNotDefinedException,
+             'options cannot be nil' if config.options.nil?
       end
     end
   end

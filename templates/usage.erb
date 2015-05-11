@@ -1,4 +1,14 @@
 <%= @basename %><% unless @description.nil? || @description.empty? %> -- <%= @description %><% end %>
 
 USAGE:
-    <%= @basename %>
+    <%= @basename %><% unless @options.empty? %> [options]
+
+Available options:
+<%
+   @options.each { |option|
+%>
+    --<%= option.name %><% unless option.short.empty? %>, -<%= option.short %><% end %><% unless option.description.empty? %>  :  <%= option.description %><% end %>
+<%
+   }
+%>
+<% end %>
