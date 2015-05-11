@@ -43,10 +43,29 @@ styles. Here are some examples.
 Here is a simple hello-world example for using Cliqr.
 
 ``` ruby
+require 'cliqr'
+
+# a custom command handler
+class MyCommandHandler < Cliqr.command
+  def execute
+    puts 'executing my awesome command'
+  end
+end
+
 cli = Cliqr.interface do
   basename 'my-command'
+  description 'this is an awesome command...try it out'
+  handler MyCommandHandler
 end
+
 puts cli.usage
+#> my-command -- this is an awesome command...try it out
+#>
+#> USAGE:
+#>     my-command
+
+cli.execute
+#> executing my awesome command
 ```
 
 This should print
