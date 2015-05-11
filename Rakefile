@@ -17,7 +17,7 @@ task :coverage do
 end
 
 desc 'default rake task'
-task default: [:clean, :spec, :rubocop, :coverage, :verify_measurements, :yardstick_measure]
+task default: [:clean, :coverage, :rubocop, :verify_measurements, :yardstick_measure]
 
 desc 'run CI tasks'
 task :ci do
