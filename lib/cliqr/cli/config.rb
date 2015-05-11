@@ -42,26 +42,10 @@ module Cliqr
         public_send("#{name}=", value)
       end
 
-      # dsl methods
       dsl do
-        # Set basename for the command line interface
-        #
-        # @param [String] basename
-        #   name of the top level command
-        def basename(basename)
-          set_config :basename, basename
-        end
-
-        # Set short description for the base command
-        #
-        # @param [String] description
-        #   short description for the base command
-        def description(description)
-          set_config :description, description
-        end
-
-        def handler(handler)
-          set_config :handler, handler
+        # dsl methods are handled dynamically by this method_missing block
+        def method_missing(name, *args, &block)
+          __getobj__.set_config name, args[0], &block
         end
       end
     end
