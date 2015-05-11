@@ -5,6 +5,7 @@ require 'cliqr/error'
 
 require 'cliqr/cli/config'
 require 'cliqr/cli/builder'
+require 'cliqr/cli/command'
 
 # Top level namespace for the Cliqr gem
 module Cliqr
@@ -17,7 +18,11 @@ module Cliqr
     # @api public
     def interface(&block)
       config = CLI::Config.build(&block)
-      CLI::Builder.new(config)
+      CLI::Builder.new(config).build
+    end
+
+    def command
+      CLI::Command
     end
   end
 end

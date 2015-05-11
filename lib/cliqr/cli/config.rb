@@ -14,15 +14,19 @@ module Cliqr
 
       attr_accessor :description
 
+      attr_accessor :handler
+
       def initialize
         @basename = UNSET
         @description = UNSET
+        @handler = UNSET
       end
 
       # Finalize config by adding default values for unset values.
       def finalize
         @basename = '' if @basename == UNSET
         @description = '' if @description == UNSET
+        @handler = nil if @handler == UNSET
       end
 
       # Set value for a config option
@@ -54,6 +58,10 @@ module Cliqr
         #   short description for the base command
         def description(description)
           set_config :description, description
+        end
+
+        def handler(handler)
+          set_config :handler, handler
         end
       end
     end
