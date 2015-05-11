@@ -1,4 +1,23 @@
 
+0.0.4 / 2015-05-11
+==================
+
+  * bring document coverage to 100%
+  * improve documentation
+  * fix minor style error in rake tasks
+  * don't execute specs twice
+  * add support for command options
+  * improve dsl framework by completely hiding dsl methods
+  * add method_missing to proxy all dsl methods
+  * add example for router in readme
+  * ignore document files
+  * add command router
+  * use a template to build usage
+  * move builder spec in its own folder
+  * add command usage section
+  *  change usage information builder
+  * show total downloads in readme
+
 0.0.3 / 2015-05-08
 ==================
 
