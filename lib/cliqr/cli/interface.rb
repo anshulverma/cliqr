@@ -8,6 +8,8 @@ require 'cliqr/cli/command_runner_factory'
 module Cliqr
   module CLI
     # A CLI interface instance which is the entry point for all CLI commands.
+    #
+    # @api public
     class Interface
       def initialize(config)
         @config = config

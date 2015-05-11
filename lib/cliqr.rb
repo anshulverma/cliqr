@@ -8,6 +8,8 @@ require 'cliqr/cli/builder'
 require 'cliqr/cli/command'
 
 # Top level namespace for the Cliqr gem
+#
+# @api public
 module Cliqr
   class << self
     # Invokes the CLI::Config builder DSL to prepare config for command line
@@ -21,6 +23,13 @@ module Cliqr
       CLI::Builder.new(config).build
     end
 
+    # All cliqr commands should extend from this. Here is an example:
+    #
+    #     class MyCommand < Cliqr.command
+    #       def execute
+    #         # execute the command
+    #       end
+    #     end
     def command
       CLI::Command
     end

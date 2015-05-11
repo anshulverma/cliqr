@@ -5,6 +5,8 @@ require 'stringio'
 module Cliqr
   module CLI
     # Factory class to get instance of CommandRunner based on input options
+    #
+    # @api private
     class CommandRunnerFactory
       # Get a instance of command runner based on options
       #

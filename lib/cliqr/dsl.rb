@@ -6,6 +6,8 @@ module Cliqr
   # Used to separate all dsl methods in a separate block, thus allowing
   # separation of concerns between non-dsl methods with dsl methods which
   # improves maintainability.
+  #
+  # @api private
   module DSL
     # Entry point for invoking dsl methods
     #

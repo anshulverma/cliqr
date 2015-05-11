@@ -3,6 +3,8 @@
 module Cliqr
   module Error
     # Base error class that others error types extend from
+    #
+    # @api private
     class CliqrError < StandardError
       def initialize(error_message, e = nil)
         super e

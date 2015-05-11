@@ -5,6 +5,8 @@ require 'cliqr/error'
 module Cliqr
   module CLI
     # Validator for the command line interface configuration
+    #
+    # @api private
     class Validator
       # Validates the config to make sure all the options are correctly set
       #

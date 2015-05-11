@@ -9,6 +9,8 @@ module Cliqr
     UNSET = Object.new
 
     # The configuration setting to build a cli application with its own dsl
+    #
+    # @api private
     class Config
       extend Cliqr::DSL
 

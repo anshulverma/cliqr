@@ -6,6 +6,8 @@ require 'cliqr/cli/interface'
 module Cliqr
   module CLI
     # Builds usage information from [CLI::Config]
+    #
+    # @api private
     class Builder
       # Start building a command line interface
       #
