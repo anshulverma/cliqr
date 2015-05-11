@@ -11,15 +11,17 @@ module Cliqr
     class Builder
       # Start building a command line interface
       #
-      # @param [Cliqr::CLI::Config] config
-      #   the configuration options for the interface (validated using
-      #   CLI::Validator)
+      # @param [Cliqr::CLI::Config] config the configuration options for the
+      # interface (validated using CLI::Validator)
       #
       # @return [Cliqr::CLI::Builder]
       def initialize(config)
         @config = config
       end
 
+      # Validate and build a cli interface based on the configuration options
+      #
+      # @return [Cliqr::CLI::Interface]
       def build
         CLI::Validator.validate @config
         Interface.new(@config)

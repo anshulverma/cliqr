@@ -11,8 +11,8 @@ describe Cliqr::CLI::Router do
       basename 'my-command'
       handler TestCommand
     end
-    output = cli.execute output: :buffer
-    expect(output).to eq "test command executed\n"
+    result = cli.execute output: :buffer
+    expect(result[:stdout]).to eq "test command executed\n"
   end
 
   it 'handles error appropriately' do

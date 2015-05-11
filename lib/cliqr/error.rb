@@ -6,6 +6,7 @@ module Cliqr
     #
     # @api private
     class CliqrError < StandardError
+      # Set up the error to wrap another error's trace
       def initialize(error_message, e = nil)
         super e
 

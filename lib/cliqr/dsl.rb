@@ -44,9 +44,13 @@ module Cliqr
     #       attribute 'some-value'
     #     end
     class DSLDelegator < SimpleDelegator
-      # All dsl methods are handled dynamically by this method_missing block.
-      # Essentially, this method acts as a proxy for subclass' set_config
-      # method.
+      # All dsl methods are handled dynamically by proxying through #set_config
+      #
+      # @param [Symbol] name Name of the method
+      # @param [Array] args Method arguments
+      # @param [Function] block A function to evaluate in the context of the method's arguments
+      #
+      # @return [Object] The return value of the proxied method
       def method_missing(name, *args, &block)
         __getobj__.set_config name, args[0], &block
       end

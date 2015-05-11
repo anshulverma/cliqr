@@ -9,11 +9,6 @@
 Lint/HandleExceptions:
   Enabled: false
 
-# Offense count: 6
-# Configuration parameters: AllowURI, URISchemes.
-Metrics/LineLength:
-  Max: 100
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, UseHashRocketsWithSymbolValues.

@@ -7,7 +7,10 @@ module Cliqr
     # @api private
     class Command
       # Execute the command
+      #
+      # @return [Integer] Exit status of the command execution
       def execute
+        0
       end
     end
   end

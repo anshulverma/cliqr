@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 begin
   require 'yardstick/rake/measurement'
   require 'yardstick/rake/verify'
@@ -10,7 +12,7 @@ begin
 
   # verify_measurements task
   Yardstick::Rake::Verify.new do |verify|
-    verify.threshold = 60
+    verify.threshold = 100
     verify.require_exact_threshold = false
   end
 rescue LoadError

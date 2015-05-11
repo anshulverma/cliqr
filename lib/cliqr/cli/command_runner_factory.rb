@@ -10,7 +10,10 @@ module Cliqr
     class CommandRunnerFactory
       # Get a instance of command runner based on options
       #
-      # @param [Hash] options used to build a command runner instance
+      # @param [Hash] options Used to build a command runner instance
+      #
+      # @return [Cliqr::CLI::StandardCommandRunner] If default output is require from command
+      # @return [Cliqr::CLI::BufferedCommandRunner] If command's output needs to be buffered
       def self.get(**options)
         case options[:output]
         when :default
@@ -24,24 +27,39 @@ module Cliqr
       end
     end
 
-    # a standard implementation for command runner used for most commands
+    # A standard implementation for command runner used for most commands
+    #
+    # @api private
     class StandardCommandRunner
       # simply execute the command handler
+      #
+      # @return [Integer] Exit status of the command
       def run
         yield
       end
     end
 
-    # used to buffer command output
+    # Used to buffer command output
+    #
+    # @api private
     class BufferedCommandRunner
-      # run the command handler but redirect stdout to a buffer
+      # Run the command handler but redirect stdout to a buffer
+      #
+      # @return [Hash] The hash contains :stdout, :stderr and :status of the command
       def run
         old_stdout = $stdout
+        old_stderr = $stderr
         $stdout = StringIO.new('', 'w')
+        $stderr = StringIO.new('', 'w')
         yield
-        $stdout.string
+        {
+            :stdout => $stdout.string,
+            :stderr => $stderr.string,
+            :status => 0
+        }
       ensure
         $stdout = old_stdout
+        $stderr = old_stderr
       end
     end
   end

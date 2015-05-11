@@ -10,7 +10,9 @@ module Cliqr
     class Validator
       # Validates the config to make sure all the options are correctly set
       #
-      # @param [Cliqr::CLI::Config] config settings for building command line interface
+      # @param [Cliqr::CLI::Config] config Settings for building command line interface
+      #
+      # @return [Cliqr::CLI::Config] Validated config object
       def self.validate(config)
         fail Cliqr::Error::ConfigNotFound, 'config is nil' if config.nil?
         fail Cliqr::Error::BasenameNotDefined, 'basename is not defined' if config.basename.empty?
@@ -21,6 +23,8 @@ module Cliqr
 
         fail Cliqr::Error::OptionsNotDefinedException,
              'options cannot be nil' if config.options.nil?
+
+        config
       end
     end
   end

@@ -34,6 +34,7 @@ module Cliqr
       # @return [Array<OptionConfig>]
       attr_accessor :options
 
+      # New config instance with all attributes set as UNSET
       def initialize
         @basename = UNSET
         @description = UNSET
@@ -41,12 +42,16 @@ module Cliqr
         @options = UNSET
       end
 
-      # Finalize config by adding default values for unset values.
+      # Finalize config by adding default values for unset values
+      #
+      # @return [Cliqr::CLI::Config]
       def finalize
         @basename = '' if @basename == UNSET
         @description = '' if @description == UNSET
         @handler = nil if @handler == UNSET
         @options = [] if @options == UNSET
+
+        self
       end
 
       # Set value for a config option
@@ -56,6 +61,9 @@ module Cliqr
       # @param [Object] value Value for the config parameter
       #
       # @param [Funciton] block Function which populates configuration for a sub-attribute
+      #
+      # @return [Object] If setting a attribute's value
+      # @return [Cliqr::CLI::OptionConfig] If adding a new option
       def set_config(name, value, &block)
         case name
         when :option
@@ -71,8 +79,11 @@ module Cliqr
       #
       # @param [Symbol] name Name of the config option
       # @param [Object] value Value for the config option
+      #
+      # @return [Object] Value that was assigned to attribute
       def handle_config(name, value)
         public_send("#{name}=", value)
+        value
       end
 
       # Add a new option for the command
@@ -80,35 +91,54 @@ module Cliqr
       # @param [Symbol] name Long name of the option
       #
       # @param [Function] block Populate the option's config in this funciton block
+      #
+      # @return [Cliqr::CLI::OptionConfig] Newly created option's config
       def handle_option(name, &block)
         option_config = OptionConfig.build(&block)
         option_config.name = name
         @options = [] if @options == UNSET
         @options.push option_config
+        option_config
       end
     end
 
     # Config attributes for a command's option
+    #
+    # @api private
     class OptionConfig
       extend Cliqr::DSL
 
+      # Long option name
+      #
+      # @return [String]
       attr_accessor :name
 
+      # Optional short name for the option
+      #
+      # @return [String]
       attr_accessor :short
 
+      # A description string for the option
+      #
+      # @return [String]
       attr_accessor :description
 
+      # Initialize a new config instance for an option with UNSET attribute values
       def initialize
         @name = UNSET
         @short = UNSET
         @description = UNSET
       end
 
-      # Finalize option's config by adding default values for unset values.
+      # Finalize option's config by adding default values for unset values
+      #
+      # @return [Cliqr::CLI::OptionConfig]
       def finalize
         @name = '' if @name == UNSET
         @short = '' if @short == UNSET
         @description = '' if @description == UNSET
+
+        self
       end
 
       # Set value for command option's attribute
@@ -116,6 +146,8 @@ module Cliqr
       # @param [Symbol] name Name of the attribute
       #
       # @param [Object] value Value for the attribute
+      #
+      # @return [Object] Value that was set for the attribute
       def set_config(name, value)
         handle_option_config name, value
       end
@@ -126,8 +158,11 @@ module Cliqr
       #
       # @param [Symbol] name Name of the config option
       # @param [Object] value Value for the config option
+      #
+      # @return [Object]
       def handle_option_config(name, value)
         public_send("#{name}=", value)
+        value
       end
     end
   end

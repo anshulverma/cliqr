@@ -12,8 +12,16 @@ require 'cliqr/cli/command'
 # @api public
 module Cliqr
   class << self
-    # Invokes the CLI::Config builder DSL to prepare config for command line
-    # application. Then uses that config to build a instance of type Cliqr::CLI
+    # Start building a cli interface
+    #
+    # @example
+    #   Cliqr.interface do
+    #     basename 'my-command' # name of the command
+    #     description 'command description in a few words' # long description
+    #     handler MyCommandHandler # command's handler class
+    #
+    #     option
+    #   end
     #
     # @return [Cliqr::CLI]
     #
@@ -25,11 +33,14 @@ module Cliqr
 
     # All cliqr commands should extend from this. Here is an example:
     #
-    #     class MyCommand < Cliqr.command
-    #       def execute
-    #         # execute the command
-    #       end
+    # @example
+    #   class MyCommand < Cliqr.command
+    #     def execute
+    #       # execute the command
     #     end
+    #   end
+    #
+    # @return [CLI::Command]
     def command
       CLI::Command
     end

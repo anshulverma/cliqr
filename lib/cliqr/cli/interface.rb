@@ -9,17 +9,18 @@ module Cliqr
   module CLI
     # A CLI interface instance which is the entry point for all CLI commands.
     #
-    # @api public
+    # @api private
     class Interface
+      # Create a new interface instance with a config
+      #
+      # @param [Cliqr::CLI::Config] config Config used to create this interface
       def initialize(config)
         @config = config
       end
 
       # Get usage information of this command line interface instance
       #
-      # @return [String]
-      #
-      # @api public
+      # @return [String] Defines usage of this interface
       def usage
         template_file_path = File.expand_path('../../../../templates/usage.erb', __FILE__)
         template = ERB.new(File.new(template_file_path).read, nil, '%')
@@ -29,6 +30,11 @@ module Cliqr
         "#{result.strip}\n"
       end
 
+      # Execute a command
+      #
+      # @param [Symbol] output Either :default or :buffer
+      #
+      # @return [Integer] Exit code of the command execution
       def execute(output: :default)
         handler = @config.handler.new
         begin
