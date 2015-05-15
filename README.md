@@ -77,12 +77,6 @@ cli.execute
 #> executing my awesome command
 ```
 
-This should print
-
-```
-USAGE: my-command
-```
-
 ## Installation
 
 Add this line to your application's Gemfile:
