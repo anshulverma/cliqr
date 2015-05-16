@@ -2,7 +2,7 @@
 
 # A command that always throws an error
 class AlwaysErrorCommand < Cliqr.command
-  def execute
+  def execute(_context)
     fail StandardError, 'I always throw an error'
   end
 end

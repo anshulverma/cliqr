@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+require 'cliqr/cli/command_runner_factory'
+
 describe Cliqr::CLI::CommandRunnerFactory do
   it 'returns standard runner for default output' do
     runner = Cliqr::CLI::CommandRunnerFactory.get(output: :default)

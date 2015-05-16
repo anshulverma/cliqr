@@ -7,7 +7,7 @@ module Cliqr
     # Validator for the command line interface configuration
     #
     # @api private
-    class Validator
+    class ConfigValidator
       # Validates the config to make sure all the options are correctly set
       #
       # @param [Cliqr::CLI::Config] config Settings for building command line interface

@@ -4,7 +4,7 @@ require 'cliqr/version'
 require 'cliqr/error'
 
 require 'cliqr/cli/config'
-require 'cliqr/cli/builder'
+require 'cliqr/cli/interface'
 require 'cliqr/cli/command'
 
 # Top level namespace for the Cliqr gem
@@ -23,12 +23,12 @@ module Cliqr
     #     option
     #   end
     #
-    # @return [Cliqr::CLI]
+    # @return [Cliqr::CLI::Interface]
     #
     # @api public
     def interface(&block)
       config = CLI::Config.build(&block)
-      CLI::Builder.new(config).build
+      CLI::Interface.build(config)
     end
 
     # All cliqr commands should extend from this. Here is an example:
