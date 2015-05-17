@@ -14,15 +14,19 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Config] Validated config object
       def self.validate(config)
-        fail Cliqr::Error::ConfigNotFound, 'config is nil' if config.nil?
-        fail Cliqr::Error::BasenameNotDefined, 'basename is not defined' if config.basename.empty?
+        fail Cliqr::Error::ConfigNotFound, 'a valid config should be defined' if config.nil?
+        fail Cliqr::Error::BasenameNotDefined, 'basename not defined' if config.basename.empty?
 
-        fail Cliqr::Error::HandlerNotDefined, 'command handler not defined' if config.handler.nil?
-        fail Cliqr::Error::InvalidCommandHandler,
-             'command handler must extend from Cliqr::CLI::Command' unless config.handler < Command
+        fail Cliqr::Error::HandlerNotDefined,
+             "handler not defined for command \"#{config.basename}\"" if config.handler.nil?
+
+        unless config.handler < Command
+          fail Cliqr::Error::InvalidCommandHandler,
+               "handler for command \"#{config.basename}\" should extend from [Cliqr::CLI::Command]"
+        end
 
         fail Cliqr::Error::OptionsNotDefinedException,
-             'options cannot be nil' if config.options.nil?
+             "option array is nil for command \"#{config.basename}\"" if config.options.nil?
 
         config
       end
