@@ -7,14 +7,25 @@ module Cliqr
     # @api private
     class CliqrError < StandardError
       # Set up the error to wrap another error's trace
-      def initialize(error_message, e = nil)
-        super e
+      def initialize(error_message, cause = nil)
+        super cause
+
+        @error_message = error_message
+        @cause = cause
 
         # Preserve the original exception's data if provided
-        return unless e && e.is_a?(Exception)
+        set_backtrace cause.backtrace if cause?
+      end
 
-        set_backtrace e.backtrace
-        message.prepend "#{error_message}\n\nCause:\n#{e.class}: "
+      def message
+        "#{@error_message}\n\nCause: #{@cause.class}" if cause?
+        @error_message
+      end
+
+      private
+
+      def cause?
+        @cause && @cause.is_a?(Exception)
       end
     end
 
@@ -38,5 +49,11 @@ module Cliqr
 
     # Raised if config's option array is nil
     class OptionsNotDefinedException < CliqrError; end
+
+    # Indicates to the user that the command line option is invalid
+    class InvalidCommandOption < CliqrError; end
+
+    # Indicates to the user that the command line option is invalid
+    class UnknownCommandOption < CliqrError; end
   end
 end
