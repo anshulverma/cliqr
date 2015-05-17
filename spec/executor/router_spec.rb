@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-require 'executor/fixtures/test_command'
-require 'executor/fixtures/always_error_command'
-require 'executor/fixtures/option_reader_command'
+require 'fixtures/test_command'
+require 'fixtures/always_error_command'
+require 'fixtures/option_reader_command'
 
 describe Cliqr::CLI::Router do
   it 'routes base command with no arguments' do

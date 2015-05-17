@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require 'executor/fixtures/test_command'
+require 'fixtures/test_command'
 
 describe Cliqr::CLI::Interface do
   it 'builds a base command with name' do
