@@ -47,8 +47,9 @@ require 'cliqr'
 
 # a custom command handler
 class MyCommandHandler < Cliqr.command
-  def execute
+  def execute(context)
     puts 'executing my awesome command'
+    puts "value for option 'test' is '#{context.option('test').value}'"
   end
 end
 
@@ -61,6 +62,8 @@ cli = Cliqr.interface do
     short 'a'
     description 'this is a option'
   end
+  
+  option 'test'
 end
 
 puts cli.usage
@@ -72,9 +75,12 @@ puts cli.usage
 #> Available options:
 #>
 #>     --an-option, -a  :  this is a option
+#>
+#>     --test
 
-cli.execute
+cli.execute %w(--test some-value)
 #> executing my awesome command
+#> value for option 'test' is 'some-value'
 ```
 
 ## Installation
