@@ -12,11 +12,6 @@ module Cliqr
       # @return [String]
       attr_accessor :command
 
-      # List of parsed options
-      #
-      # @return [Cliqr::CLI::CommandOption]
-      attr_accessor :options
-
       # Build a instance of command context based on the parsed set of arguments
       #
       # @param [Hash] parsed_args A hash of parsed command line arguments
@@ -31,7 +26,24 @@ module Cliqr
       # @return [Cliqr::CLI::CommandContext]
       def initialize(command, options)
         @command = command
-        @options = options
+        # make option map from array
+        @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
+      end
+
+      # List of parsed options
+      #
+      # @return [Array<Cliqr::CLI::CommandOption>]
+      def options
+        @options.values
+      end
+
+      # Get a option by name
+      #
+      # @param [String] name Name of the option
+      #
+      # @return [Cliqr::CLI::CommandOption] Instance of CommandOption for option
+      def option(name)
+        @options[name]
       end
 
       private :initialize

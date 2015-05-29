@@ -7,6 +7,7 @@ require 'cliqr/error'
 require 'fixtures/test_command'
 require 'fixtures/always_error_command'
 require 'fixtures/option_reader_command'
+require 'fixtures/test_option_reader_command'
 
 describe Cliqr::CLI::Executor do
   it 'returns code 0 for default command runner' do
@@ -53,6 +54,19 @@ describe Cliqr::CLI::Executor do
 my-command
 
 [option] test-option => some-value
+    EOS
+  end
+
+  it 'lets a command get single option value' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler TestOptionReaderCommand
+
+      option 'test-option'
+    end
+    result = cli.execute %w(--test-option some-value), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+some-value
     EOS
   end
 
