@@ -7,6 +7,9 @@ module Cliqr
     # @api private
     class CliqrError < StandardError
       # Set up the error to wrap another error's trace
+      #
+      # @param [String] error_message A short error description
+      # @param [Error] cause The cause of the error
       def initialize(error_message, cause = nil)
         super cause
 
@@ -17,13 +20,22 @@ module Cliqr
         set_backtrace cause.backtrace if cause?
       end
 
+      # Build a error message based on the cause of the error
+      #
+      # @return [String] Error message including the cause of the error
       def message
-        "#{@error_message}\n\nCause: #{@cause.class}" if cause?
-        @error_message
+        if cause?
+          "#{@error_message}\n\nCause: #{@cause.class} - #{@cause.message}"
+        else
+          @error_message
+        end
       end
 
       private
 
+      # Check if there was a nested cause for this error
+      #
+      # @return [Boolean] <tt>true</tt> if there was a valid cause for this error
       def cause?
         @cause && @cause.is_a?(Exception)
       end
@@ -55,5 +67,20 @@ module Cliqr
 
     # Indicates to the user that the command line option is invalid
     class UnknownCommandOption < CliqrError; end
+
+    # Raised to signal missing value for a option
+    class OptionValueMissing < CliqrError; end
+
+    # Indicates that a option has multiple values in the command line
+    class MultipleOptionValues < CliqrError; end
+
+    # Raised if two options are defined with same long or short name
+    class DuplicateOptions < CliqrError; end
+
+    # Raised if an option is not defined properly
+    class InvalidOptionDefinition < CliqrError; end
+
+    # Raised if an option is not defined properly
+    class InvalidArgumentError < CliqrError; end
   end
 end

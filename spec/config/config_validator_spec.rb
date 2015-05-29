@@ -9,7 +9,7 @@ require 'fixtures/test_command'
 describe Cliqr::CLI::ConfigValidator do
   it 'does not allow empty config' do
     expect { Cliqr::CLI::Interface.build(nil) }.to(
-        raise_error(Cliqr::Error::ConfigNotFound, 'a valid config should be defined')
+      raise_error(Cliqr::Error::ConfigNotFound, 'a valid config should be defined')
     )
   end
 
@@ -18,7 +18,7 @@ describe Cliqr::CLI::ConfigValidator do
     config.basename = ''
     config.finalize
     expect { Cliqr::CLI::Interface.build(config) }.to(
-        raise_error(Cliqr::Error::BasenameNotDefined, 'basename not defined')
+      raise_error(Cliqr::Error::BasenameNotDefined, 'basename not defined')
     )
   end
 
@@ -27,7 +27,7 @@ describe Cliqr::CLI::ConfigValidator do
     config.basename = 'my-command'
     config.finalize
     expect { Cliqr::CLI::Interface.build(config) }.to(
-        raise_error(Cliqr::Error::HandlerNotDefined, 'handler not defined for command "my-command"')
+      raise_error(Cliqr::Error::HandlerNotDefined, 'handler not defined for command "my-command"')
     )
   end
 
@@ -37,8 +37,8 @@ describe Cliqr::CLI::ConfigValidator do
     config.handler = Object
     config.finalize
     expect { Cliqr::CLI::Interface.build(config) }.to(
-        raise_error(Cliqr::Error::InvalidCommandHandler,
-                    'handler for command "my-command" should extend from [Cliqr::CLI::Command]')
+      raise_error(Cliqr::Error::InvalidCommandHandler,
+                  'handler for command "my-command" should extend from [Cliqr::CLI::Command]')
     )
   end
 
@@ -49,7 +49,7 @@ describe Cliqr::CLI::ConfigValidator do
     config.options = nil
     config.finalize
     expect { Cliqr::CLI::Interface.build(config) }.to(
-        raise_error(Cliqr::Error::OptionsNotDefinedException, 'option array is nil for command "my-command"'),
+      raise_error(Cliqr::Error::OptionsNotDefinedException, 'option array is nil for command "my-command"')
     )
   end
 end

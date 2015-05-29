@@ -7,7 +7,7 @@ Available options:
 <%
    @options.each { |option|
 %>
-    --<%= option.name %><% unless option.short.empty? %>, -<%= option.short %><% end %><% unless option.description.empty? %>  :  <%= option.description %><% end %>
+    --<%= option.name %><% if option.short? %>, -<%= option.short %><% end %><% if option.description? %>  :  <%= option.description %><% end %>
 <%
    }
 %>

@@ -2,11 +2,8 @@
 
 require 'cliqr/error'
 
-require 'cliqr/cli/router'
+require 'cliqr/cli/executor'
 require 'cliqr/cli/config_validator'
-require 'cliqr/cli/argument_parser'
-require 'cliqr/cli/argument_validator'
-require 'cliqr/cli/command_context'
 
 module Cliqr
   # Definition and builder for command line interface
@@ -15,15 +12,17 @@ module Cliqr
     #
     # @api private
     class Interface
+      # Command line interface configuration
+      #
+      # @return [Cliqr::CLI::Config]
+      attr_accessor :config
+
       # Create a new interface instance with a config
       #
       # @param [Cliqr::CLI::Config] config Config used to create this interface
       def initialize(config)
         @config = config
-
-        @parser = ArgumentParser.new(config)
-        @validator = ArgumentValidator.new
-        @router = Router.new(config)
+        @executor = Executor.new(config)
       end
 
       # Get usage information of this command line interface instance
@@ -44,17 +43,11 @@ module Cliqr
       # @param [Hash] options Options for command execution
       #
       # @return [Integer] Exit code of the command execution
-      def execute(args, **options)
+      def execute(args = [], **options)
         options = {
             :output => :default
         }.merge(options)
-
-        begin
-          command_context = CommandContext.build(parse(args))
-          @router.handle command_context, **options
-        rescue StandardError => e
-          raise Cliqr::Error::CommandRuntimeException.new("command '#{@config.basename}' failed", e)
-        end
+        @executor.execute(args, options)
       end
 
       # Invoke the builder method for [Cliqr::CLI::Interface]
@@ -64,17 +57,6 @@ module Cliqr
       # @return [Cliqr::CLI::Interface]
       def self.build(config)
         InterfaceBuilder.new(config).build
-      end
-
-      private
-
-      # Invoke the command line argument parser
-      #
-      # @return [Hash] Parsed hash of command line arguments
-      def parse(args)
-        parsed_args = @parser.parse args
-        @validator.validate(parsed_args)
-        parsed_args
       end
     end
 
@@ -98,7 +80,7 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Interface]
       def build
-        CLI::ConfigValidator.validate @config
+        ConfigValidator.validate @config
         Interface.new(@config)
       end
     end

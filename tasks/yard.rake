@@ -9,6 +9,7 @@ begin
     measurement.output = '.metrics/yard-report.txt'
   end
   CLEAN.include('.metrics')
+  CLEAN.include('.yardoc')
 
   # verify_measurements task
   Yardstick::Rake::Verify.new do |verify|

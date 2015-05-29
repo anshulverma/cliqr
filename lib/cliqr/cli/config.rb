@@ -39,7 +39,9 @@ module Cliqr
         @basename = UNSET
         @description = UNSET
         @handler = UNSET
-        @options = UNSET
+
+        @options = []
+        @option_index = {}
       end
 
       # Finalize config by adding default values for unset values
@@ -49,7 +51,6 @@ module Cliqr
         @basename = '' if @basename == UNSET
         @description = '' if @description == UNSET
         @handler = nil if @handler == UNSET
-        @options = [] if @options == UNSET
 
         self
       end
@@ -60,10 +61,10 @@ module Cliqr
       #
       # @param [Object] value Value for the config parameter
       #
-      # @param [Funciton] block Function which populates configuration for a sub-attribute
+      # @param [Function] block Function which populates configuration for a sub-attribute
       #
-      # @return [Object] If setting a attribute's value
-      # @return [Cliqr::CLI::OptionConfig] If adding a new option
+      # @return [Object] if setting a attribute's value
+      # @return [Cliqr::CLI::OptionConfig] if adding a new option
       def set_config(name, value, &block)
         case name
         when :option
@@ -71,6 +72,31 @@ module Cliqr
         else
           handle_config name, value
         end
+      end
+
+      # Check if options are set
+      #
+      # @return [Boolean] <tt>true</tt> if the CLI config's options have been set
+      def options?
+        @options != UNSET
+      end
+
+      # Check if particular option is set
+      #
+      # @param [String] name Name of the option to check
+      #
+      # @return [Boolean] <tt>true</tt> if the a CLI config's option is set
+      def option?(name)
+        @option_index.key?(name)
+      end
+
+      # Get value of a option
+      #
+      # @param [String] name Name of the option
+      #
+      # @return [String] value for the option
+      def option(name)
+        @option_index[name]
       end
 
       private
@@ -96,8 +122,14 @@ module Cliqr
       def handle_option(name, &block)
         option_config = OptionConfig.build(&block)
         option_config.name = name
-        @options = [] if @options == UNSET
+
+        OptionConfigValidator.validate(option_config, self)
+
         @options.push option_config
+
+        @option_index[option_config.name] = option_config
+        @option_index[option_config.short] = option_config if option_config.short?
+
         option_config
       end
     end
@@ -123,6 +155,17 @@ module Cliqr
       # @return [String]
       attr_accessor :description
 
+      # Set value for command option's attribute
+      #
+      # @param [Symbol] name Name of the attribute
+      #
+      # @param [Object] value Value for the attribute
+      #
+      # @return [Object] Value that was set for the attribute
+      def set_config(name, value)
+        handle_option_config name, value
+      end
+
       # Initialize a new config instance for an option with UNSET attribute values
       def initialize
         @name = UNSET
@@ -134,22 +177,32 @@ module Cliqr
       #
       # @return [Cliqr::CLI::OptionConfig]
       def finalize
-        @name = '' if @name == UNSET
-        @short = '' if @short == UNSET
-        @description = '' if @description == UNSET
+        @name = nil if @name == UNSET
+        @short = nil if @short == UNSET
+        @description = nil if @description == UNSET
 
         self
       end
 
-      # Set value for command option's attribute
+      # Check if a option's name is defined
       #
-      # @param [Symbol] name Name of the attribute
+      # @return [Boolean] <tt>true</tt> if options' name is not null neither empty
+      def name?
+        !(@name.nil? || @name.empty?)
+      end
+
+      # Check if a option's short name is defined
       #
-      # @param [Object] value Value for the attribute
+      # @return [Boolean] <tt>true</tt> if options' short name is not null neither empty
+      def short?
+        !(@short.nil? || @short.empty?)
+      end
+
+      # Check if a option's description is defined
       #
-      # @return [Object] Value that was set for the attribute
-      def set_config(name, value)
-        handle_option_config name, value
+      # @return [Boolean] <tt>true</tt> if options' description is not null neither empty
+      def description?
+        !(@description.nil? || @description.empty?)
       end
 
       private

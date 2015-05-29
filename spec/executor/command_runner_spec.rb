@@ -20,8 +20,4 @@ describe Cliqr::CLI::CommandRunnerFactory do
       raise_error(be_kind_of(Cliqr::Error::UnknownCommandRunnerException))
     )
   end
-
-  it 'returns code 0 for default command runner' do
-    expect(Cliqr.command.new.execute).to eq(0)
-  end
 end

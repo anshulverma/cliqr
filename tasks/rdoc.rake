@@ -10,6 +10,7 @@ begin
     rdoc.rdoc_files.include('README.md', 'LICENSE.txt', 'CHANGELOG.md', 'lib/**/*.rb')
   end
   CLEAN.include('.doc')
+  CLEAN.include('doc')
 rescue LoadError
   # do nothing
 end
