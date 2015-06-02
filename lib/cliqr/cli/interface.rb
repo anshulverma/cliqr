@@ -1,9 +1,7 @@
 # encoding: utf-8
 
 require 'cliqr/error'
-
 require 'cliqr/cli/executor'
-require 'cliqr/cli/config_validator'
 
 module Cliqr
   # Definition and builder for command line interface
@@ -79,8 +77,14 @@ module Cliqr
       # Validate and build a cli interface based on the configuration options
       #
       # @return [Cliqr::CLI::Interface]
+      #
+      # @throws [Cliqr::Error::ConfigNotFound] if a config is <tt>nil</tt>
+      # @throws [Cliqr::Error::ValidationError] if the validation for config fails
       def build
-        ConfigValidator.validate @config
+        fail Cliqr::Error::ConfigNotFound, 'a valid config should be defined' if @config.nil?
+        fail Cliqr::Error::ValidationError, \
+             "invalid Cliqr interface configuration - [#{@config.errors}]" unless @config.valid?
+
         Interface.new(@config)
       end
     end

@@ -1,6 +1,8 @@
 # encoding: utf-8
 
 require 'cliqr/dsl'
+require 'cliqr/validation/verifiable'
+require 'cliqr/cli/command'
 
 module Cliqr
   # A extension for CLI module to group all config classes
@@ -13,11 +15,15 @@ module Cliqr
     # @api private
     class Config
       extend Cliqr::DSL
+      include Cliqr::Validation
 
       # Base name of the command
       #
       # @return [String]
       attr_accessor :basename
+      validates :basename,
+                presence: true,
+                format: /^[a-zA-Z0-9_\-]*$/
 
       # Description for the base command
       #
@@ -26,13 +32,18 @@ module Cliqr
 
       # Command handler for the base command
       #
-      # @return [Class]
+      # @return [Class<Cliqr::CLI::Command>]
       attr_accessor :handler
+      validates :handler,
+                presence: true,
+                extend: Cliqr::CLI::Command
 
       # Array of options applied to the base command
       #
       # @return [Array<OptionConfig>]
       attr_accessor :options
+      validates :options,
+                presence: true
 
       # New config instance with all attributes set as UNSET
       def initialize

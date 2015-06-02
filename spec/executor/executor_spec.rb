@@ -79,7 +79,7 @@ some-value
       cli.execute
     rescue Cliqr::Error::CliqrError => e
       expect(e.backtrace[0]).to end_with "cliqr/spec/fixtures/always_error_command.rb:6:in `execute'"
-      expect(e.message).to eq "command 'my-command' failed\n\nCause: StandardError - I always throw an error"
+      expect(e.message).to eq "command 'my-command' failed\n\nCause: StandardError - I always throw an error\n"
     end
   end
 end
