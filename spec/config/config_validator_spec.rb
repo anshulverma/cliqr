@@ -6,13 +6,7 @@ require 'cliqr/cli/option_config_validator'
 
 require 'fixtures/test_command'
 
-describe Cliqr::Validation do
-  it 'does not allow empty config' do
-    expect do
-      Cliqr::CLI::Interface.build(nil)
-    end.to(raise_error(Cliqr::Error::ConfigNotFound, 'a valid config should be defined'))
-  end
-
+describe Cliqr::CLI::Config do
   it 'does not allow empty basename' do
     expect do
       Cliqr.interface do
@@ -40,7 +34,7 @@ describe Cliqr::Validation do
         handler TestCommand
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [value for 'basename' must match /^[a-zA-Z0-9_\\-]*$/; actual: \"invalid-char-!\"]"))
+                       "invalid Cliqr interface configuration - [value for 'basename' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-char-!\"]"))
   end
 
   it 'does not allow command handler to be null' do
@@ -78,7 +72,7 @@ describe Cliqr::Validation do
         handler Object
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [value for 'basename' must match /^[a-zA-Z0-9_\\-]*$/; actual: \"invalid-name-!@#\", " \
+                       "invalid Cliqr interface configuration - [value for 'basename' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-name-!@#\", " \
                        "value 'Object' of type 'Class' for 'handler' does not extend from 'Cliqr::CLI::Command']"))
   end
 end

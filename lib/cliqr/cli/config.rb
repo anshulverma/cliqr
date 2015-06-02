@@ -22,8 +22,7 @@ module Cliqr
       # @return [String]
       attr_accessor :basename
       validates :basename,
-                presence: true,
-                format: /^[a-zA-Z0-9_\-]*$/
+                format: /^[a-zA-Z0-9_\-]+$/
 
       # Description for the base command
       #
@@ -35,7 +34,6 @@ module Cliqr
       # @return [Class<Cliqr::CLI::Command>]
       attr_accessor :handler
       validates :handler,
-                presence: true,
                 extend: Cliqr::CLI::Command
 
       # Array of options applied to the base command
@@ -150,11 +148,15 @@ module Cliqr
     # @api private
     class OptionConfig
       extend Cliqr::DSL
+      include Cliqr::Validation
 
       # Long option name
       #
       # @return [String]
       attr_accessor :name
+      validates :name,
+                presence: true,
+                format: /^[a-zA-Z0-9_\-]*$/
 
       # Optional short name for the option
       #

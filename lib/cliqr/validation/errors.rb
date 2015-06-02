@@ -6,6 +6,11 @@ module Cliqr
     #
     # @api private
     class Errors
+      # List of all error messages
+      #
+      # @return [Array<String]
+      attr_accessor :errors
+
       # Create a new instance of the validation error wrapper
       def initialize
         @errors = []
@@ -32,6 +37,15 @@ module Cliqr
       # @return [String] A comma separated list of all errors
       def to_s
         @errors.join(', ')
+      end
+
+      # Merge the list of errors from another
+      #
+      # @param [Cliqr::Validation::Errors] other Errors that need to be merged
+      #
+      # @return [Cliqr::Validation::Errors] Updated errors list
+      def merge(other)
+        @errors.push(*other.errors)
       end
     end
   end
