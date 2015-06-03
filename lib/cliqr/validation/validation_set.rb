@@ -20,9 +20,8 @@ module Cliqr
       #
       # @return [Hash] A map of all validators
       def add(name, options)
-        @validations[name] = Hash[options.map do |type, config|
-          [type, ValidatorFactory.get(type, config)]
-        end]
+        @validations[name] = \
+          Hash[options.map { |type, config| [type, ValidatorFactory.get(type, config)] }]
       end
 
       # Iterate over each type of validators

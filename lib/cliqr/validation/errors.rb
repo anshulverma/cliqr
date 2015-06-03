@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module Cliqr
   module Validation
     # A wrapper of validation errors which provides helpful methods for accessing it
@@ -13,7 +15,7 @@ module Cliqr
 
       # Create a new instance of the validation error wrapper
       def initialize
-        @errors = []
+        @errors = Set.new []
       end
 
       # Add a new error message
@@ -22,7 +24,7 @@ module Cliqr
       #
       # @return [Array] A collection of all error messages
       def add(error_message)
-        @errors.push(error_message)
+        @errors.add(error_message)
       end
 
       # Check if there are error or not
@@ -36,7 +38,7 @@ module Cliqr
       #
       # @return [String] A comma separated list of all errors
       def to_s
-        @errors.join(', ')
+        @errors.to_a.join(', ')
       end
 
       # Merge the list of errors from another
@@ -45,7 +47,16 @@ module Cliqr
       #
       # @return [Cliqr::Validation::Errors] Updated errors list
       def merge(other)
-        @errors.push(*other.errors)
+        @errors = @errors.union(other.errors)
+      end
+
+      # Iterate over each error message
+      #
+      # @param [Function] block The iterating function
+      #
+      # @return [Set<String>] A set of all error messages
+      def each(&block)
+        @errors.each(&block)
       end
     end
   end

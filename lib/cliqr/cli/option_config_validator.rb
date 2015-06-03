@@ -37,10 +37,6 @@ module Cliqr
              "multiple options with long name \"#{config.name}\"" \
              if parent_config.option?(config.name)
 
-        fail Cliqr::Error::InvalidOptionDefinition,
-             "option number #{parent_config.options.length + 1} does not have a name field" \
-              unless config.name?
-
         config
       end
 

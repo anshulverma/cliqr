@@ -3,6 +3,7 @@
 require 'cliqr/dsl'
 require 'cliqr/validation/verifiable'
 require 'cliqr/cli/command'
+require 'cliqr/cli/option_config_validator'
 
 module Cliqr
   # A extension for CLI module to group all config classes
@@ -22,7 +23,7 @@ module Cliqr
       # @return [String]
       attr_accessor :basename
       validates :basename,
-                format: /^[a-zA-Z0-9_\-]+$/
+                non_empty_format: /^[a-zA-Z0-9_\-]+$/
 
       # Description for the base command
       #
@@ -41,7 +42,7 @@ module Cliqr
       # @return [Array<OptionConfig>]
       attr_accessor :options
       validates :options,
-                presence: true
+                collection: true
 
       # New config instance with all attributes set as UNSET
       def initialize
@@ -155,7 +156,7 @@ module Cliqr
       # @return [String]
       attr_accessor :name
       validates :name,
-                presence: true,
+                non_empty: true,
                 format: /^[a-zA-Z0-9_\-]*$/
 
       # Optional short name for the option
@@ -195,13 +196,6 @@ module Cliqr
         @description = nil if @description == UNSET
 
         self
-      end
-
-      # Check if a option's name is defined
-      #
-      # @return [Boolean] <tt>true</tt> if options' name is not null neither empty
-      def name?
-        !(@name.nil? || @name.empty?)
       end
 
       # Check if a option's short name is defined

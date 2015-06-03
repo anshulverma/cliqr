@@ -69,7 +69,8 @@ describe Cliqr::CLI::OptionConfig do
           short 'p'
         end
       end
-    end.to(raise_error(Cliqr::Error::InvalidOptionDefinition, 'option number 1 does not have a name field'))
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       "invalid Cliqr interface configuration - [options[1] - 'name' cannot be empty]"))
   end
 
   it 'does not allow option with empty short name' do
@@ -95,7 +96,8 @@ describe Cliqr::CLI::OptionConfig do
 
         option nil
       end
-    end.to(raise_error(Cliqr::Error::InvalidOptionDefinition, 'option number 1 does not have a name field'))
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       "invalid Cliqr interface configuration - [options[1] - 'name' cannot be nil]"))
   end
 
   it 'does not allow option with nil long name for second option' do
@@ -108,7 +110,8 @@ describe Cliqr::CLI::OptionConfig do
         option 'option-1'
         option ''
       end
-    end.to(raise_error(Cliqr::Error::InvalidOptionDefinition, 'option number 2 does not have a name field'))
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       "invalid Cliqr interface configuration - [options[2] - 'name' cannot be empty]"))
   end
 
   it 'does not allow multiple characters in short name' do
