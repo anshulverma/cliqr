@@ -163,6 +163,8 @@ module Cliqr
       #
       # @return [String]
       attr_accessor :short
+      validates :short,
+                non_empty_nil_ok_format: /^[a-z0-9A-Z]$/
 
       # A description string for the option
       #

@@ -84,7 +84,8 @@ describe Cliqr::CLI::OptionConfig do
           short ''
         end
       end
-    end.to(raise_error(Cliqr::Error::InvalidOptionDefinition, "option \"option-1\" has empty short name"))
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       "invalid Cliqr interface configuration - [options[1] - 'short' cannot be empty]"))
   end
 
   it 'does not allow option with nil long name' do
@@ -125,7 +126,7 @@ describe Cliqr::CLI::OptionConfig do
           short 'p1'
         end
       end
-    end.to(raise_error(Cliqr::Error::InvalidOptionDefinition,
-                       'short option name can not have more than one characters in "option-1"'))
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       "invalid Cliqr interface configuration - [options[1] - value for 'short' must match /^[a-z0-9A-Z]$/; actual: \"p1\"]"))
   end
 end

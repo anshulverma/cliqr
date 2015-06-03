@@ -142,9 +142,33 @@ module Cliqr
         #
         # @return [Boolean] <tt>true</tt> if there were any errors during validation
         def do_validate(name, value, errors)
-          errors.add("value for '#{name}' must match /#{@format.source}/; " \
-                     "actual: #{value.inspect}") \
-              if !value.nil? && @format.match(value).nil?
+          FormatValidator.new(@format).validate(name, value, errors)
+        end
+      end
+
+      # Validates that a value matches a pattern and it is not empty; nil value allowed
+      class NonEmptyNilOkFormatValidator < Validator
+        # Initialize a new non-empty-nil-ok format validator
+        #
+        # @param [Regex] format Format of the value to validate required
+        def initialize(format)
+          @format = format
+        end
+
+        protected
+
+        # Run the validator
+        #
+        # @return [Boolean] <tt>true</tt> if there were any errors during validation
+        def do_validate(name, value, errors)
+          unless value.nil?
+            local_errors = Errors.new
+            local_errors.add("'#{name}' cannot be empty") \
+              if value.respond_to?(:empty?) && value.empty?
+            FormatValidator.new(@format).validate(name, value, local_errors) \
+              if local_errors.empty?
+            errors.merge(local_errors)
+          end
           errors
         end
       end
@@ -193,6 +217,7 @@ module Cliqr
       VALIDATORS = {
           :non_empty => NonEmptyValidator,
           :non_empty_format => NonEmptyFormatValidator,
+          :non_empty_nil_ok_format => NonEmptyNilOkFormatValidator,
           :format => FormatValidator,
           :extend => TypeHierarchyValidator,
           :collection => CollectionValidator
