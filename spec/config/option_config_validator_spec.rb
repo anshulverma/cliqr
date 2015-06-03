@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'cliqr/cli/option_config_validator'
 
 require 'fixtures/test_command'
 

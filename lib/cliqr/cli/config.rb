@@ -3,7 +3,6 @@
 require 'cliqr/dsl'
 require 'cliqr/validation/verifiable'
 require 'cliqr/cli/command'
-require 'cliqr/cli/option_config_validator'
 
 module Cliqr
   # A extension for CLI module to group all config classes
@@ -133,12 +132,29 @@ module Cliqr
         option_config = OptionConfig.build(&block)
         option_config.name = name
 
-        OptionConfigValidator.validate(option_config, self)
+        validate_option_name(option_config)
 
         @options.push option_config
 
         @option_index[option_config.name] = option_config
         @option_index[option_config.short] = option_config if option_config.short?
+
+        option_config
+      end
+
+      # Make sure that the option's name is unique
+      #
+      # @param [Cliqr::CLI::OptionConfig] option_config Config for this particular option
+      #
+      # @return [Cliqr::CLI::OptionConfig] Validated OptionConfig instance
+      def validate_option_name(option_config)
+        fail Cliqr::Error::DuplicateOptions,
+             "multiple options with long name \"#{option_config.name}\"" \
+             if option?(option_config.name)
+
+        fail Cliqr::Error::DuplicateOptions,
+             "multiple options with short name \"#{option_config.short}\"" \
+              if option?(option_config.short)
 
         option_config
       end
