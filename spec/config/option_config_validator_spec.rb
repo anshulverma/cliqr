@@ -32,24 +32,6 @@ describe Cliqr::CLI::OptionConfig do
           short 'p'
         end
 
-        option 'option-1' do
-          short 't'
-        end
-      end
-    end.to(raise_error(Cliqr::Error::DuplicateOptions, 'multiple options with long name "option-1"'))
-  end
-
-  it 'does not allow multiple options with same short name' do
-    expect do
-      Cliqr.interface do
-        basename 'my-command'
-        description 'a command used to test cliqr'
-        handler TestCommand
-
-        option 'option-1' do
-          short 'p'
-        end
-
         option 'option-2' do
           short 'p'
         end
