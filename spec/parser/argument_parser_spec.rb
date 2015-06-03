@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-require 'cliqr/cli/parser/argument_parser'
+require 'cliqr/parser/argument_parser'
 
 require 'fixtures/test_command'
 require 'fixtures/option_reader_command'
 
-describe Cliqr::CLI::Parser do
+describe Cliqr::Parser do
   TEST_CLI = Cliqr.interface do
     basename 'my-command'
     handler TestCommand
@@ -17,7 +17,7 @@ describe Cliqr::CLI::Parser do
     end
   end
   CONFIG = TEST_CLI.config
-  PARSER = Cliqr::CLI::Parser
+  PARSER = Cliqr::Parser
 
   it 'can parse no argument command' do
     expect(PARSER.parse(CONFIG, [])).to eq(:command => 'my-command',
@@ -58,7 +58,7 @@ describe Cliqr::CLI::Parser do
       option 'test-option-1'
       option 'test-option-2'
     end
-    expect(Cliqr::CLI::Parser.parse(cli.config, %w(--test-option-1 abcd --test-option-2 xyz))).to eq(expected_arguments)
+    expect(Cliqr::Parser.parse(cli.config, %w(--test-option-1 abcd --test-option-2 xyz))).to eq(expected_arguments)
   end
 
   it 'can parse command with option using short name' do

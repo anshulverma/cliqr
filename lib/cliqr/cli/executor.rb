@@ -3,7 +3,7 @@
 require 'cliqr/cli/router'
 require 'cliqr/cli/command_context'
 require 'cliqr/cli/argument_validator'
-require 'cliqr/cli/parser/argument_parser'
+require 'cliqr/parser/argument_parser'
 
 module Cliqr
   module CLI
