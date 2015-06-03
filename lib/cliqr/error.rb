@@ -73,9 +73,6 @@ module Cliqr
     class DuplicateOptions < CliqrError; end
 
     # Raised if an option is not defined properly
-    class InvalidOptionDefinition < CliqrError; end
-
-    # Raised if an option is not defined properly
     class InvalidArgumentError < CliqrError; end
 
     # Indicates that a unknown validator type is being used in a class
