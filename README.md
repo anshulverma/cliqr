@@ -49,7 +49,11 @@ require 'cliqr'
 class MyCommandHandler < Cliqr.command
   def execute(context)
     puts 'executing my awesome command'
+    puts "value for option 'an-option' is '#{context.option('an-option').value}'"
+    puts "value for option 'count' is '#{context.option('count').value}'"
+    puts "value for option 'single' is '#{context.option('single').value}'"
     puts "value for option 'test' is '#{context.option('test').value}'"
+    puts "has count argument" if context.option?('count')
   end
 end
 
@@ -94,9 +98,13 @@ puts cli.usage
 #
 #     --test
 
-cli.execute %w(--test some-value)
+cli.execute %w(--an-option qwerty -c 86 --no-single --test some-value)
 # executing my awesome command
+# value for option 'an-option' is 'qwerty'
+# value for option 'count' is '86'
+# value for option 'single' is 'false'
 # value for option 'test' is 'some-value'
+# has count argument
 ```
 
 ## Installation
