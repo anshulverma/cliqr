@@ -92,7 +92,7 @@ puts cli.usage
 #
 #     --[no-]single, -s  :  <boolean> a boolean option
 #
-#     --test#> my-command -- this is an awesome command...try it out
+#     --test
 
 cli.execute %w(--test some-value)
 # executing my awesome command
