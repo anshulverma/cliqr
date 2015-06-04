@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require 'cliqr/dsl'
-require 'cliqr/validation/verifiable'
+require 'cliqr/config_validation/verifiable'
 require 'cliqr/cli/command'
 
 module Cliqr
@@ -15,7 +15,7 @@ module Cliqr
     # @api private
     class Config
       extend Cliqr::DSL
-      include Cliqr::Validation
+      include Cliqr::ConfigValidation
 
       # Base name of the command
       #
@@ -165,7 +165,7 @@ module Cliqr
     # @api private
     class OptionConfig
       extend Cliqr::DSL
-      include Cliqr::Validation
+      include Cliqr::ConfigValidation
 
       # Long option name
       #

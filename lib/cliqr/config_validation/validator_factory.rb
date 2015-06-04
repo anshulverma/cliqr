@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 module Cliqr
-  module Validation
+  module ConfigValidation
     # A factory class to retrieve a attribute validator based on the configuration type
     #
     # @api private

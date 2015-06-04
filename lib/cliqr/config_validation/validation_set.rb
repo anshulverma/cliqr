@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-require 'cliqr/validation/validator_factory'
+require 'cliqr/config_validation/validator_factory'
 
 module Cliqr
-  module Validation
+  module ConfigValidation
     # A collection of configured validators
     #
     # @api private

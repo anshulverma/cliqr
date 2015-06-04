@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-require 'cliqr/validation/validator_factory'
-require 'cliqr/validation/validation_set'
+require 'cliqr/config_validation/validator_factory'
+require 'cliqr/config_validation/validation_set'
 require 'cliqr/validation_errors'
 
 module Cliqr
@@ -11,7 +11,7 @@ module Cliqr
   # @api private
   #
   # @see https://github.com/lotus/validations
-  module Validation
+  module ConfigValidation
     # If a class includes this module, we add a few useful methods to that class
     #
     # @see http://www.ruby-doc.org/core/Module.html#method-i-included
