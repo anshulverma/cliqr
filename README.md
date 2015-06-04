@@ -62,25 +62,41 @@ cli = Cliqr.interface do
     short 'a'
     description 'this is a option'
   end
-  
+
+  option 'count' do
+    short 'c'
+    description 'count of something'
+    type :numeric
+  end
+
+  option 'single' do
+    short 's'
+    description 'a boolean option'
+    type :boolean
+  end
+
   option 'test'
 end
 
 puts cli.usage
-#> my-command -- this is an awesome command...try it out
-#>
-#> USAGE:
-#>     my-command
-#>
-#> Available options:
-#>
-#>     --an-option, -a  :  this is a option
-#>
-#>     --test
+# my-command -- this is an awesome command...try it out
+#
+# USAGE:
+#     my-command [options]
+#
+# Available options:
+#
+#     --an-option, -a  :  this is a option
+#
+#     --count, -c  :  <numeric> count of something
+#
+#     --[no-]single, -s  :  <boolean> a boolean option
+#
+#     --test#> my-command -- this is an awesome command...try it out
 
 cli.execute %w(--test some-value)
-#> executing my awesome command
-#> value for option 'test' is 'some-value'
+# executing my awesome command
+# value for option 'test' is 'some-value'
 ```
 
 ## Installation
