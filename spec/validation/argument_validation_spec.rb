@@ -104,4 +104,38 @@ false
     end.to raise_error(Cliqr::Error::InvalidArgumentError,
                        "invalid command argument \"qwe\"")
   end
+
+  it 'allows numeric options to be optional' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      description 'this is an awesome command...try it out'
+      handler TestCommand
+
+      option 'count' do
+        type :numeric
+      end
+    end
+
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+test command executed
+    EOS
+  end
+
+  it 'allows boolean options to be optional' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      description 'this is an awesome command...try it out'
+      handler TestCommand
+
+      option 'single' do
+        type :boolean
+      end
+    end
+
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+test command executed
+    EOS
+  end
 end

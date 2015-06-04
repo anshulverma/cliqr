@@ -26,7 +26,8 @@ module Cliqr
       def validate(args, config)
         errors = ValidationErrors.new
         config.options.each do |option|
-          validate_argument(args.option(option.name), option, errors)
+          validate_argument(args.option(option.name), option, errors) \
+            if args.options.key?(option.name)
         end
         fail(Cliqr::Error::IllegalArgumentError, "illegal argument error - #{errors}") \
           unless errors.empty?
