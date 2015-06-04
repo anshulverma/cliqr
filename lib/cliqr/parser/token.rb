@@ -6,16 +6,25 @@ module Cliqr
     #
     # @api private
     class Token
-      # Type of the token handler (:option in this case)
+      # Name of the option token
       #
-      # @return [Symbol]
-      attr_accessor :type
+      # @return [String]
+      attr_accessor :name
 
-      # Create a new NO OP token
+      # Argument that was used to parse the option name from
       #
-      # @return [Cliqr::CLI::Parser::Token]
-      def initialize
-        @type = :NO_OP
+      # @return [String]
+      attr_accessor :arg
+
+      # Create a new option token
+      #
+      # @param [String] name Long name of the option
+      # @param [String] arg Value of the option
+      #
+      # @return [Cliqr::CLI::Parser::OptionToken] A new Token instance
+      def initialize(name = nil, arg = nil)
+        @name = name
+        @arg = arg
       end
 
       # This token is never active
@@ -25,11 +34,11 @@ module Cliqr
         false
       end
 
-      # Called if this token was still active once the argument list ends
+      # A token is not valid if it does not have a name
       #
-      # @return [Cliqr::CLI::Parser::TokenHandler] Current instance object
-      def finalize
-        self
+      # @return [Boolean] <tt>false</tt> if the token's name is nil
+      def valid?
+        !@name.nil?
       end
     end
   end

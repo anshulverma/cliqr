@@ -26,13 +26,10 @@ module Cliqr
       #
       # @return [Boolean] <tt>true</tt> if the token was added
       def add_token(token)
-        case token.type
-        when :option
-          add_option_name(token)
-          @options.push(token.build)
-        else
-          return false
-        end
+        return false unless token.valid?
+
+        add_option_name(token)
+        @options.push(token.build)
         true
       end
 

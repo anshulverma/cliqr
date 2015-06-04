@@ -39,4 +39,69 @@ describe Cliqr::ArgumentValidation::Validator do
     end.to raise_error(Cliqr::Error::IllegalArgumentError,
                        "illegal argument error - only values of type 'numeric' allowed for option 'age'")
   end
+
+  it 'can validate boolean option arguments' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler TestOptionReaderCommand
+
+      option 'test-option' do
+        type :boolean
+      end
+    end
+
+    result = cli.execute %w(--test-option), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+true
+    EOS
+  end
+
+  it 'can validate boolean option argumentswith short name' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler TestOptionReaderCommand
+
+      option 'test-option' do
+        short 't'
+        type :boolean
+      end
+    end
+
+    result = cli.execute %w(-t), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+true
+    EOS
+  end
+
+  it 'can validate boolean option arguments for false' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler TestOptionReaderCommand
+
+      option 'test-option' do
+        type :boolean
+      end
+    end
+
+    result = cli.execute %w(--no-test-option), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+false
+    EOS
+  end
+
+  it 'does not allow string for boolean option types' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler TestCommand
+
+      option 'opt' do
+        type :boolean
+      end
+    end
+
+    expect do
+      cli.execute %w(--opt qwe)
+    end.to raise_error(Cliqr::Error::InvalidArgumentError,
+                       "invalid command argument \"qwe\"")
+  end
 end

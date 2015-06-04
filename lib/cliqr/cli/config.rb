@@ -192,7 +192,7 @@ module Cliqr
       # @return [Symbol] Type of the option
       attr_accessor :type
       validates :type,
-                inclusion: [:any, :numeric]
+                inclusion: [:any, :numeric, :boolean]
 
       # Set value for command option's attribute
       #
@@ -244,6 +244,13 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if options' type is not nil and not equal to <tt>:any</tt>
       def type?
         !@type.nil? && @type != :any
+      end
+
+      # Check if a option is of boolean type
+      #
+      # @return [Boolean] <tt>true</tt> is the option is of type <tt>:boolean</tt>
+      def boolean?
+        @type == :boolean
       end
 
       private

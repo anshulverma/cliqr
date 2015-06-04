@@ -7,14 +7,17 @@ Available options:
 <%
    @options.each { |option|
 %>
-    --<%= option.name %><%=
-                        if option.short?
-                          ", -#{option.short}"
-                        end %><%=
-                        if option.description? || option.type?
-                          "  :  #{"<#{option.type}> " if option.type? }#{option.description if option.description?}"
-                        end
-                      %>
+    --<%=
+         '[no-]' if option.boolean?
+       %><%=
+         option.name
+       %><%=
+            ", -#{option.short}" if option.short?
+          %><%=
+            if option.description? || option.type?
+              "  :  #{"<#{option.type}> " if option.type? }#{option.description if option.description?}"
+            end
+          %>
 <%
    }
 %>

@@ -28,9 +28,10 @@ module Cliqr
         token_factory = TokenFactory.new(@config)
         token = token_factory.get_token
         args.each do |arg|
-          token = handle_argument(arg, token, argument_builder, token_factory)
+          token = handle_argument(arg, token, token_factory)
+          argument_builder.add_token(token) unless token.active?
         end
-        token.finalize
+        token.finalize if token.active?
         argument_builder.build
       end
 
@@ -38,16 +39,12 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Parser::Token] The new active token in case <tt>current_token</tt>
       # becomes inactive
-      def handle_argument(arg, current_token, argument_builder, token_factory)
+      def handle_argument(arg, current_token, token_factory)
         if current_token.active?
           current_token.append(arg)
-          arg = nil
+        else
+          token_factory.get_token(arg)
         end
-        unless current_token.active?
-          argument_builder.add_token(current_token)
-          current_token = token_factory.get_token(arg)
-        end
-        current_token
       end
     end
   end

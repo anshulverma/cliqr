@@ -123,4 +123,29 @@ Available options:
     --option-1, -p  :  <numeric> a numeric option
     EOS
   end
+
+  it 'allows command options to have a boolean value type' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      description 'a command used to test cliqr'
+      handler TestCommand
+
+      option 'option-1' do
+        description 'a boolean option'
+        short 'p'
+        type :boolean
+      end
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command -- a command used to test cliqr
+
+USAGE:
+    my-command [options]
+
+Available options:
+
+    --[no-]option-1, -p  :  <boolean> a boolean option
+    EOS
+  end
 end

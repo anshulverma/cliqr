@@ -5,30 +5,12 @@ module Cliqr
     # Token handler for parsing a option and its value
     #
     # @api private
-    class OptionToken < Token
-      # Name of the option token
-      #
-      # @return [String]
-      attr_accessor :name
-
-      # Argument that was used to parse the option name from
-      #
-      # @return [String]
-      attr_accessor :arg
-
+    class SingleValuedOptionToken < Token
       # Create a new option token. Initial state will be <tt>active</tt>
-      #
-      # @param [String] name Long name of the option
-      # @param [String] arg Value of the option
-      #
-      # @return [Cliqr::CLI::Parser::OptionToken] A new Token instance
       def initialize(name, arg)
-        @name = name
-        @arg = arg
-
+        super(name, arg)
         @value = nil
         @active = true
-        @type = :option
       end
 
       # Check if the token handler is active and needs more arguments
@@ -42,15 +24,16 @@ module Cliqr
       #
       # @param [String] arg Argument value of the next command line parameter
       #
-      # @return [Boolean] Active state of the token handler
+      # @return [Cliqr::Parser::SingleValuedOptionToken]
       def append(arg)
         @value = arg
         @active = false
+        self
       end
 
       # Get the token representation
       #
-      # @return [Hash] A hash of the token parameters and their values
+      # @return [Hash] Token name and value in a hash
       def build
         {
             :name => @name.to_s,

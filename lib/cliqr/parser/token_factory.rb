@@ -1,7 +1,8 @@
 # encoding: utf-8
 
 require 'cliqr/parser/token'
-require 'cliqr/parser/option_token'
+require 'cliqr/parser/single_valued_option_token'
+require 'cliqr/parser/boolean_option_token'
 
 module Cliqr
   module Parser
@@ -29,9 +30,9 @@ module Cliqr
           Token.new
         else
           case arg
-          when /^--([a-zA-Z][a-zA-Z0-9\-_]*)$/, /^-([a-zA-Z])$/
-            option_config = get_option_config(Regexp.last_match(1), arg)
-            OptionToken.new(option_config.name, arg)
+          when /^--(no-)?([a-zA-Z][a-zA-Z0-9\-_]*)$/, /^(-)([a-zA-Z])$/
+            option_config = get_option_config(Regexp.last_match(2), arg)
+            build_token(option_config, arg)
           else
             fail Cliqr::Error::InvalidArgumentError, "invalid command argument \"#{arg}\""
           end
@@ -39,6 +40,18 @@ module Cliqr
       end
 
       private
+
+      # Build a option token handler based on the option's config
+      #
+      # @return [Cliqr::CLI::Parser::Token]
+      def build_token(option_config, arg)
+        case option_config.type
+        when :boolean
+          BooleanOptionToken.new(option_config.name, arg)
+        else
+          SingleValuedOptionToken.new(option_config.name, arg)
+        end
+      end
 
       # Check if a option is defined with the requested name then return it
       #

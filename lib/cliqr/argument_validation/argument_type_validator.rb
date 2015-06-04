@@ -19,6 +19,8 @@ module Cliqr
         case required_type
         when :numeric
           Integer(argument)
+        when :boolean
+          fail ArgumentError unless argument.class == TrueClass || argument.class == FalseClass
         end
         true
       rescue ArgumentError
