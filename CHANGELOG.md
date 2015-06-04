@@ -5,6 +5,16 @@ item in this nested table for further details.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
+- [1.0.0 / 2015-06-04](#100--2015-06-04)
+    - [Features](#features)
+        - [Support for option types](#support-for-option-types)
+    - [Improvements](#improvements)
+        - [Generic CLI config validator implementation](#generic-cli-config-validator-implementation)
+    - [Minor Improvements](#minor-improvements)
+        - [Reduce the number of error types](#reduce-the-number-of-error-types)
+        - [Maintain example in readme](#maintain-example-in-readme)
+    - [Bug-fixes](#bug-fixes)
+        - [It should be optional to include options in a command](#it-should-be-optional-to-include-options-in-a-command)
 - [0.1.0 / 2015-05-29](#010--2015-05-29)
     - [Features](#features)
         - [First pass at building ability to parse command line arguments](#first-pass-at-building-ability-to-parse-command-line-arguments)
@@ -51,6 +61,51 @@ item in this nested table for further details.
 
 <!-- markdown-toc end -->
 
+1.0.0 / 2015-06-04
+==================
+
+Aaaaand here it is ladies and gentlemen! A major release version of
+`cliqr`
+
+The main feature that was added in this release is support for option
+types. Namely: `:boolean` and `:numeric`. Along with this, a major
+refactoring was done for the config validator framework to make it more
+generic and easy to manage in the long run.
+
+## Features
+
+### Support for option types
+
+We can now restrict option values to either a number or define a option
+which is either present or not. This also requires a new and improved
+option parser and validator.
+
+## Improvements
+
+### Generic CLI config validator implementation
+
+The idea for this came from [https://github.com/lotus/validations/]. By
+doing this we can make sure that it will be fairly easy to maintain the
+validation logic and extend it in future.
+
+## Minor Improvements
+
+### Reduce the number of error types
+
+This was made possible by using a generic validator. So, along with all
+the custom validation code we were able to get rid of the custom error
+types.
+
+### Maintain example in readme
+
+The example in the readme file was updated to reflect the latest changes.
+
+## Bug-fixes
+
+### It should be optional to include options in a command
+
+We will be adding a restriction to allow users to mark certain options
+as required in future versions.
 
 0.1.0 / 2015-05-29
 ==================
