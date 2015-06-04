@@ -52,8 +52,9 @@ class MyCommandHandler < Cliqr.command
     puts "value for option 'an-option' is '#{context.option('an-option').value}'"
     puts "value for option 'count' is '#{context.option('count').value}'"
     puts "value for option 'single' is '#{context.option('single').value}'"
-    puts "value for option 'test' is '#{context.option('test').value}'"
+    puts "value for option 'test-1' is '#{context.option('test-1').value}'"
     puts "has count argument" if context.option?('count')
+    puts "does not have test argument" unless context.option?('test-2')
   end
 end
 
@@ -79,7 +80,8 @@ cli = Cliqr.interface do
     type :boolean
   end
 
-  option 'test'
+  option 'test-1'
+  option 'test-2'
 end
 
 puts cli.usage
@@ -96,15 +98,18 @@ puts cli.usage
 #
 #     --[no-]single, -s  :  <boolean> a boolean option
 #
-#     --test
+#     --test-1
+#
+#     --test-2
 
-cli.execute %w(--an-option qwerty -c 86 --no-single --test some-value)
+cli.execute %w(--an-option qwerty -c 86 --no-single --test-1 some-value)
 # executing my awesome command
 # value for option 'an-option' is 'qwerty'
 # value for option 'count' is '86'
 # value for option 'single' is 'false'
-# value for option 'test' is 'some-value'
+# value for option 'test-1' is 'some-value'
 # has count argument
+# does not have test argument
 ```
 
 ## Installation
