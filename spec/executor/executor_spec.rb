@@ -8,6 +8,7 @@ require 'fixtures/test_command'
 require 'fixtures/always_error_command'
 require 'fixtures/option_reader_command'
 require 'fixtures/test_option_reader_command'
+require 'fixtures/test_option_checker_command'
 
 describe Cliqr::CLI::Executor do
   it 'returns code 0 for default command runner' do
@@ -81,5 +82,22 @@ some-value
       expect(e.backtrace[0]).to end_with "cliqr/spec/fixtures/always_error_command.rb:6:in `execute'"
       expect(e.message).to eq "command 'my-command' failed\n\nCause: StandardError - I always throw an error\n"
     end
+  end
+
+  it 'allows command to check if an option exists or not' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      description 'a command used to test cliqr'
+      handler TestOptionCheckerCommand
+
+      option 'test-option' do
+        type :boolean
+      end
+    end
+
+    result = cli.execute %w(--test-option), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+test-option is defined
+    EOS
   end
 end

@@ -46,6 +46,15 @@ module Cliqr
         @options[name]
       end
 
+      # Check if a option with a specified name has been passed
+      #
+      # @param [String] name Name of the option
+      #
+      # @return [Boolean] <tt>true</tt> if the option has a argument value
+      def option?(name)
+        @options.key?(name)
+      end
+
       private :initialize
     end
 
