@@ -1,17 +1,19 @@
 # encoding: utf-8
 
+require 'cliqr/parser/parsed_input'
+
 module Cliqr
   module Parser
     # Builder for collecting parsed command line arguments that can be used to
     # build a command context
     #
     # @api private
-    class ParsedArgumentBuilder
+    class ParsedInputBuilder
       # Initialize a new instance
       #
       # @param [Cliqr::CLI::Config] config Configuration settings for the command line interface
       #
-      # @return [Cliqr::CLI::Parser::ParsedArgumentBuilder]
+      # @return [Cliqr::CLI::Parser::ParsedInputBuilder]
       def initialize(config)
         @config = config
         @options = []
@@ -36,12 +38,10 @@ module Cliqr
 
       # Build the hash of parsed command line arguments
       #
-      # @return [Hash] Parsed arguments
+      # @return [Cliqr::Parser::ParsedInput] Parsed arguments wrapper
       def build
-        {
-            :command => @config.basename,
-            :options => @options
-        }
+        ParsedInput.new(:command => @config.basename,
+                        :options => @options)
       end
 
       private

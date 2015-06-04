@@ -2,7 +2,7 @@
 
 require 'cliqr/cli/router'
 require 'cliqr/cli/command_context'
-require 'cliqr/cli/argument_validator'
+require 'cliqr/argument_validation/validator'
 require 'cliqr/parser/argument_parser'
 
 module Cliqr
@@ -15,7 +15,7 @@ module Cliqr
       def initialize(config)
         @config = config
         @router = Router.new(config)
-        @validator = ArgumentValidator.new
+        @validator = Cliqr::ArgumentValidation::Validator.new
       end
 
       # Execute the command
@@ -25,10 +25,13 @@ module Cliqr
       #
       # @return [Integer] Exit status of the command execution
       def execute(args, options)
-        command_context = CommandContext.build(parse(args))
-        @router.handle command_context, **options
-      rescue StandardError => e
-        raise Cliqr::Error::CommandRuntimeException.new("command '#{@config.basename}' failed", e)
+        parsed_input = parse(args)
+        begin
+          command_context = CommandContext.build(parsed_input)
+          @router.handle command_context, **options
+        rescue StandardError => e
+          raise Cliqr::Error::CommandRuntimeException.new("command '#{@config.basename}' failed", e)
+        end
       end
 
       private
@@ -37,11 +40,14 @@ module Cliqr
       #
       # @param [Array<String>] args List of arguments that needs to parsed
       #
-      # @return [Hash] Parsed hash of command line arguments
+      # @throws [Cliqr::Error::ValidationError] If the input arguments do not satisfy validation
+      # criteria
+      #
+      # @return [Cliqr::Parser::ParsedInput] Parsed arguments wrapper
       def parse(args)
-        parsed_args = Parser.parse(@config, args)
-        @validator.validate(parsed_args)
-        parsed_args
+        parsed_input = Parser.parse(@config, args)
+        @validator.validate(parsed_input, @config)
+        parsed_input
       end
     end
   end

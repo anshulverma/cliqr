@@ -64,7 +64,7 @@ Available options:
 EOS
   end
 
-  it 'allows command options to optionally have description and short name' do
+  it 'allows command options to optionally have description, type and short name' do
     cli = Cliqr.interface do
       basename 'my-command'
       description 'a command used to test cliqr'
@@ -97,5 +97,30 @@ Available options:
       end
     end
     expect(cli.config.options?).to be_truthy
+  end
+
+  it 'allows command options to have a numeric value type' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      description 'a command used to test cliqr'
+      handler TestCommand
+
+      option 'option-1' do
+        description 'a numeric option'
+        short 'p'
+        type :numeric
+      end
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command -- a command used to test cliqr
+
+USAGE:
+    my-command [options]
+
+Available options:
+
+    --option-1, -p  :  <numeric> a numeric option
+    EOS
   end
 end

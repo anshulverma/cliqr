@@ -14,11 +14,11 @@ module Cliqr
 
       # Build a instance of command context based on the parsed set of arguments
       #
-      # @param [Hash] parsed_args A hash of parsed command line arguments
+      # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed input object
       #
       # @return [Cliqr::CLI::CommandContext]
-      def self.build(parsed_args)
-        CommandContextBuilder.new(parsed_args).build
+      def self.build(parsed_input)
+        CommandContextBuilder.new(parsed_input).build
       end
 
       # Initialize the command context (called by the CommandContextBuilder)
@@ -57,19 +57,19 @@ module Cliqr
     class CommandContextBuilder
       # Initialize builder for CommandContext
       #
-      # @param [Hash] parsed_args Parsed and validated command line arguments
+      # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed and validated command line arguments
       #
       # @return [Cliqr::CLI::CommandContextBuilder]
-      def initialize(parsed_args)
-        @parsed_args = parsed_args
+      def initialize(parsed_input)
+        @parsed_input = parsed_input
       end
 
       # Build a new instance of CommandContext
       #
       # @return [Cliqr::CLI::CommandContext] A newly created CommandContext instance
       def build
-        CommandContext.new @parsed_args[:command],
-                           @parsed_args[:options].map { |args| CommandOption.new(args) }
+        CommandContext.new @parsed_input.command,
+                           @parsed_input.options.map { |option| CommandOption.new(option) }
       end
     end
 
@@ -89,12 +89,12 @@ module Cliqr
 
       # Create a new command line option instance
       #
-      # @param [Hash] args Arguments for creating a command line option
+      # @param [Array] option Parsed arguments for creating a command line option
       #
       # @return [Cliqr::CLI::CommandContext] A new CommandOption object
-      def initialize(args)
-        @name = args[:name]
-        @value = args[:value]
+      def initialize(option)
+        @value = option.pop
+        @name = option.pop
       end
     end
   end

@@ -110,4 +110,34 @@ describe Cliqr::CLI::OptionConfig do
     end.to(raise_error(Cliqr::Error::ValidationError,
                        "invalid Cliqr interface configuration - [options[1] - value for 'short' must match /^[a-z0-9A-Z]$/; actual: \"p1\"]"))
   end
+
+  it 'does not allow invalid type values' do
+    expect do
+      Cliqr.interface do
+        basename 'my-command'
+        description 'a command used to test cliqr'
+        handler TestCommand
+
+        option 'option-1' do
+          type :random
+        end
+      end
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       "invalid Cliqr interface configuration - [options[1] - invalid type 'random']"))
+  end
+
+  it 'does not allow empty type values' do
+    expect do
+      Cliqr.interface do
+        basename 'my-command'
+        description 'a command used to test cliqr'
+        handler TestCommand
+
+        option 'option-1' do
+          type ''
+        end
+      end
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       "invalid Cliqr interface configuration - [options[1] - invalid type '']"))
+  end
 end

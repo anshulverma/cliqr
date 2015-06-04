@@ -187,6 +187,13 @@ module Cliqr
       # @return [String]
       attr_accessor :description
 
+      # Optional field that restricts values of this option to a certain type
+      #
+      # @return [Symbol] Type of the option
+      attr_accessor :type
+      validates :type,
+                inclusion: [:any, :numeric]
+
       # Set value for command option's attribute
       #
       # @param [Symbol] name Name of the attribute
@@ -203,6 +210,7 @@ module Cliqr
         @name = UNSET
         @short = UNSET
         @description = UNSET
+        @type = UNSET
       end
 
       # Finalize option's config by adding default values for unset values
@@ -212,6 +220,7 @@ module Cliqr
         @name = nil if @name == UNSET
         @short = nil if @short == UNSET
         @description = nil if @description == UNSET
+        @type = :any if @type == UNSET
 
         self
       end
@@ -228,6 +237,13 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if options' description is not null neither empty
       def description?
         !(@description.nil? || @description.empty?)
+      end
+
+      # Check if a option's type is defined
+      #
+      # @return [Boolean] <tt>true</tt> if options' type is not nil and not equal to <tt>:any</tt>
+      def type?
+        !@type.nil? && @type != :any
       end
 
       private

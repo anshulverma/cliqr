@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'cliqr/parser/parsed_argument_builder'
+require 'cliqr/parser/parsed_input_builder'
 require 'cliqr/parser/token_factory'
 
 module Cliqr
@@ -24,7 +24,7 @@ module Cliqr
       #
       # @return [Hash] Parsed hash of command line arguments
       def walk(args)
-        argument_builder = ParsedArgumentBuilder.new(@config)
+        argument_builder = ParsedInputBuilder.new(@config)
         token_factory = TokenFactory.new(@config)
         token = token_factory.get_token
         args.each do |arg|

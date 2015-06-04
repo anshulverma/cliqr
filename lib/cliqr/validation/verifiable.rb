@@ -2,7 +2,7 @@
 
 require 'cliqr/validation/validator_factory'
 require 'cliqr/validation/validation_set'
-require 'cliqr/validation/errors'
+require 'cliqr/validation_errors'
 
 module Cliqr
   # Validation framework for the command line interface config definition adopted from
@@ -61,9 +61,9 @@ module Cliqr
 
     # Get a list of errors after validation finishes
     #
-    # @return [Cliqr::Validation::Errors] A wrapper of all errors
+    # @return [Cliqr::ValidationErrors] A wrapper of all errors
     def errors
-      @errors ||= Errors.new
+      @errors ||= ValidationErrors.new
     end
 
     # Validations DSL

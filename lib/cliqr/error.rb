@@ -75,6 +75,9 @@ module Cliqr
     # Raised if an option is not defined properly
     class InvalidArgumentError < CliqrError; end
 
+    # Raised if an argument does not conform to the option's type
+    class IllegalArgumentError < CliqrError; end
+
     # Indicates that a unknown validator type is being used in a class
     class UnknownValidatorType < CliqrError; end
   end

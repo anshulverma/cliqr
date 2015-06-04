@@ -12,7 +12,7 @@ module Cliqr
         #
         # @param [String] name Name of the attribute
         # @param [Object] value Value of the attribute
-        # @param [Cliqr::Validation::Errors] errors Errors after validation finished
+        # @param [Cliqr::ValidationErrors] errors Errors after validation finished
         #
         # @return [Boolean] <tt>true</tt> if validation passed
         def validate(name, value, errors)
@@ -27,7 +27,7 @@ module Cliqr
         def validation_sequence(name, value, errors)
           return false unless validate_parent(name, value, errors)
 
-          local_errors = Errors.new
+          local_errors = ValidationErrors.new
           @class_stack.last.instance_method(:do_validate).bind(self).call(name, value, local_errors)
           errors.merge(local_errors)
           local_errors.empty?
@@ -57,6 +57,8 @@ module Cliqr
           @type = type
         end
 
+        protected
+
         # Fails if invoked
         #
         # @return [Object]
@@ -76,7 +78,7 @@ module Cliqr
 
         # Validate presence of an attribute's value
         #
-        # @return [Cliqr::Validation::Errors] Errors after the validation has finished
+        # @return [Cliqr::ValidationErrors] Errors after the validation has finished
         def do_validate(name, value, errors)
           errors.add("'#{name}' cannot be nil") if @enabled && value.nil?
           errors
@@ -95,7 +97,7 @@ module Cliqr
 
         # Validate that a attribute's value is not empty
         #
-        # @return [Cliqr::Validation::Errors] Errors after the validation has finished
+        # @return [Cliqr::ValidationErrors] Errors after the validation has finished
         def do_validate(name, value, errors)
           errors.add("'#{name}' cannot be empty") \
             if @enabled && value.respond_to?(:empty?) && value.empty?
@@ -162,7 +164,7 @@ module Cliqr
         # @return [Boolean] <tt>true</tt> if there were any errors during validation
         def do_validate(name, value, errors)
           unless value.nil?
-            local_errors = Errors.new
+            local_errors = ValidationErrors.new
             local_errors.add("'#{name}' cannot be empty") \
               if value.respond_to?(:empty?) && value.empty?
             FormatValidator.new(@format).validate(name, value, local_errors) \
@@ -183,6 +185,8 @@ module Cliqr
           @super_type = super_type
         end
 
+        protected
+
         # Check if the type of <tt>value</tt> is extensible from a <tt>super_type</tt>
         #
         # @return [Boolean] <tt>true</tt> if there were any errors during validation
@@ -200,6 +204,8 @@ module Cliqr
           super(Array)
         end
 
+        protected
+
         # Validate each element inside a collection and prepend index to error
         #
         # @return [Boolean] <tt>true</tt> if there were any errors during validation
@@ -213,6 +219,25 @@ module Cliqr
         end
       end
 
+      # Validate that a attribute value is included in a predefined set
+      class InclusionValidator < NonNilValidator
+        # Create a new inclusion validator
+        #
+        # @param [Array<Symbol>] allowed_values A set of allowed values
+        def initialize(allowed_values)
+          @allowed_values = allowed_values
+        end
+
+        protected
+
+        # Validate that a value is included in <tt>allowed_values</tt>
+        #
+        # @return [Nothing]
+        def do_validate(_name, value, errors)
+          errors.add("invalid type '#{value}'") unless @allowed_values.include?(value)
+        end
+      end
+
       # A hash of validator type id to validator class
       VALIDATORS = {
           :non_empty => NonEmptyValidator,
@@ -220,7 +245,8 @@ module Cliqr
           :non_empty_nil_ok_format => NonEmptyNilOkFormatValidator,
           :format => FormatValidator,
           :extend => TypeHierarchyValidator,
-          :collection => CollectionValidator
+          :collection => CollectionValidator,
+          :inclusion => InclusionValidator
       }
 
       # Get a new validator based on the type and config param

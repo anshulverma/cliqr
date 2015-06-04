@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 require 'cliqr/parser/argument_parser'
+require 'cliqr/parser/parsed_input'
 
 require 'fixtures/test_command'
 require 'fixtures/option_reader_command'
@@ -20,37 +21,32 @@ describe Cliqr::Parser do
   PARSER = Cliqr::Parser
 
   it 'can parse no argument command' do
-    expect(PARSER.parse(CONFIG, [])).to eq(:command => 'my-command',
-                                           :options => [])
+    expect(PARSER.parse(CONFIG, [])).to eq(Cliqr::Parser::ParsedInput.new(:command => 'my-command', :options => []))
   end
 
   it 'can parse command with option using long name' do
-    expected_arguments = {
-        :command => 'my-command',
-        :options => [
-          {
-              :name => 'test-option',
-              :value => 'abcd'
-          }
-        ]
-    }
-    expect(PARSER.parse(CONFIG, %w(--test-option abcd))).to eq(expected_arguments)
+    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
+                                                  :options => [
+                                                    {
+                                                        :name => 'test-option',
+                                                        :value => 'abcd'
+                                                    }
+                                                  ])
+    expect(PARSER.parse(CONFIG, %w(--test-option abcd))).to eq(parsed_input)
   end
 
   it 'can parse multiple options' do
-    expected_arguments = {
-        :command => 'my-command',
-        :options => [
-          {
-              :name => 'test-option-1',
-              :value => 'abcd'
-          },
-          {
-              :name => 'test-option-2',
-              :value => 'xyz'
-          }
-        ]
-    }
+    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
+                                                  :options => [
+                                                    {
+                                                        :name => 'test-option-1',
+                                                        :value => 'abcd'
+                                                    },
+                                                    {
+                                                        :name => 'test-option-2',
+                                                        :value => 'xyz'
+                                                    }
+                                                  ])
     cli = Cliqr.interface do
       basename 'my-command'
       handler TestCommand
@@ -58,20 +54,18 @@ describe Cliqr::Parser do
       option 'test-option-1'
       option 'test-option-2'
     end
-    expect(Cliqr::Parser.parse(cli.config, %w(--test-option-1 abcd --test-option-2 xyz))).to eq(expected_arguments)
+    expect(Cliqr::Parser.parse(cli.config, %w(--test-option-1 abcd --test-option-2 xyz))).to eq(parsed_input)
   end
 
   it 'can parse command with option using short name' do
-    expected_arguments = {
-        :command => 'my-command',
-        :options => [
-          {
-              :name => 'test-option',
-              :value => 'abcd'
-          }
-        ]
-    }
-    expect(PARSER.parse(CONFIG, %w(-t abcd))).to eq(expected_arguments)
+    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
+                                                  :options => [
+                                                    {
+                                                        :name => 'test-option',
+                                                        :value => 'abcd'
+                                                    }
+                                                  ])
+    expect(PARSER.parse(CONFIG, %w(-t abcd))).to eq(parsed_input)
   end
 
   it 'cannot parse unknown options' do
