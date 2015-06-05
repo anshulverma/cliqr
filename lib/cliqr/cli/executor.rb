@@ -30,7 +30,7 @@ module Cliqr
           command_context = CommandContext.build(parsed_input)
           @router.handle command_context, **options
         rescue StandardError => e
-          raise Cliqr::Error::CommandRuntimeException.new("command '#{@config.basename}' failed", e)
+          raise Cliqr::Error::CommandRuntimeException.new("command '#{@config.name}' failed", e)
         end
       end
 

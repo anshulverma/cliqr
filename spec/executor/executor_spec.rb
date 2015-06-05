@@ -18,7 +18,7 @@ describe Cliqr::CLI::Executor do
 
   it 'routes base command with no arguments' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestCommand
     end
     result = cli.execute [], output: :buffer
@@ -27,7 +27,7 @@ describe Cliqr::CLI::Executor do
 
   it 'handles error appropriately' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler AlwaysErrorCommand
     end
     expect { cli.execute [] }.to raise_error(Cliqr::Error::CommandRuntimeException)
@@ -35,7 +35,7 @@ describe Cliqr::CLI::Executor do
 
   it 'routes a command with option values' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestCommand
 
       option 'test-option'
@@ -46,7 +46,7 @@ describe Cliqr::CLI::Executor do
 
   it 'lets a command get all option values' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler OptionReaderCommand
 
       option 'test-option'
@@ -61,7 +61,7 @@ my-command
 
   it 'lets a command get single option value' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestOptionReaderCommand
 
       option 'test-option'
@@ -74,7 +74,7 @@ some-value
 
   it 'handles executor error cause properly' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler AlwaysErrorCommand
     end
     begin
@@ -87,7 +87,7 @@ some-value
 
   it 'allows command to check if an option exists or not' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'a command used to test cliqr'
       handler TestOptionCheckerCommand
 
@@ -104,7 +104,7 @@ test-option is defined
 
   it 'allows command to access argument list' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler ArgumentReaderCommand
       arguments :enable
 

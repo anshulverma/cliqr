@@ -27,20 +27,14 @@ module Cliqr
         @active
       end
 
-      # This token is never valid
-      #
-      # @return [Boolean] Always <tt>false</tt>
-      def valid?
-        false
-      end
-
       # Collect this token's argument into a input builder
       #
-      # @param [Cliqr::Parser::ParsedInputBuilder] input_builder A builder to prepare parsed arguments
+      # @param [Cliqr::Parser::ParsedInputBuilder] input_builder A builder to prepare parsed
+      # arguments
       #
       # @return [Cliqr::Parser::ParsedInputBuilder] The updated input builder instance
       def collect(input_builder)
-        input_builder.add_argument(@arg)
+        input_builder.add_argument_token(self)
       end
 
       protected

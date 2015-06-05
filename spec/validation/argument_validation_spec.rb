@@ -10,7 +10,7 @@ require 'fixtures/test_option_reader_command'
 describe Cliqr::ArgumentValidation::Validator do
   it 'can validate numerical arguments' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestOptionReaderCommand
 
       option 'test-option' do
@@ -26,7 +26,7 @@ describe Cliqr::ArgumentValidation::Validator do
 
   it 'does not allow string for numeric option types' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestCommand
 
       option 'age' do
@@ -42,7 +42,7 @@ describe Cliqr::ArgumentValidation::Validator do
 
   it 'can validate boolean option arguments' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestOptionReaderCommand
 
       option 'test-option' do
@@ -58,7 +58,7 @@ true
 
   it 'can validate boolean option argumentswith short name' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestOptionReaderCommand
 
       option 'test-option' do
@@ -75,7 +75,7 @@ true
 
   it 'can validate boolean option arguments for false' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestOptionReaderCommand
 
       option 'test-option' do
@@ -91,7 +91,7 @@ false
 
   it 'does not allow string for boolean option types' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestCommand
       arguments :disable
 
@@ -108,7 +108,7 @@ false
 
   it 'allows numeric options to be optional' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'this is an awesome command...try it out'
       handler TestCommand
 
@@ -125,7 +125,7 @@ test command executed
 
   it 'allows boolean options to be optional' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'this is an awesome command...try it out'
       handler TestCommand
 

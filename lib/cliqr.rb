@@ -16,7 +16,7 @@ module Cliqr
     #
     # @example
     #   Cliqr.interface do
-    #     basename 'my-command' # name of the command
+    #     name 'my-command' # name of the command
     #     description 'command description in a few words' # long description
     #     handler MyCommandHandler # command's handler class
     #

@@ -13,7 +13,7 @@ describe Cliqr::CLI::Interface do
 
   it 'builds a base command with name' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
@@ -27,9 +27,9 @@ USAGE:
 EOS
   end
 
-  it 'only makes basename and handler to be required' do
+  it 'only makes name and handler to be required' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestCommand
       arguments :disable
     end
@@ -44,7 +44,7 @@ EOS
 
   it 'allows options for a command' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
@@ -69,7 +69,7 @@ EOS
 
   it 'allows command options to optionally have description, type and short name' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
@@ -91,7 +91,7 @@ Available options:
 
   it 'has options if added during build phase' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
 
@@ -105,7 +105,7 @@ Available options:
 
   it 'allows command options to have a numeric value type' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
@@ -131,7 +131,7 @@ Available options:
 
   it 'allows command options to have a boolean value type' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
@@ -157,7 +157,7 @@ Available options:
 
   it 'allows interface to enable arbitrary argument list parsing without options' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestCommand
       arguments :enable
     end
@@ -172,7 +172,7 @@ USAGE:
 
   it 'allows interface to enable arbitrary argument list parsing' do
     cli = Cliqr.interface do
-      basename 'my-command'
+      name 'my-command'
       handler TestCommand
       arguments :enable
 
@@ -190,5 +190,4 @@ Available options:
     --option-1
     EOS
   end
-
 end

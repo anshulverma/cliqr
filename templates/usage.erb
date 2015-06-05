@@ -1,7 +1,7 @@
-<%= @basename %><% unless @description.nil? || @description.empty? %> -- <%= @description %><% end %>
+<%= @name %><% unless @description.nil? || @description.empty? %> -- <%= @description %><% end %>
 
 USAGE:
-    <%= @basename %><%=
+    <%= @name %><%=
     ' [options]' unless @options.empty? %><%=
     ' [arguments]' if arguments? %><%
 

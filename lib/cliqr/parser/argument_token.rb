@@ -16,10 +16,7 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if token's argument is non-empty
       def valid?
         return false if arg.nil?
-
-        return !arg.empty? if @arg.respond_to?(:empty?)
-
-        true
+        !arg.empty?
       end
     end
   end

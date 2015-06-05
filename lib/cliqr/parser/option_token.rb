@@ -46,7 +46,8 @@ module Cliqr
 
       # Collect this token's name and value into a input builder
       #
-      # @param [Cliqr::Parser::ParsedInputBuilder] input_builder A builder to prepare parsed arguments
+      # @param [Cliqr::Parser::ParsedInputBuilder] input_builder A builder to prepare parsed
+      # arguments
       #
       # @return [Cliqr::Parser::ParsedInputBuilder] The updated input builder instance
       def collect(input_builder)

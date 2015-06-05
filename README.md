@@ -59,7 +59,7 @@ class MyCommandHandler < Cliqr.command
 end
 
 cli = Cliqr.interface do
-  basename 'my-command'
+  name 'my-command'
   description 'this is an awesome command...try it out'
   handler MyCommandHandler
 

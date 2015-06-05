@@ -6,7 +6,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow multiple options with same long name' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -24,7 +24,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow multiple options with same short name' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -42,7 +42,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow option with empty long name' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -57,7 +57,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow option with empty short name' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -72,7 +72,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow option with nil long name' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -85,7 +85,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow option with nil long name for second option' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -99,7 +99,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow multiple characters in short name' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -114,7 +114,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow invalid type values' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
@@ -129,7 +129,7 @@ describe Cliqr::CLI::OptionConfig do
   it 'does not allow empty type values' do
     expect do
       Cliqr.interface do
-        basename 'my-command'
+        name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 

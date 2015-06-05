@@ -30,8 +30,8 @@ module Cliqr
         args.each do |arg|
           token = handle_argument(arg, token, token_factory, input_builder)
         end
-        fail Cliqr::Error::OptionValueMissing, "a value must be defined for argument \"#{token.arg}\"" \
-          if token.active?
+        fail Cliqr::Error::OptionValueMissing, \
+             "a value must be defined for argument \"#{token.arg}\"" if token.active?
         input_builder.build
       end
 

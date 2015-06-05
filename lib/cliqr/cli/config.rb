@@ -17,11 +17,11 @@ module Cliqr
       extend Cliqr::DSL
       include Cliqr::ConfigValidation
 
-      # Base name of the command
+      # Name of the command
       #
       # @return [String]
-      attr_accessor :basename
-      validates :basename,
+      attr_accessor :name
+      validates :name,
                 non_empty_format: /^[a-zA-Z0-9_\-]+$/
 
       # Description for the base command
@@ -36,7 +36,7 @@ module Cliqr
       validates :handler,
                 extend: Cliqr::CLI::Command
 
-      # Optional attribute that dictates whether this command can take arbitrary arguments
+      #  Dictates whether this command can take arbitrary arguments (optional)
       #
       # @return [Symbol] Either <tt>:enabled</tt> or <tt>:disabled</tt>
       attr_accessor :arguments
@@ -52,7 +52,7 @@ module Cliqr
 
       # New config instance with all attributes set as UNSET
       def initialize
-        @basename = UNSET
+        @name = UNSET
         @description = UNSET
         @handler = UNSET
         @arguments = UNSET
@@ -65,7 +65,7 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Config]
       def finalize
-        @basename = '' if @basename == UNSET
+        @name = '' if @name == UNSET
         @description = '' if @description == UNSET
         @handler = nil if @handler == UNSET
         @arguments = :enable if @arguments == UNSET
