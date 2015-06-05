@@ -53,8 +53,8 @@ class MyCommandHandler < Cliqr.command
     puts "value for option 'count' is '#{context.option('count').value}'"
     puts "value for option 'single' is '#{context.option('single').value}'"
     puts "value for option 'test-1' is '#{context.option('test-1').value}'"
-    puts "has count argument" if context.option?('count')
-    puts "does not have test argument" unless context.option?('test-2')
+    puts "has 'count' argument" if context.option?('count')
+    puts "does not have 'test-2' argument" unless context.option?('test-2')
   end
 end
 
@@ -108,8 +108,8 @@ cli.execute %w(--an-option qwerty -c 86 --no-single --test-1 some-value)
 # value for option 'count' is '86'
 # value for option 'single' is 'false'
 # value for option 'test-1' is 'some-value'
-# has count argument
-# does not have test argument
+# has 'count' argument
+# does not have 'test-2' argument
 ```
 
 ## Installation
