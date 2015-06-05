@@ -5,6 +5,12 @@ item in this nested table for further details.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
+- [1.1.0 / 2015-06-05](#110--2015-06-05)
+    - [Features](#features)
+        - [Support for arbitrary arguments in a command](#support-for-arbitrary-arguments-in-a-command)
+    - [Minor Improvements](#minor-improvements)
+        - [Improve readme example](#improve-readme-example)
+        - [Reorganize config validation logic](#reorganize-config-validation-logic)
 - [1.0.0 / 2015-06-04](#100--2015-06-04)
     - [Features](#features)
         - [Support for option types](#support-for-option-types)
@@ -60,6 +66,24 @@ item in this nested table for further details.
         - [Incorporate `RSpec` for unit tests](#incorporate-rspec-for-unit-tests)
 
 <!-- markdown-toc end -->
+
+1.1.0 / 2015-06-05
+==================
+
+A small, yet a very important release. In this release we add support
+for arbitrary arguments.
+
+## Features
+
+### Support for arbitrary arguments in a command
+
+For the first time you can invoke a command with a non-option arguments.
+
+## Minor Improvements
+
+### Improve readme example
+
+### Reorganize config validation logic
 
 1.0.0 / 2015-06-04
 ==================
