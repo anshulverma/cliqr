@@ -16,6 +16,7 @@ describe Cliqr::CLI::Interface do
       basename 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
+      arguments :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -30,6 +31,7 @@ EOS
     cli = Cliqr.interface do
       basename 'my-command'
       handler TestCommand
+      arguments :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -45,6 +47,7 @@ EOS
       basename 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
+      arguments :disable
 
       option 'option-1' do
         short 'p'
@@ -69,6 +72,7 @@ EOS
       basename 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
+      arguments :disable
 
       option 'option-1'
     end
@@ -104,6 +108,7 @@ Available options:
       basename 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
+      arguments :disable
 
       option 'option-1' do
         description 'a numeric option'
@@ -129,6 +134,7 @@ Available options:
       basename 'my-command'
       description 'a command used to test cliqr'
       handler TestCommand
+      arguments :disable
 
       option 'option-1' do
         description 'a boolean option'
@@ -148,4 +154,41 @@ Available options:
     --[no-]option-1, -p  :  <boolean> a boolean option
     EOS
   end
+
+  it 'allows interface to enable arbitrary argument list parsing without options' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler TestCommand
+      arguments :enable
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [arguments]
+    EOS
+  end
+
+  it 'allows interface to enable arbitrary argument list parsing' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler TestCommand
+      arguments :enable
+
+      option 'option-1'
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [options] [arguments]
+
+Available options:
+
+    --option-1
+    EOS
+  end
+
 end

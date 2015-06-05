@@ -24,27 +24,31 @@ module Cliqr
       #
       # @return [Hash] Parsed hash of command line arguments
       def walk(args)
-        argument_builder = ParsedInputBuilder.new(@config)
+        input_builder = ParsedInputBuilder.new(@config)
         token_factory = TokenFactory.new(@config)
         token = token_factory.get_token
         args.each do |arg|
-          token = handle_argument(arg, token, token_factory)
-          argument_builder.add_token(token) unless token.active?
+          token = handle_argument(arg, token, token_factory, input_builder)
         end
-        token.finalize if token.active?
-        argument_builder.build
+        fail Cliqr::Error::OptionValueMissing, "a value must be defined for argument \"#{token.arg}\"" \
+          if token.active?
+        input_builder.build
       end
 
       # Handle the next argument in the context of the current token
       #
       # @return [Cliqr::CLI::Parser::Token] The new active token in case <tt>current_token</tt>
       # becomes inactive
-      def handle_argument(arg, current_token, token_factory)
+      def handle_argument(arg, current_token, token_factory, input_builder)
         if current_token.active?
-          current_token.append(arg)
+          token = current_token.append(arg)
         else
-          token_factory.get_token(arg)
+          token = token_factory.get_token(arg)
         end
+
+        token.collect(input_builder)
+
+        token
       end
     end
   end

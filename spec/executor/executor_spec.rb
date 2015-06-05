@@ -9,6 +9,7 @@ require 'fixtures/always_error_command'
 require 'fixtures/option_reader_command'
 require 'fixtures/test_option_reader_command'
 require 'fixtures/test_option_checker_command'
+require 'fixtures/argument_reader_command'
 
 describe Cliqr::CLI::Executor do
   it 'returns code 0 for default command runner' do
@@ -98,6 +99,23 @@ some-value
     result = cli.execute %w(--test-option), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test-option is defined
+    EOS
+  end
+
+  it 'allows command to access argument list' do
+    cli = Cliqr.interface do
+      basename 'my-command'
+      handler ArgumentReaderCommand
+      arguments :enable
+
+      option 'test-option'
+    end
+
+    result = cli.execute %w(value1 --test-option qwerty value2 value3), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+value1
+value2
+value3
     EOS
   end
 end

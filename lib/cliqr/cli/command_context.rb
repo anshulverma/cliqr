@@ -12,6 +12,11 @@ module Cliqr
       # @return [String]
       attr_accessor :command
 
+      # Command arguments
+      #
+      # @return [Array<String>] List of arguments
+      attr_accessor :arguments
+
       # Build a instance of command context based on the parsed set of arguments
       #
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed input object
@@ -24,8 +29,10 @@ module Cliqr
       # Initialize the command context (called by the CommandContextBuilder)
       #
       # @return [Cliqr::CLI::CommandContext]
-      def initialize(command, options)
+      def initialize(command, options, arguments)
         @command = command
+        @arguments = arguments
+
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
       end
@@ -78,7 +85,8 @@ module Cliqr
       # @return [Cliqr::CLI::CommandContext] A newly created CommandContext instance
       def build
         CommandContext.new @parsed_input.command,
-                           @parsed_input.options.map { |option| CommandOption.new(option) }
+                           @parsed_input.options.map { |option| CommandOption.new(option) },
+                           @parsed_input.arguments
       end
     end
 

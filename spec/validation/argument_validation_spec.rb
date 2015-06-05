@@ -93,6 +93,7 @@ false
     cli = Cliqr.interface do
       basename 'my-command'
       handler TestCommand
+      arguments :disable
 
       option 'opt' do
         type :boolean

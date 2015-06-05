@@ -6,39 +6,57 @@ module Cliqr
     #
     # @api private
     class Token
-      # Name of the option token
-      #
-      # @return [String]
-      attr_accessor :name
-
-      # Argument that was used to parse the option name from
+      # Argument that was used to parse this token
       #
       # @return [String]
       attr_accessor :arg
 
-      # Create a new option token
+      # Create a new token
       #
-      # @param [String] name Long name of the option
       # @param [String] arg Value of the option
-      #
-      # @return [Cliqr::CLI::Parser::OptionToken] A new Token instance
-      def initialize(name = nil, arg = nil)
-        @name = name
+      def initialize(arg = nil)
         @arg = arg
+
+        @active = false
       end
 
-      # This token is never active
+      # Get activation status of this token
       #
       # @return [Boolean] This will always return <tt>false</tt> in this case
       def active?
+        @active
+      end
+
+      # This token is never valid
+      #
+      # @return [Boolean] Always <tt>false</tt>
+      def valid?
         false
       end
 
-      # A token is not valid if it does not have a name
+      # Collect this token's argument into a input builder
       #
-      # @return [Boolean] <tt>false</tt> if the token's name is nil
-      def valid?
-        !@name.nil?
+      # @param [Cliqr::Parser::ParsedInputBuilder] input_builder A builder to prepare parsed arguments
+      #
+      # @return [Cliqr::Parser::ParsedInputBuilder] The updated input builder instance
+      def collect(input_builder)
+        input_builder.add_argument(@arg)
+      end
+
+      protected
+
+      # Activate this token so that it can consume more arguments
+      #
+      # @return [Boolean] Token activation state
+      def activate
+        @active = true
+      end
+
+      # Deactivate this token to indicate that it does not need more arguments
+      #
+      # @return [Boolean] Token activation state
+      def deactivate
+        @active = false
       end
     end
   end

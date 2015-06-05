@@ -36,6 +36,13 @@ module Cliqr
       validates :handler,
                 extend: Cliqr::CLI::Command
 
+      # Optional attribute that dictates whether this command can take arbitrary arguments
+      #
+      # @return [Symbol] Either <tt>:enabled</tt> or <tt>:disabled</tt>
+      attr_accessor :arguments
+      validates :arguments,
+                inclusion: [:enable, :disable]
+
       # Array of options applied to the base command
       #
       # @return [Array<OptionConfig>]
@@ -48,6 +55,7 @@ module Cliqr
         @basename = UNSET
         @description = UNSET
         @handler = UNSET
+        @arguments = UNSET
 
         @options = []
         @option_index = {}
@@ -60,6 +68,7 @@ module Cliqr
         @basename = '' if @basename == UNSET
         @description = '' if @description == UNSET
         @handler = nil if @handler == UNSET
+        @arguments = :enable if @arguments == UNSET
 
         self
       end
@@ -106,6 +115,13 @@ module Cliqr
       # @return [String] value for the option
       def option(name)
         @option_index[name]
+      end
+
+      # Check if arguments are enabled for this configuration
+      #
+      # @return [Boolean] <tt>true</tt> if arguments are enabled
+      def arguments?
+        @arguments == :enable
       end
 
       private

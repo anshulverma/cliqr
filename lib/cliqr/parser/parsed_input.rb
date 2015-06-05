@@ -15,13 +15,20 @@ module Cliqr
       # @return [Hash]
       attr_accessor :options
 
+      # List of arguments from the command line
+      #
+      # @return [Array<String>]
+      attr_accessor :arguments
+
       # Initialize a new parsed input
       def initialize(parsed_arguments)
         @command = parsed_arguments[:command]
 
         @options = Hash[parsed_arguments[:options].collect \
-            { |option| [option[:name], option[:value]] }
-          ]
+            { |option| [option[:name], option[:value]] }]\
+            if parsed_arguments.key?(:options)
+
+        @arguments = parsed_arguments[:arguments]
       end
 
       # Get a value of an option

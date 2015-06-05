@@ -1,23 +1,17 @@
 # encoding: utf-8
 
+require 'cliqr/parser/option_token'
+
 module Cliqr
   module Parser
     # Token handler for parsing a option and its value
     #
     # @api private
-    class SingleValuedOptionToken < Token
+    class SingleValuedOptionToken < OptionToken
       # Create a new option token. Initial state will be <tt>active</tt>
       def initialize(name, arg)
         super(name, arg)
-        @value = nil
-        @active = true
-      end
-
-      # Check if the token handler is active and needs more arguments
-      #
-      # @return [Boolean] <tt>true</tt> if the token handler is active
-      def active?
-        @active
+        activate
       end
 
       # Append the next argument in the series and set token to inactive
@@ -27,26 +21,8 @@ module Cliqr
       # @return [Cliqr::Parser::SingleValuedOptionToken]
       def append(arg)
         @value = arg
-        @active = false
+        deactivate
         self
-      end
-
-      # Get the token representation
-      #
-      # @return [Hash] Token name and value in a hash
-      def build
-        {
-            :name => @name.to_s,
-            :value => @value
-        }
-      end
-
-      # Called if this token handler was still active once the argument list ends
-      #
-      # @return [Cliqr::CLI::Parser::OptionToken] Current instance object
-      def finalize
-        # should not be called
-        fail Cliqr::Error::OptionValueMissing, "a value must be defined for option \"#{@arg}\""
       end
     end
   end

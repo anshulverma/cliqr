@@ -88,7 +88,7 @@ puts cli.usage
 # my-command -- this is an awesome command...try it out
 #
 # USAGE:
-#     my-command [options]
+#     my-command [options] [arguments]
 #
 # Available options:
 #

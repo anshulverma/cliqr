@@ -18,19 +18,31 @@ module Cliqr
         @config = config
         @options = []
         @option_names = Set.new
+        @arguments = []
       end
 
-      # Add a new parsed token from the list of arguments
+      # Add a new parsed option token from the list of options
       #
-      # @param [Cliqr::CLI::Parser::Token] token A parsed token from command line arguments
+      # @param [Cliqr::CLI::Parser::OptionToken] token A parsed option token from command line arguments
       #
-      # @return [Boolean] <tt>true</tt> if the token was added
-      def add_token(token)
-        return false unless token.valid?
+      # @return [Cliqr::Parser::ParsedInputBuilder] Updated input builder
+      def add_option_token(token)
+        return self unless token.valid?
 
         add_option_name(token)
         @options.push(token.build)
-        true
+
+        self
+      end
+
+      # Add a argument to the list of parsed arguments
+      #
+      # @param [String] arg Argument value
+      #
+      # @return [Cliqr::Parser::ParsedInputBuilder] Updated input builder
+      def add_argument(arg)
+        @arguments.push(arg)
+        self
       end
 
       # Build the hash of parsed command line arguments
@@ -38,7 +50,8 @@ module Cliqr
       # @return [Cliqr::Parser::ParsedInput] Parsed arguments wrapper
       def build
         ParsedInput.new(:command => @config.basename,
-                        :options => @options)
+                        :options => @options,
+                        :arguments => @arguments)
       end
 
       private
