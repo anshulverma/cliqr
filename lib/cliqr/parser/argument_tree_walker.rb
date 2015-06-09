@@ -20,19 +20,38 @@ module Cliqr
 
       # Parse the arguments and generate tokens by iterating over command line arguments
       #
-      # @param [Array<String>] args List of arguments that needs to parsed
+      # @param [Array<String>] raw_args List of arguments that needs to parsed
       #
       # @return [Hash] Parsed hash of command line arguments
-      def walk(args)
-        input_builder = ParsedInputBuilder.new(@config)
-        token_factory = TokenFactory.new(@config)
+      def walk(raw_args)
+        action_config, args = parse_action(raw_args)
+        input_builder = ParsedInputBuilder.new(@config, action_config)
+        token_factory = TokenFactory.new(action_config)
         token = token_factory.get_token
         args.each do |arg|
           token = handle_argument(arg, token, token_factory, input_builder)
         end
         fail Cliqr::Error::OptionValueMissing, \
              "a value must be defined for argument \"#{token.arg}\"" if token.active?
-        input_builder.build
+        [action_config, input_builder.build]
+      end
+
+      private
+
+      # Parse the action from the list of arguments
+      #
+      # @return [Cliqr::CLI::Config] Configuration of the command invoked and remaining arguments
+      def parse_action(raw_args)
+        args = []
+        action_config = @config
+        raw_args.each do |arg|
+          if action_config.action?(arg)
+            action_config = action_config.action(arg)
+          else
+            args.push(arg)
+          end
+        end
+        [action_config, args]
       end
 
       # Handle the next argument in the context of the current token

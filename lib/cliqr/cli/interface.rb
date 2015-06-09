@@ -2,6 +2,7 @@
 
 require 'cliqr/error'
 require 'cliqr/cli/executor'
+require 'cliqr/cli/usage_builder'
 
 module Cliqr
   # Definition and builder for command line interface
@@ -27,12 +28,7 @@ module Cliqr
       #
       # @return [String] Defines usage of this interface
       def usage
-        template_file_path = File.expand_path('../../../../templates/usage.erb', __FILE__)
-        template = ERB.new(File.new(template_file_path).read, nil, '%')
-        result = template.result(@config.instance_eval { binding })
-
-        # remove multiple newlines from the end of usage
-        "#{result.strip}\n"
+        UsageBuilder.build(config)
       end
 
       # Execute a command

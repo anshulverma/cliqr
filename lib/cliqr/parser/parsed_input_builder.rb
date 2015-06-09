@@ -14,8 +14,10 @@ module Cliqr
       # @param [Cliqr::CLI::Config] config Configuration settings for the command line interface
       #
       # @return [Cliqr::CLI::Parser::ParsedInputBuilder]
-      def initialize(config)
+      def initialize(config, action_config)
         @config = config
+        @action_config = action_config
+        @actions = []
         @options = []
         @option_names = Set.new
         @arguments = []
@@ -38,7 +40,7 @@ module Cliqr
 
       # Add a argument to the list of parsed arguments
       #
-      # @param [Cliqr::CLI::Parser::OptionToken] token Argument token
+      # @param [Cliqr::CLI::Parser::ArgumentToken] token Argument token
       #
       # @return [Cliqr::Parser::ParsedInputBuilder] Updated input builder
       def add_argument_token(token)
@@ -51,6 +53,7 @@ module Cliqr
       # @return [Cliqr::Parser::ParsedInput] Parsed arguments wrapper
       def build
         ParsedInput.new(:command => @config.name,
+                        :actions => @actions,
                         :options => @options,
                         :arguments => @arguments)
       end
@@ -63,7 +66,7 @@ module Cliqr
       #
       # @return [Set<String>] Current list of option names
       def add_option_name(token)
-        option_config = @config.option(token.name)
+        option_config = @action_config.option(token.name)
         old_config = @option_names.add?(option_config.name)
         fail Cliqr::Error::MultipleOptionValues,
              "multiple values for option \"#{token.arg}\"" if old_config.nil?

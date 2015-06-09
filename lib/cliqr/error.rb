@@ -69,8 +69,11 @@ module Cliqr
     # Indicates that a option has multiple values in the command line
     class MultipleOptionValues < CliqrError; end
 
-    # Raised if two options are defined with same long or short name
+    # Raised if more than one option is defined with same long or short name
     class DuplicateOptions < CliqrError; end
+
+    # Raised if multiple actions are defined with same name at the same nesting level
+    class DuplicateActions < CliqrError; end
 
     # Raised if an option is not defined properly
     class InvalidArgumentError < CliqrError; end

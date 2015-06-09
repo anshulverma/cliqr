@@ -12,7 +12,7 @@ module Cliqr
     # @param [Cliqr::CLI::Config] config Command line configuration
     # @param [Array<String>] args An array of arguments from command line
     #
-    # @return [Hash] Parsed hash of command linet arguments
+    # @return [Hash] Parsed action config and hash of command line arguments
     def self.parse(config, args)
       tree_walker = ArgumentTreeWalker.new(config)
       tree_walker.walk(args)

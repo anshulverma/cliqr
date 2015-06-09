@@ -1,15 +1,16 @@
-<%= @name %><% unless @description.nil? || @description.empty? %> -- <%= @description %><% end %>
+<%= name %><% unless description.nil? || description.empty? %> -- <%= description %><% end %>
 
 USAGE:
-    <%= @name %><%=
-    ' [options]' unless @options.empty? %><%=
+    <%= name %><%=
+    ' [actions]' if actions? %><%=
+    ' [options]' if options? %><%=
     ' [arguments]' if arguments? %><%
 
-unless @options.empty? %>
+if options? %>
 
 Available options:
 <%
-   @options.each { |option|
+   options.each { |option|
 %>
     --<%=
          '[no-]' if option.boolean?
@@ -18,10 +19,21 @@ Available options:
        %><%=
             ", -#{option.short}" if option.short?
           %><%=
-            if option.description? || option.type?
+            if option.details?
               "  :  #{"<#{option.type}> " if option.type? }#{option.description if option.description?}"
             end
-          %>
+          %><%
+   }
+end
+
+if actions? %>
+
+Available actions:
+<%
+   actions.each { |action|
+%>
+    <%= action.name %><%= " -- #{action.description}" if action.description? %>
+    <%= "Type \"#{name} help #{action.name}\" to get more information about action \"#{action.name}\"" if action.arguments? || action.options? || action.actions?%>
 <%
    }
 %>

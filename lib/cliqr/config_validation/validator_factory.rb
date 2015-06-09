@@ -213,7 +213,13 @@ module Cliqr
           valid = true
           values.each_with_index do |value, index|
             valid = false unless value.valid?
-            value.errors.each { |error| errors.add("#{name}[#{index + 1}] - #{error}") }
+            value.errors.each do |error|
+              if value.name.nil? || value.name.empty?
+                errors.add("#{name}[#{index + 1}] - #{error}")
+              else
+                errors.add("#{name.to_s.gsub(/s$/, '')} \"#{value.name}\" - #{error}")
+              end
+            end
           end
           valid
         end

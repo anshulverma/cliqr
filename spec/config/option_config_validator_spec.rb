@@ -66,7 +66,7 @@ describe Cliqr::CLI::OptionConfig do
         end
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [options[1] - 'short' cannot be empty]"))
+                       "invalid Cliqr interface configuration - [option \"option-1\" - 'short' cannot be empty]"))
   end
 
   it 'does not allow option with nil long name' do
@@ -108,7 +108,7 @@ describe Cliqr::CLI::OptionConfig do
         end
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [options[1] - value for 'short' must match /^[a-z0-9A-Z]$/; actual: \"p1\"]"))
+                       "invalid Cliqr interface configuration - [option \"option-1\" - value for 'short' must match /^[a-z0-9A-Z]$/; actual: \"p1\"]"))
   end
 
   it 'does not allow invalid type values' do
@@ -123,7 +123,7 @@ describe Cliqr::CLI::OptionConfig do
         end
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [options[1] - invalid type 'random']"))
+                       "invalid Cliqr interface configuration - [option \"option-1\" - invalid type 'random']"))
   end
 
   it 'does not allow empty type values' do
@@ -138,6 +138,6 @@ describe Cliqr::CLI::OptionConfig do
         end
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [options[1] - invalid type '']"))
+                       "invalid Cliqr interface configuration - [option \"option-1\" - invalid type '']"))
   end
 end

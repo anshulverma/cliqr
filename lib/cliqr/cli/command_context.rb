@@ -17,21 +17,29 @@ module Cliqr
       # @return [Array<String>] List of arguments
       attr_accessor :arguments
 
+      # Name of the current action
+      #
+      # @return [String]
+      attr_accessor :action_name
+
       # Build a instance of command context based on the parsed set of arguments
       #
+      # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed input object
       #
       # @return [Cliqr::CLI::CommandContext]
-      def self.build(parsed_input)
-        CommandContextBuilder.new(parsed_input).build
+      def self.build(config, parsed_input)
+        CommandContextBuilder.new(config, parsed_input).build
       end
 
       # Initialize the command context (called by the CommandContextBuilder)
       #
       # @return [Cliqr::CLI::CommandContext]
-      def initialize(command, options, arguments)
-        @command = command
+      def initialize(config, options, arguments)
+        @config = config
+        @command = config.command
         @arguments = arguments
+        @action_name = config.name
 
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
@@ -62,6 +70,13 @@ module Cliqr
         @options.key?(name)
       end
 
+      # Check whether the current context is based off of a sub-action
+      #
+      # @return [Boolean] <tt>true</tt> if this context is based off a sub-action
+      def action?
+        @config.parent?
+      end
+
       private :initialize
     end
 
@@ -73,10 +88,12 @@ module Cliqr
     class CommandContextBuilder
       # Initialize builder for CommandContext
       #
+      # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed and validated command line arguments
       #
       # @return [Cliqr::CLI::CommandContextBuilder]
-      def initialize(parsed_input)
+      def initialize(config, parsed_input)
+        @config = config
         @parsed_input = parsed_input
       end
 
@@ -84,7 +101,7 @@ module Cliqr
       #
       # @return [Cliqr::CLI::CommandContext] A newly created CommandContext instance
       def build
-        CommandContext.new @parsed_input.command,
+        CommandContext.new @config,
                            @parsed_input.options.map { |option| CommandOption.new(option) },
                            @parsed_input.arguments
       end

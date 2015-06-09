@@ -10,6 +10,12 @@ module Cliqr
     # A value to initialize configuration attributes with
     UNSET = Object.new
 
+    # Configuration option to enable arguments for a command (default)
+    ENABLE_ARGUMENTS = :enable
+
+    # Configuration option to disable arguments for a command
+    DISABLE_ARGUMENTS = :disable
+
     # The configuration setting to build a cli application with its own dsl
     #
     # @api private
@@ -38,10 +44,10 @@ module Cliqr
 
       #  Dictates whether this command can take arbitrary arguments (optional)
       #
-      # @return [Symbol] Either <tt>:enabled</tt> or <tt>:disabled</tt>
+      # @return [Symbol] Either <tt>#ENABLE_ARGUMENTS</tt> or <tt>#DISABLE_ARGUMENTS</tt>
       attr_accessor :arguments
       validates :arguments,
-                inclusion: [:enable, :disable]
+                inclusion: [ENABLE_ARGUMENTS, DISABLE_ARGUMENTS]
 
       # Array of options applied to the base command
       #
@@ -49,6 +55,18 @@ module Cliqr
       attr_accessor :options
       validates :options,
                 collection: true
+
+      # Array of children action configs for this action
+      #
+      # @return [Array<Cliqr::CLI::Config>]
+      attr_accessor :actions
+      validates :actions,
+                collection: true
+
+      # Parent configuration
+      #
+      # @return [Cliqr::CLI::Config]
+      attr_writer :parent
 
       # New config instance with all attributes set as UNSET
       def initialize
@@ -59,6 +77,9 @@ module Cliqr
 
         @options = []
         @option_index = {}
+
+        @actions = []
+        @action_index = {}
       end
 
       # Finalize config by adding default values for unset values
@@ -68,7 +89,7 @@ module Cliqr
         @name = '' if @name == UNSET
         @description = '' if @description == UNSET
         @handler = nil if @handler == UNSET
-        @arguments = :enable if @arguments == UNSET
+        @arguments = ENABLE_ARGUMENTS if @arguments == UNSET
 
         self
       end
@@ -83,10 +104,13 @@ module Cliqr
       #
       # @return [Object] if setting a attribute's value
       # @return [Cliqr::CLI::OptionConfig] if adding a new option
+      # @return [Cliqr::CLI::Config] if adding a new action
       def set_config(name, value, &block)
         case name
         when :option
           handle_option value, &block # value is the long name for the option
+        when :action
+          handle_action value, &block # value is action's name
         else
           handle_config name, value
         end
@@ -103,7 +127,7 @@ module Cliqr
       #
       # @param [String] name Name of the option to check
       #
-      # @return [Boolean] <tt>true</tt> if the a CLI config's option is set
+      # @return [Boolean] <tt>true</tt> if the CLI config's option is set
       def option?(name)
         @option_index.key?(name)
       end
@@ -117,11 +141,44 @@ module Cliqr
         @option_index[name]
       end
 
+      # Check if particular action exists
+      #
+      # @param [String] name Name of the action to check
+      #
+      # @return [Boolean] <tt>true</tt> if the action exists in the configuration
+      def action?(name)
+        @action_index.key?(name)
+      end
+
+      # Get action config by name
+      #
+      # @param [String] name Name of the action
+      #
+      # @return [Cliqr::CLI::Config] Configuration of the action
+      def action(name)
+        @action_index[name]
+      end
+
       # Check if arguments are enabled for this configuration
       #
       # @return [Boolean] <tt>true</tt> if arguments are enabled
       def arguments?
-        @arguments == :enable
+        @arguments == ENABLE_ARGUMENTS
+      end
+
+      # Get name of the command along with the action upto this config
+      #
+      # @return [String] Serialized command name
+      def command
+        return name unless parent?
+        "#{@parent.command} #{name}"
+      end
+
+      # Check if this config has a parent config
+      #
+      # @return [Boolean] <tt>true</tt> if there exists a parent action for this action
+      def parent?
+        !@parent.nil?
       end
 
       private
@@ -140,7 +197,6 @@ module Cliqr
       # Add a new option for the command
       #
       # @param [Symbol] name Long name of the option
-      #
       # @param [Function] block Populate the option's config in this funciton block
       #
       # @return [Cliqr::CLI::OptionConfig] Newly created option's config
@@ -150,12 +206,30 @@ module Cliqr
 
         validate_option_name(option_config)
 
-        @options.push option_config
-
+        @options.push(option_config)
         @option_index[option_config.name] = option_config
         @option_index[option_config.short] = option_config if option_config.short?
 
         option_config
+      end
+
+      # Add a new action to the list of actions
+      #
+      # @param [String] name Name of the action
+      # @param [Function] block The block which configures this action
+      #
+      # @return [Cliqr::CLI::Config] The newly configured action
+      def handle_action(name, &block)
+        action_config = Config.build(&block)
+        action_config.name = name
+        action_config.parent = self
+
+        validate_action_name(action_config)
+
+        @actions.push(action_config)
+        @action_index[action_config.name] = action_config
+
+        action_config
       end
 
       # Make sure that the option's name is unique
@@ -173,6 +247,19 @@ module Cliqr
               if option?(option_config.short)
 
         option_config
+      end
+
+      # Make sure that the action's name is unique
+      #
+      # @param [Cliqr::CLI::Config] action_config Config for this particular action
+      #
+      # @return [Cliqr::CLI::Config] Validated action's Config instance
+      def validate_action_name(action_config)
+        fail Cliqr::Error::DuplicateActions,
+             "multiple actions named \"#{action_config.name}\"" \
+             if action?(action_config.name)
+
+        action_config
       end
     end
 

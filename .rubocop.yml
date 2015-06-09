@@ -15,5 +15,18 @@ Metrics/LineLength:
     - 'spec/**/*_spec.rb'
 
 Metrics/MethodLength:
-  CountComments: false  # count full line comments?
+  CountComments: false
   Max: 15
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
+Metrics/AbcSize:
+  Max: 15
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
+
+
+Metrics/ClassLength:
+  CountComments: false
+  Max: 110

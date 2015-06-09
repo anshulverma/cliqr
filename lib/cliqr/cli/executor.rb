@@ -14,7 +14,6 @@ module Cliqr
       # Create a new command executor
       def initialize(config)
         @config = config
-        @router = Router.new(config)
         @validator = Cliqr::ArgumentValidation::Validator.new
       end
 
@@ -25,12 +24,13 @@ module Cliqr
       #
       # @return [Integer] Exit status of the command execution
       def execute(args, options)
-        parsed_input = parse(args)
+        action_config, parsed_input = parse(args)
         begin
-          command_context = CommandContext.build(parsed_input)
-          @router.handle command_context, **options
+          command_context = CommandContext.build(action_config, parsed_input)
+          Router.new(action_config).handle command_context, **options
         rescue StandardError => e
-          raise Cliqr::Error::CommandRuntimeException.new("command '#{@config.name}' failed", e)
+          raise Cliqr::Error::CommandRuntimeException.new(
+            "command '#{action_config.command}' failed", e)
         end
       end
 
@@ -43,11 +43,12 @@ module Cliqr
       # @throws [Cliqr::Error::ValidationError] If the input arguments do not satisfy validation
       # criteria
       #
-      # @return [Cliqr::Parser::ParsedInput] Parsed arguments wrapper
+      # @return [Cliqr::Parser::ParsedInput] Parsed [Cliqr::CLI::Config] instance and arguments
+      # wrapper
       def parse(args)
-        parsed_input = Parser.parse(@config, args)
-        @validator.validate(parsed_input, @config)
-        parsed_input
+        action_config, parsed_input = Parser.parse(@config, args)
+        @validator.validate(parsed_input, action_config)
+        [action_config, parsed_input]
       end
     end
   end

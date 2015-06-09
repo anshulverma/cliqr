@@ -30,7 +30,9 @@ describe Cliqr::CLI::Executor do
       name 'my-command'
       handler AlwaysErrorCommand
     end
-    expect { cli.execute [] }.to raise_error(Cliqr::Error::CommandRuntimeException)
+    expect { cli.execute [] }.to(
+      raise_error(Cliqr::Error::CommandRuntimeException,
+                  "command 'my-command' failed\n\nCause: StandardError - I always throw an error\n"))
   end
 
   it 'routes a command with option values' do
