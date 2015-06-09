@@ -23,18 +23,22 @@
 
 ## Summary
 
-`cliqr` is a lightweight framework and DSL to easily build a command
-line application. Features include:
+`cliqr` is a lightweight yet feature rich framework which can be used to
+build a powerful command line application. It provides a easy to use DSL
+to define the interface of a application. Some of the features included:
 
-- Command Routing
-- DSL for simple interface definition
-- Usage info generation
-- Error handling
+- Quick and easy method for defining CLI interface
+- Command usage generation based on interface definition
+- Argument parsing
+- Argument validation
+- Nested command actions
+- Multiple command handler based on arguments
+- Command routing to appropriate handler
 
 ## Examples
 
 The DSL provides several helper methods to build interfaces of different
-styles. Here are some examples.
+styles.
 
 ### Simple CLI app example
 
@@ -53,6 +57,12 @@ class MyCommandHandler < Cliqr.command
     puts "value for option 'test-1' is '#{context.option('test-1').value}'"
     puts "has 'count' argument" if context.option?('count')
     puts "does not have 'test-2' argument" unless context.option?('test-2')
+  end
+end
+
+class MyActionHandler < Cliqr.command
+  def execute(context)
+    puts "command executed : #{context.command}"
   end
 end
 
@@ -80,25 +90,31 @@ cli = Cliqr.interface do
 
   option 'test-1'
   option 'test-2'
+
+  action 'my-action' do
+    handler MyActionHandler
+    description 'a simple action handler'
+  end
 end
 
 puts cli.usage
 # my-command -- this is an awesome command...try it out
 #
 # USAGE:
-#     my-command [options] [arguments]
+#     my-command [actions] [options] [arguments]
 #
 # Available options:
 #
 #     --an-option, -a  :  this is a option
-#
 #     --count, -c  :  <numeric> count of something
-#
 #     --[no-]single, -s  :  <boolean> a boolean option
-#
 #     --test-1
-#
 #     --test-2
+#
+# Available actions:
+#
+#     my-action -- a simple action handler
+#     Type "my-command help my-action" to get more information about action "my-action"
 
 cli.execute %w(--an-option qwerty -c 86 --no-single --test-1 some-value)
 # executing my awesome command
@@ -108,6 +124,9 @@ cli.execute %w(--an-option qwerty -c 86 --no-single --test-1 some-value)
 # value for option 'test-1' is 'some-value'
 # has 'count' argument
 # does not have 'test-2' argument
+
+cli.execute ['my-action']
+# command executed : my-command my-action
 ```
 
 ## Installation
