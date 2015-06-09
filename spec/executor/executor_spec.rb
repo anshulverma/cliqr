@@ -10,16 +10,27 @@ require 'fixtures/option_reader_command'
 require 'fixtures/test_option_reader_command'
 require 'fixtures/test_option_checker_command'
 require 'fixtures/argument_reader_command'
+require 'fixtures/test_option_type_checker_command'
+require 'fixtures/csv_argument_operator'
 
 describe Cliqr::CLI::Executor do
   it 'returns code 0 for default command runner' do
     expect(Cliqr.command.new.execute).to eq(0)
   end
 
-  it 'routes base command with no arguments' do
+  it 'routes base command with no arguments to command class' do
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+    end
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq "test command executed\n"
+  end
+
+  it 'routes base command with no arguments to command instance' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand.new
     end
     result = cli.execute [], output: :buffer
     expect(result[:stdout]).to eq "test command executed\n"
@@ -118,6 +129,76 @@ test-option is defined
 value1
 value2
 value3
+    EOS
+  end
+
+  it 'properly handles string type arguments' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestOptionTypeCheckerCommand
+
+      option 'test-option'
+    end
+
+    result = cli.execute %w(--test-option qwerty), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+test-option is of type String
+    EOS
+  end
+
+  it 'properly handles boolean type arguments' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestOptionTypeCheckerCommand
+
+      option 'test-option' do
+        type :boolean
+      end
+    end
+
+    result = cli.execute %w(--test-option), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+test-option is of type TrueClass
+    EOS
+
+    result = cli.execute %w(--no-test-option), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+test-option is of type FalseClass
+    EOS
+  end
+
+  it 'properly handles integer type arguments' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestOptionTypeCheckerCommand
+
+      option 'test-option' do
+        type :numeric
+      end
+    end
+
+    result = cli.execute %w(--test-option 123), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+test-option is of type Fixnum
+    EOS
+  end
+
+  it 'allows custom argument operators' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestOptionReaderCommand
+
+      option 'test-option' do
+        operator CSVArgumentOperator
+      end
+    end
+
+    result = cli.execute %w(--test-option a,b,c,d), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+a
+b
+c
+d
     EOS
   end
 end

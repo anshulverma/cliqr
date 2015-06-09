@@ -50,7 +50,7 @@ describe Cliqr::CLI::Config do
         handler Object
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [value 'Object' of type 'Class' for 'handler' does not extend from 'Cliqr::CLI::Command']"))
+                       "invalid Cliqr interface configuration - [handler of type 'Object' does not extend from 'Cliqr::CLI::Command']"))
   end
 
   it 'expects that config options should not be nil' do
@@ -70,7 +70,8 @@ describe Cliqr::CLI::Config do
         handler Object
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-name-!@#\", " \
-                       "value 'Object' of type 'Class' for 'handler' does not extend from 'Cliqr::CLI::Command']"))
+                       'invalid Cliqr interface configuration - [' \
+                       "value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-name-!@#\", " \
+                       "handler of type 'Object' does not extend from 'Cliqr::CLI::Command']"))
   end
 end

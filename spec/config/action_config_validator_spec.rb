@@ -102,7 +102,7 @@ describe Cliqr::CLI::Config do
     end
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - ' \
-                                               "[action \"my-action\" - value 'Object' of type 'Class' for 'handler' does not extend from 'Cliqr::CLI::Command']"))
+                                               "[action \"my-action\" - handler of type 'Object' does not extend from 'Cliqr::CLI::Command']"))
   end
 
   it 'throws multiple errors if more than one issue exists in config' do
@@ -124,8 +124,8 @@ describe Cliqr::CLI::Config do
       raise_error(Cliqr::Error::ValidationError,
                   'invalid Cliqr interface configuration - [' \
                     "value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-name-!@#\", " \
-                    "value 'Object' of type 'Class' for 'handler' does not extend from 'Cliqr::CLI::Command', " \
-                    "action \"my-action\" - value 'Object' of type 'Class' for 'handler' does not extend from 'Cliqr::CLI::Command', " \
+                    "handler of type 'Object' does not extend from 'Cliqr::CLI::Command', " \
+                    "action \"my-action\" - handler of type 'Object' does not extend from 'Cliqr::CLI::Command', " \
                     "action \"my-action\" - actions[1] - 'name' cannot be nil, " \
                     "action \"my-action\" - actions[1] - 'handler' cannot be nil, " \
                     "action \"my-action\" - action \"bla\" - 'handler' cannot be nil]"))

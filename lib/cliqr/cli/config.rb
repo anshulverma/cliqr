@@ -1,8 +1,10 @@
 # encoding: utf-8
 
 require 'cliqr/dsl'
+require 'cliqr/util'
 require 'cliqr/config_validation/verifiable'
 require 'cliqr/cli/command'
+require 'cliqr/cli/argument_operator'
 
 module Cliqr
   # A extension for CLI module to group all config classes
@@ -15,6 +17,12 @@ module Cliqr
 
     # Configuration option to disable arguments for a command
     DISABLE_ARGUMENTS = :disable
+
+    # Option type for numeric arguments
+    NUMERIC_ARGUMENT_TYPE = :numeric
+
+    # Option type for boolean arguments
+    BOOLEAN_ARGUMENT_TYPE = :boolean
 
     # The configuration setting to build a cli application with its own dsl
     #
@@ -88,7 +96,7 @@ module Cliqr
       def finalize
         @name = '' if @name == UNSET
         @description = '' if @description == UNSET
-        @handler = nil if @handler == UNSET
+        @handler = Util.ensure_instance(@handler == UNSET ? nil : @handler)
         @arguments = ENABLE_ARGUMENTS if @arguments == UNSET
 
         self
@@ -295,7 +303,14 @@ module Cliqr
       # @return [Symbol] Type of the option
       attr_accessor :type
       validates :type,
-                inclusion: [:any, :numeric, :boolean]
+                inclusion: [:any, NUMERIC_ARGUMENT_TYPE, BOOLEAN_ARGUMENT_TYPE]
+
+      # Operation to be applied to the option value after validation
+      #
+      # @return [Class<Cliqr::CLI::ArgumentOperator>]
+      attr_accessor :operator
+      validates :operator,
+                extend: Cliqr::CLI::ArgumentOperator
 
       # Set value for command option's attribute
       #
@@ -314,6 +329,7 @@ module Cliqr
         @short = UNSET
         @description = UNSET
         @type = UNSET
+        @operator = UNSET
       end
 
       # Finalize option's config by adding default values for unset values
@@ -324,6 +340,8 @@ module Cliqr
         @short = nil if @short == UNSET
         @description = nil if @description == UNSET
         @type = :any if @type == UNSET
+        @operator = Util.ensure_instance(
+          @operator == UNSET ? ArgumentOperator.for_type(@type) : @operator)
 
         self
       end

@@ -101,8 +101,12 @@ module Cliqr
       #
       # @return [Cliqr::CLI::CommandContext] A newly created CommandContext instance
       def build
+        option_contexts = @parsed_input.options.map do |option|
+          CommandOption.new(option, @config.option(option.first))
+        end
+
         CommandContext.new @config,
-                           @parsed_input.options.map { |option| CommandOption.new(option) },
+                           option_contexts,
                            @parsed_input.arguments
       end
     end
@@ -124,10 +128,11 @@ module Cliqr
       # Create a new command line option instance
       #
       # @param [Array] option Parsed arguments for creating a command line option
+      # @param [Cliqr::CLI::OptionConfig] option_config Option's config settings
       #
       # @return [Cliqr::CLI::CommandContext] A new CommandOption object
-      def initialize(option)
-        @value = option.pop
+      def initialize(option, option_config)
+        @value = option_config.operator.operate(option.pop)
         @name = option.pop
       end
     end

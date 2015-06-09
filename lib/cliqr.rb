@@ -40,9 +40,23 @@ module Cliqr
     #     end
     #   end
     #
-    # @return [CLI::Command]
+    # @return [Cliqr::CLI::Command]
     def command
       CLI::Command
+    end
+
+    # A argument operator must extend from [Cliqr::CLI::ArgumentOperator]
+    #
+    # @example
+    #   class MyOperator < Cliqr.operator
+    #     def operate(value)
+    #       # return the operated value
+    #     end
+    #   end
+    #
+    # @return [Cliar::CLI::ArgumentOperator]
+    def operator
+      CLI::ArgumentOperator
     end
   end
 end

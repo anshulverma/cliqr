@@ -191,9 +191,10 @@ module Cliqr
         #
         # @return [Boolean] <tt>true</tt> if there were any errors during validation
         def do_validate(name, value, errors)
-          errors.add("value '#{value}' of type '#{value.class.name}' for '#{name}' " \
-                     "does not extend from '#{@super_type}'") \
-                         unless value.is_a?(@super_type) || value < @super_type
+          return if value.is_a?(@super_type) || \
+                    (value.respond_to?(:<) ? value < @super_type : value.is_a?(@super_type))
+          errors.add("#{name} of type '#{value.class.name}' " \
+                     "does not extend from '#{@super_type}'")
         end
       end
 

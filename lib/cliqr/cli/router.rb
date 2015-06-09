@@ -24,7 +24,7 @@ module Cliqr
       #
       # @return [Integer] Exit code of the command execution
       def handle(context, **options)
-        handler = @config.handler.new
+        handler = @config.handler
         runner = CommandRunnerFactory.get(options)
         runner.run do
           handler.execute(context)
