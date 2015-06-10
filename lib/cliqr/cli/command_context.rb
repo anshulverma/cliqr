@@ -42,6 +42,7 @@ module Cliqr
         @command = config.command
         @arguments = arguments
         @action_name = config.name
+        @context = self
 
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]

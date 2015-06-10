@@ -28,7 +28,7 @@ module Cliqr
         runner = CommandRunnerFactory.get(options)
         runner.run do
           if handler.is_a?(Proc)
-            Cliqr.command.new.instance_exec(context, &handler)
+            context.instance_eval(&handler)
           else
             handler.execute(context)
           end

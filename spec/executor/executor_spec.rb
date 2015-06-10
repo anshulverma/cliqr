@@ -206,8 +206,8 @@ d
     cli = Cliqr.interface do
       name 'my-command'
 
-      handler do |context|
-        puts "value = #{context.option('test-option').value}"
+      handler do
+        puts "value = #{option('test-option').value}"
       end
 
       option 'test-option'
@@ -234,6 +234,60 @@ value = executor-inline
     result = cli.execute %w(--test-option operator-inline), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 value = operator-inline
+    EOS
+  end
+
+  it 'allows inline executor to access all context methods directly' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts 'in my-command'
+        puts options.map { |option| "#{option.name} => #{option.value}" }
+        puts action?
+        puts option?('option-1')
+        puts option?('option-2')
+        puts option?('option-3')
+      end
+
+      option 'option-1'
+      option 'option-2'
+
+      action 'my-action' do
+        handler do
+          puts 'in my-action'
+          puts options.map { |option| "#{option.name} => #{option.value}" }
+          puts option('option-3').value
+          puts action?
+          puts option?('option-1')
+          puts option?('option-2')
+          puts option?('option-3')
+        end
+
+        option 'option-3'
+      end
+    end
+
+    result = cli.execute %w(--option-1 val1 --option-2 val2), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+in my-command
+option-1 => val1
+option-2 => val2
+false
+true
+true
+false
+    EOS
+
+    result = cli.execute %w(my-action --option-3 val3), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+in my-action
+option-3 => val3
+val3
+true
+false
+false
+true
     EOS
   end
 end
