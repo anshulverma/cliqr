@@ -9,7 +9,7 @@ module Cliqr
       # Execute the command
       #
       # @return [Integer] Exit status of the command execution
-      def execute
+      def execute(_context)
         0
       end
     end

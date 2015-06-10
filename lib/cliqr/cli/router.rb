@@ -27,7 +27,11 @@ module Cliqr
         handler = @config.handler
         runner = CommandRunnerFactory.get(options)
         runner.run do
-          handler.execute(context)
+          if handler.is_a?(Proc)
+            Cliqr.command.new.instance_exec(context, &handler)
+          else
+            handler.execute(context)
+          end
         end
       end
     end

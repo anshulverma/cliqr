@@ -29,4 +29,6 @@ Metrics/AbcSize:
 
 Metrics/ClassLength:
   CountComments: false
-  Max: 110
+  Max: 100
+  Exclude:
+    - 'lib/cliqr/cli/config.rb'

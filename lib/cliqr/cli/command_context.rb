@@ -132,8 +132,21 @@ module Cliqr
       #
       # @return [Cliqr::CLI::CommandContext] A new CommandOption object
       def initialize(option, option_config)
-        @value = option_config.operator.operate(option.pop)
+        @value = run_value_operator(option.pop, option_config.operator)
         @name = option.pop
+      end
+
+      private
+
+      # Run the operator for a named attribute for a value
+      #
+      # @return [Nothing]
+      def run_value_operator(value, operator)
+        if operator.is_a?(Proc)
+          Cliqr.operator.new.instance_exec(value, &operator)
+        else
+          operator.operate(value)
+        end
       end
     end
   end

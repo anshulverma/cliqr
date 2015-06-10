@@ -245,6 +245,51 @@ module Cliqr
         end
       end
 
+      # Validate the type of a attribute's value
+      class TypeOfValidator < NonNilValidator
+        # Create a new <tt>:type_of</tt> validator
+        def initialize(type)
+          super(true)
+          @type = type
+        end
+
+        protected
+
+        # Run the <tt>:type_of</tt> validation check
+        #
+        # @return [Nothing]
+        def do_validate(name, value, errors)
+          errors.add("#{name} should be a '#{@type}' not '#{value.class}'") \
+            unless value.class == @type
+        end
+      end
+
+      # Run multiple validators on a value to assert at-least one of them passes
+      class OneOfValidator < Validator
+        # Create a new <tt>:one_of</tt> validator
+        def initialize(validators)
+          @validators = validators.map { |type, config| ValidatorFactory.get(type, config) }
+        end
+
+        protected
+
+        # Run each validator one by one until one passes
+        #
+        # @return [Nothing]
+        def do_validate(name, value, errors)
+          local_errors = ValidationErrors.new
+          passing_validator = @validators.find do |validator|
+            validator_errors = ValidationErrors.new.tap do |temp_errors|
+              validator.validate(name, value, temp_errors)
+              local_errors.merge(temp_errors)
+            end
+            validator_errors.empty?
+          end
+          errors.add("invalid value for #{name}; fix one of - [#{local_errors}]") \
+            if passing_validator.nil?
+        end
+      end
+
       # A hash of validator type id to validator class
       VALIDATORS = {
           :non_empty => NonEmptyValidator,
@@ -253,7 +298,9 @@ module Cliqr
           :format => FormatValidator,
           :extend => TypeHierarchyValidator,
           :collection => CollectionValidator,
-          :inclusion => InclusionValidator
+          :inclusion => InclusionValidator,
+          :one_of => OneOfValidator,
+          :type_of => TypeOfValidator
       }
 
       # Get a new validator based on the type and config param

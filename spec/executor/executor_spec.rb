@@ -15,7 +15,7 @@ require 'fixtures/csv_argument_operator'
 
 describe Cliqr::CLI::Executor do
   it 'returns code 0 for default command runner' do
-    expect(Cliqr.command.new.execute).to eq(0)
+    expect(Cliqr.command.new.execute(nil)).to eq(0)
   end
 
   it 'routes base command with no arguments to command class' do
@@ -199,6 +199,41 @@ a
 b
 c
 d
+    EOS
+  end
+
+  it 'allows inline executor' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do |context|
+        puts "value = #{context.option('test-option').value}"
+      end
+
+      option 'test-option'
+    end
+
+    result = cli.execute %w(--test-option executor-inline), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+value = executor-inline
+    EOS
+  end
+
+  it 'allows inline argument operator' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestOptionReaderCommand
+
+      option 'test-option' do
+        operator do |value|
+          "value = #{value}"
+        end
+      end
+    end
+
+    result = cli.execute %w(--test-option operator-inline), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+value = operator-inline
     EOS
   end
 end

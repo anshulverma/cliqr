@@ -48,7 +48,10 @@ module Cliqr
       # @return [Class<Cliqr::CLI::Command>]
       attr_accessor :handler
       validates :handler,
-                extend: Cliqr::CLI::Command
+                one_of: {
+                    extend: Cliqr::CLI::Command,
+                    type_of: Proc
+                }
 
       #  Dictates whether this command can take arbitrary arguments (optional)
       #
@@ -105,10 +108,8 @@ module Cliqr
       # Set value for a config option
       #
       # @param [Symbol] name Name of the config parameter
-      #
       # @param [Object] value Value for the config parameter
-      #
-      # @param [Function] block Function which populates configuration for a sub-attribute
+      # @param [Proc] block Function which populates configuration for a sub-attribute
       #
       # @return [Object] if setting a attribute's value
       # @return [Cliqr::CLI::OptionConfig] if adding a new option
@@ -120,6 +121,7 @@ module Cliqr
         when :action
           handle_action value, &block # value is action's name
         else
+          value = block if block_given?
           handle_config name, value
         end
       end
@@ -205,7 +207,7 @@ module Cliqr
       # Add a new option for the command
       #
       # @param [Symbol] name Long name of the option
-      # @param [Function] block Populate the option's config in this funciton block
+      # @param [Proc] block Populate the option's config in this funciton block
       #
       # @return [Cliqr::CLI::OptionConfig] Newly created option's config
       def handle_option(name, &block)
@@ -310,16 +312,20 @@ module Cliqr
       # @return [Class<Cliqr::CLI::ArgumentOperator>]
       attr_accessor :operator
       validates :operator,
-                extend: Cliqr::CLI::ArgumentOperator
+                one_of: {
+                    extend: Cliqr::CLI::ArgumentOperator,
+                    type_of: Proc
+                }
 
       # Set value for command option's attribute
       #
       # @param [Symbol] name Name of the attribute
-      #
       # @param [Object] value Value for the attribute
+      # @param [Proc] block A anonymous block to initialize the config value
       #
       # @return [Object] Value that was set for the attribute
-      def set_config(name, value)
+      def set_config(name, value, &block)
+        value = block if block_given?
         handle_option_config name, value
       end
 

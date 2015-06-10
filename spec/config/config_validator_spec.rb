@@ -40,7 +40,9 @@ describe Cliqr::CLI::Config do
       Cliqr.interface do
         name 'my-command'
       end
-    end.to(raise_error(Cliqr::Error::ValidationError, "invalid Cliqr interface configuration - ['handler' cannot be nil]"))
+    end.to(raise_error(Cliqr::Error::ValidationError,
+                       'invalid Cliqr interface configuration - [' \
+                         "invalid value for handler; fix one of - ['handler' cannot be nil]]"))
   end
 
   it 'only accepts command handler that extend from Cliqr::CLI::Command' do
@@ -50,7 +52,10 @@ describe Cliqr::CLI::Config do
         handler Object
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
-                       "invalid Cliqr interface configuration - [handler of type 'Object' does not extend from 'Cliqr::CLI::Command']"))
+                       'invalid Cliqr interface configuration - [' \
+                         'invalid value for handler; fix one of - [' \
+                           "handler of type 'Object' does not extend from 'Cliqr::CLI::Command', " \
+                           "handler should be a 'Proc' not 'Object']]"))
   end
 
   it 'expects that config options should not be nil' do
@@ -71,7 +76,9 @@ describe Cliqr::CLI::Config do
       end
     end.to(raise_error(Cliqr::Error::ValidationError,
                        'invalid Cliqr interface configuration - [' \
-                       "value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-name-!@#\", " \
-                       "handler of type 'Object' does not extend from 'Cliqr::CLI::Command']"))
+                         "value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-name-!@#\", " \
+                         'invalid value for handler; fix one of - [' \
+                           "handler of type 'Object' does not extend from 'Cliqr::CLI::Command', " \
+                           "handler should be a 'Proc' not 'Object']]"))
   end
 end
