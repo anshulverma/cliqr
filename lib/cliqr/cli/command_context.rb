@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'cliqr/cli/argument_operator_context'
+
 module Cliqr
   # Definition and builder for command context
   module CLI
@@ -143,7 +145,7 @@ module Cliqr
       # @return [Nothing]
       def run_value_operator(value, operator)
         if operator.is_a?(Proc)
-          Cliqr.operator.new.instance_exec(value, &operator)
+          ArgumentOperatorContext.new(value).instance_eval(&operator)
         else
           operator.operate(value)
         end

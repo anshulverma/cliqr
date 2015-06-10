@@ -225,7 +225,7 @@ value = executor-inline
       handler TestOptionReaderCommand
 
       option 'test-option' do
-        operator do |value|
+        operator do
           "value = #{value}"
         end
       end
