@@ -290,4 +290,36 @@ false
 true
     EOS
   end
+
+  it 'allows inline executor to get option value by calling method' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts test_option
+        puts test_option?
+        puts second_option
+      end
+
+      option 'test_option'
+
+      option 'second_option' do
+        type :boolean
+      end
+    end
+
+    result = cli.execute %w(--test_option executor-inline --second_option), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+executor-inline
+true
+true
+    EOS
+
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+
+false
+
+    EOS
+  end
 end

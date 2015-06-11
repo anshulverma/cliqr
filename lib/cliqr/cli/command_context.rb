@@ -61,7 +61,8 @@ module Cliqr
       #
       # @return [Cliqr::CLI::CommandOption] Instance of CommandOption for option
       def option(name)
-        @options[name]
+        option = @options[name]
+        option.nil? ? CommandOption.new([name, nil], nil) : option
       end
 
       # Check if a option with a specified name has been passed
@@ -78,6 +79,16 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if this context is based off a sub-action
       def action?
         @config.parent?
+      end
+
+      # Handle the case when a method is invoked to get an option value
+      #
+      # @return [Object] Option's value
+      def method_missing(name)
+        option_name = name.to_s.chomp('?')
+        existence_check = name.to_s.end_with?('?')
+        existence_check ? option?(option_name) : option(option_name).value \
+          if @config.option?(option_name)
       end
 
       private :initialize
@@ -135,7 +146,11 @@ module Cliqr
       #
       # @return [Cliqr::CLI::CommandContext] A new CommandOption object
       def initialize(option, option_config)
-        @value = run_value_operator(option.pop, option_config.operator)
+        if option_config.nil?
+          @value = option.pop
+        else
+          @value = run_value_operator(option.pop, option_config.operator)
+        end
         @name = option.pop
       end
 
