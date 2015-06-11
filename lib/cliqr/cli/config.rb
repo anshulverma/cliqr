@@ -18,11 +18,21 @@ module Cliqr
     # Configuration option to disable arguments for a command
     DISABLE_ARGUMENTS = :disable
 
+    # Option type for regular options
+    ANY_ARGUMENT_TYPE = :any
+
     # Option type for numeric arguments
     NUMERIC_ARGUMENT_TYPE = :numeric
 
     # Option type for boolean arguments
     BOOLEAN_ARGUMENT_TYPE = :boolean
+
+    # Default values based on argument type
+    ARGUMENT_DEFAULTS = {
+        NUMERIC_ARGUMENT_TYPE => 0,
+        BOOLEAN_ARGUMENT_TYPE => false,
+        ANY_ARGUMENT_TYPE => nil
+    }
 
     # The configuration setting to build a cli application with its own dsl
     #
@@ -139,7 +149,7 @@ module Cliqr
       #
       # @return [Boolean] <tt>true</tt> if the CLI config's option is set
       def option?(name)
-        @option_index.key?(name)
+        @option_index.key?(name.to_s)
       end
 
       # Get value of a option
@@ -148,7 +158,7 @@ module Cliqr
       #
       # @return [String] value for the option
       def option(name)
-        @option_index[name]
+        @option_index[name.to_s]
       end
 
       # Check if particular action exists
@@ -217,8 +227,8 @@ module Cliqr
         validate_option_name(option_config)
 
         @options.push(option_config)
-        @option_index[option_config.name] = option_config
-        @option_index[option_config.short] = option_config if option_config.short?
+        @option_index[option_config.name.to_s] = option_config
+        @option_index[option_config.short.to_s] = option_config if option_config.short?
 
         option_config
       end
@@ -317,6 +327,11 @@ module Cliqr
                     type_of: Proc
                 }
 
+      # Default value for this option
+      #
+      # @return [Object]
+      attr_accessor :default
+
       # Set value for command option's attribute
       #
       # @param [Symbol] name Name of the attribute
@@ -336,18 +351,19 @@ module Cliqr
         @description = UNSET
         @type = UNSET
         @operator = UNSET
+        @default = UNSET
       end
 
       # Finalize option's config by adding default values for unset values
       #
       # @return [Cliqr::CLI::OptionConfig]
       def finalize
-        @name = nil if @name == UNSET
-        @short = nil if @short == UNSET
-        @description = nil if @description == UNSET
-        @type = :any if @type == UNSET
-        @operator = Util.ensure_instance(
-          @operator == UNSET ? ArgumentOperator.for_type(@type) : @operator)
+        @name = get_if_unset(@name, nil)
+        @short = get_if_unset(@short, nil)
+        @description = get_if_unset(@description, nil)
+        @type = get_if_unset(@type, ANY_ARGUMENT_TYPE)
+        @operator = Util.ensure_instance(get_if_unset(@operator, ArgumentOperator.for_type(@type)))
+        @default = get_if_unset(@default, ARGUMENT_DEFAULTS[@type])
 
         self
       end
@@ -380,6 +396,13 @@ module Cliqr
         @type == :boolean
       end
 
+      # Check if a default value setting is defined
+      #
+      # @return [Boolean]
+      def default?
+        !@default.nil?
+      end
+
       private
 
       # Set value for config option without evaluating a block
@@ -391,6 +414,13 @@ module Cliqr
       def handle_option_config(name, value)
         public_send("#{name}=", value)
         value
+      end
+
+      # Get the passed param value if current attribute is unset
+      #
+      # @return [Object]
+      def get_if_unset(attribute_value, default_value)
+        attribute_value == UNSET ? default_value : attribute_value
       end
     end
   end

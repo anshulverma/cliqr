@@ -61,8 +61,8 @@ module Cliqr
       #
       # @return [Cliqr::CLI::CommandOption] Instance of CommandOption for option
       def option(name)
-        option = @options[name]
-        option.nil? ? CommandOption.new([name, nil], nil) : option
+        return @options[name] if option?(name)
+        default(name)
       end
 
       # Check if a option with a specified name has been passed
@@ -91,7 +91,15 @@ module Cliqr
           if @config.option?(option_name)
       end
 
-      private :initialize
+      # Get default value for a option
+      #
+      # @return [Object]
+      def default(name)
+        option_config = @config.option(name)
+        CommandOption.new([name, option_config.default], option_config)
+      end
+
+      private :initialize, :default
     end
 
     private
@@ -146,11 +154,7 @@ module Cliqr
       #
       # @return [Cliqr::CLI::CommandContext] A new CommandOption object
       def initialize(option, option_config)
-        if option_config.nil?
-          @value = option.pop
-        else
-          @value = run_value_operator(option.pop, option_config.operator)
-        end
+        @value = run_value_operator(option.pop, option_config.operator)
         @name = option.pop
       end
 

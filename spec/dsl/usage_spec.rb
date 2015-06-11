@@ -5,13 +5,7 @@ require 'spec_helper'
 require 'fixtures/test_command'
 require 'fixtures/action_reader_command'
 
-describe Cliqr::CLI::Interface do
-  it 'does not allow empty config' do
-    expect do
-      Cliqr::CLI::Interface.build(nil)
-    end.to(raise_error(Cliqr::Error::ConfigNotFound, 'a valid config should be defined'))
-  end
-
+describe Cliqr::CLI::UsageBuilder do
   ################ BASE COMMAND ################
 
   it 'builds a base command with name' do
@@ -132,7 +126,7 @@ USAGE:
 
 Available options:
 
-    --option-1, -p  :  <numeric> a numeric option
+    --option-1, -p  :  <numeric> a numeric option (default => 0)
     EOS
   end
 
@@ -158,7 +152,32 @@ USAGE:
 
 Available options:
 
-    --[no-]option-1, -p  :  <boolean> a boolean option
+    --[no-]option-1, -p  :  <boolean> a boolean option (default => false)
+    EOS
+  end
+
+  it 'allows command options to have a boolean value type and no description' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      description 'a command used to test cliqr'
+      handler TestCommand
+      arguments :disable
+
+      option 'option-1' do
+        short 'p'
+        type :boolean
+      end
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command -- a command used to test cliqr
+
+USAGE:
+    my-command [options]
+
+Available options:
+
+    --[no-]option-1, -p  :  <boolean> (default => false)
     EOS
   end
 
@@ -407,6 +426,134 @@ Available actions:
     Type "my-command help my-action-1" to get more information about action "my-action-1"
 
     another-action
+    EOS
+  end
+
+  ################ DEFAULT OPTION VALUES ################
+
+  it 'allows options to have default value' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+
+      option 'test-option' do
+        default :a_symbol
+      end
+
+      option :another do
+        short 'a'
+        description 'another option'
+        type :numeric
+        default %w(test array default)
+
+        operator CSVArgumentOperator
+      end
+
+      option 'nil-option' do
+        default nil
+      end
+
+      option 'string-option' do
+        default 'string'
+      end
+
+      option 'hash-option' do
+        default(:key => 'val')
+      end
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [options] [arguments]
+
+Available options:
+
+    --test-option  :  (default => :a_symbol)
+    --another, -a  :  <numeric> another option (default => [\"test\", \"array\", \"default\"])
+    --nil-option
+    --string-option  :  (default => "string")
+    --hash-option  :  (default => {:key=>"val"})
+    EOS
+  end
+
+  it 'boolean option is false by default' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+
+      option :another do
+        short 'a'
+        description 'another option'
+        type :boolean
+
+        operator CSVArgumentOperator
+      end
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [options] [arguments]
+
+Available options:
+
+    --[no-]another, -a  :  <boolean> another option (default => false)
+    EOS
+  end
+
+  it 'numeric option is 0 by default' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+
+      option :another do
+        short 'a'
+        description 'another option'
+        type :numeric
+
+        operator CSVArgumentOperator
+      end
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [options] [arguments]
+
+Available options:
+
+    --another, -a  :  <numeric> another option (default => 0)
+    EOS
+  end
+
+  it 'boolean option can be made default true' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+
+      option :another do
+        short 'a'
+        description 'another option'
+        type :boolean
+        default true
+
+        operator CSVArgumentOperator
+      end
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [options] [arguments]
+
+Available options:
+
+    --[no-]another, -a  :  <boolean> another option (default => true)
     EOS
   end
 end

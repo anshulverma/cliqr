@@ -20,7 +20,7 @@ Available options:
             ", -#{option.short}" if option.short?
           %><%=
             if option.details?
-              "  :  #{"<#{option.type}> " if option.type? }#{option.description if option.description?}"
+              "  :  #{"<#{option.type}> " if option.type? }#{"#{option.description} " if option.description?}#{"(default => #{option.default.inspect})" if option.default?}"
             end
           %><%
    }

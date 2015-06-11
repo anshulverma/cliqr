@@ -319,7 +319,93 @@ true
     expect(result[:stdout]).to eq <<-EOS
 
 false
+false
+    EOS
+  end
 
+  it 'makes false the default for boolean options' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts test_option
+        puts test_option?
+      end
+
+      option 'test_option' do
+        type :boolean
+      end
+    end
+
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+false
+false
+    EOS
+  end
+
+  it 'can override default to true' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts test_option
+        puts test_option?
+      end
+
+      option 'test_option' do
+        type :boolean
+        default true
+      end
+    end
+
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+true
+false
+    EOS
+  end
+
+  it 'makes 0 as default for numerical' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts test_option
+        puts test_option?
+      end
+
+      option 'test_option' do
+        type :numeric
+      end
+    end
+
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+0
+false
+    EOS
+  end
+
+  it 'allows non-zero default for numerical option' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts test_option
+        puts test_option?
+      end
+
+      option :test_option do
+        type :numeric
+        default 123
+      end
+    end
+
+    result = cli.execute [], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+123
+false
     EOS
   end
 end

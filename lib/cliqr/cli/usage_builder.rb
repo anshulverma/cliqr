@@ -110,6 +110,11 @@ module Cliqr
       # @return [String]
       attr_accessor :description
 
+      # Default value for this option
+      #
+      # @return [Object]
+      attr_accessor :default
+
       # Create a new option usage context
       def initialize(option_config)
         @option_config = option_config
@@ -118,6 +123,7 @@ module Cliqr
         @short = @option_config.short
         @type = @option_config.type
         @description = @option_config.description
+        @default = @option_config.default
       end
 
       # Check if current option is a boolean option
@@ -137,12 +143,17 @@ module Cliqr
 
       # Assert if the details of this options should be printed
       def details?
-        @option_config.description? || @option_config.type?
+        @option_config.description? || @option_config.type? || @option_config.default?
       end
 
       # Check if the option has a non-default type
       def type?
         @option_config.type?
+      end
+
+      # check if the option has a default value setting
+      def default?
+        @option_config.default?
       end
     end
   end
