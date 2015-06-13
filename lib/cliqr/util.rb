@@ -57,18 +57,18 @@ module Cliqr
     # Sanitize raw command line arguments
     #
     # @return [Array<String>]
-    # def self.sanitize_args(args, config = nil)
-    #   sanitized = []
-    #   if args.kind_of?(Array)
-    #     args.each { |arg| sanitized.concat(sanitize_args(arg))}
-    #   elsif args.kind_of?(String)
-    #     sanitized = args.split(' ')
-    #   end
-    #   unless config.nil?
-    #     sanitized = sanitized.drop(1) if sanitized.length > 0 && sanitized[0] ==
-    #           config.root.name.to_s
-    #   end
-    #   sanitized
-    # end
+    def self.sanitize_args(args, config = nil)
+      sanitized = []
+      if args.kind_of?(Array)
+        args.each { |arg| sanitized.concat(sanitize_args(arg))}
+      elsif args.kind_of?(String)
+        sanitized = args.split(' ')
+      end
+      unless config.nil?
+        sanitized = sanitized.drop(1) \
+          if sanitized.length > 0 && sanitized[0] == config.root.name.to_s
+      end
+      sanitized
+    end
   end
 end

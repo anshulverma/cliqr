@@ -721,44 +721,39 @@ USAGE:
                     "Cause: Cliqr::Error::IllegalArgumentError - too many arguments for \"my_command help\" command\n"))
   end
 
-  #   it 'can forward command to another action' do
-  #     cli = Cliqr.interface do
-  #       name :my_command
-  #       description 'test command has no description'
-  #       handler TestCommand
-  #
-  #       action :action_1 do
-  #         description 'test action'
-  #         handler do
-  #           puts 'in action_1'
-  #           forward 'my_command action_2 sub-action' # starting with base command name
-  #         end
-  #       end
-  #
-  #       action 'action_2' do
-  #         handler do
-  #           puts 'in action_2'
-  #         end
-  #
-  #         action 'sub-action' do
-  #           handler do
-  #             puts 'in sub-action'
-  #             forward 'action_2' # not starting with base command name
-  #           end
-  #         end
-  #       end
-  #     end
-  #
-  #     result = cli.execute ['action_1'], output: :buffer
-  #     expect(result[:stdout]).to eq <<-EOS
-  # my-command
-  #
-  # USAGE:
-  #     my-command [actions] [arguments]
-  #
-  # Available actions:
-  #
-  #     help -- Print help for command "my-command" or get help for one of its actions
-  #     EOS
-  #   end
+    it 'can forward command to another action' do
+      cli = Cliqr.interface do
+        name :my_command
+        description 'test command has no description'
+        handler TestCommand
+
+        action :action_1 do
+          description 'test action'
+          handler do
+            puts 'in action_1'
+            puts forward 'my_command action_2 sub-action' # starting with base command name
+          end
+        end
+
+        action 'action_2' do
+          handler do
+            puts 'in action_2'
+          end
+
+          action 'sub-action' do
+            handler do
+              puts 'in sub-action'
+              puts forward 'action_2' # not starting with base command name
+            end
+          end
+        end
+      end
+
+      result = cli.execute ['action_1'], output: :buffer
+      expect(result[:stdout]).to(
+          eq("in action_1\n" \
+               "{:stdout=>\"in sub-action\\n" \
+                 "{:stdout=>\\\"in action_2\\\\n\\\", :stderr=>\\\"\\\", :status=>0}" \
+               "\\n\", :stderr=>\"\", :status=>0}\n"))
+    end
 end

@@ -86,9 +86,9 @@ module Cliqr
       # Forward a command to the executor
       #
       # return [Integer] Exit code
-      # def forward(args)
-      #   @executor.call(args)
-      # end
+      def forward(args)
+        @executor.call(args)
+      end
 
       # Handle the case when a method is invoked to get an option value
       #
