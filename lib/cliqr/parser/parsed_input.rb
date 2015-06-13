@@ -40,6 +40,13 @@ module Cliqr
         @options[name]
       end
 
+      # Remove a option
+      #
+      # @return [Object] Option's original value
+      def remove_option(name)
+        @options.delete(name)
+      end
+
       # Test equality with another object
       #
       # @return [Boolean] <tt>true</tt> if this object is equal to <tt>other</tt>

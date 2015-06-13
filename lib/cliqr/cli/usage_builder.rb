@@ -17,7 +17,8 @@ module Cliqr
       def self.build(config)
         template_file_path = File.expand_path('../../../../templates/usage.erb', __FILE__)
         template = ERB.new(File.new(template_file_path).read, nil, '%')
-        result = template.result(CommandUsageContext.new(config).instance_eval { binding })
+        usage_context = CommandUsageContext.new(config)
+        result = template.result(usage_context.instance_eval { binding })
 
         # remove multiple newlines from the end of usage
         "#{result.strip}\n"
@@ -31,22 +32,27 @@ module Cliqr
       # Name of the current command in context
       #
       # @return [String]
-      attr_accessor :name
+      attr_reader :name
 
       # Description of the current command
       #
       # @return [String]
-      attr_accessor :description
+      attr_reader :description
 
       # Pre-configured command's actions
       #
       # @return [Array<Cliqr::CLI::CommandUsageContext>]
-      attr_accessor :actions
+      attr_reader :actions
 
       # List of options configured for current context
       #
       # @return [Array<Cliqr::CLI::OptionUsageContext>]
-      attr_accessor :options
+      attr_reader :options
+
+      # Command for the current context
+      #
+      # @return [String]
+      attr_reader :command
 
       # Wrap a [Cliqr::CLI::Config] instance for usage template
       def initialize(config)
@@ -56,6 +62,7 @@ module Cliqr
         @description = config.description
         @actions = @config.actions.map { |action| CommandUsageContext.new(action) }
         @options = @config.options.map { |option| OptionUsageContext.new(option) }
+        @command = @config.command
       end
 
       # Check if command has a description
@@ -70,12 +77,19 @@ module Cliqr
 
       # Check if current command allows arguments
       def arguments?
-        @config.arguments == Cliqr::CLI::ENABLE_ARGUMENTS
+        @config.arguments == Cliqr::CLI::ENABLE_CONFIG
       end
 
       # Check if current command has any actions
       def actions?
         non_empty?(@actions)
+      end
+
+      # Check if the help is enabled
+      #
+      # @return [Boolean]
+      def help?
+        @config.help?
       end
 
       private
@@ -93,27 +107,27 @@ module Cliqr
       # Name of the option
       #
       # @return [String]
-      attr_accessor :name
+      attr_reader :name
 
       # Short name of the option
       #
       # @return [String]
-      attr_accessor :short
+      attr_reader :short
 
       # Option's type
       #
       # @return [Symbol]
-      attr_accessor :type
+      attr_reader :type
 
       # Option's description
       #
       # @return [String]
-      attr_accessor :description
+      attr_reader :description
 
       # Default value for this option
       #
       # @return [Object]
-      attr_accessor :default
+      attr_reader :default
 
       # Create a new option usage context
       def initialize(option_config)
@@ -151,9 +165,14 @@ module Cliqr
         @option_config.type?
       end
 
-      # check if the option has a default value setting
+      # check if the option should display default setting
       def default?
-        @option_config.default?
+        @option_config.default? && !help?
+      end
+
+      # Check if the option is for getting help
+      def help?
+        @option_config.name == 'help'
       end
     end
   end

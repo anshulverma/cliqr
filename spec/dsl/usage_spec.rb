@@ -4,6 +4,7 @@ require 'spec_helper'
 
 require 'fixtures/test_command'
 require 'fixtures/action_reader_command'
+require 'fixtures/csv_argument_operator'
 
 describe Cliqr::CLI::UsageBuilder do
   ################ BASE COMMAND ################
@@ -14,6 +15,7 @@ describe Cliqr::CLI::UsageBuilder do
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
+      help :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -29,6 +31,7 @@ USAGE:
       name 'my-command'
       handler TestCommand
       arguments :disable
+      help :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -47,6 +50,7 @@ USAGE:
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
+      help :disable
 
       option 'option-1' do
         short 'p'
@@ -72,6 +76,7 @@ Available options:
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
+      help :disable
 
       option 'option-1'
     end
@@ -110,6 +115,7 @@ Available options:
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
+      help :disable
 
       option 'option-1' do
         description 'a numeric option'
@@ -136,6 +142,7 @@ Available options:
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
+      help :disable
 
       option 'option-1' do
         description 'a boolean option'
@@ -162,6 +169,7 @@ Available options:
       description 'a command used to test cliqr'
       handler TestCommand
       arguments :disable
+      help :disable
 
       option 'option-1' do
         short 'p'
@@ -188,6 +196,7 @@ Available options:
       name 'my-command'
       handler TestCommand
       arguments :enable
+      help :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -203,6 +212,7 @@ USAGE:
       name 'my-command'
       handler TestCommand
       arguments :enable
+      help :disable
 
       option 'option-1'
     end
@@ -225,6 +235,7 @@ Available options:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       action 'my-action' do
         handler TestCommand
@@ -248,6 +259,7 @@ Available actions:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       action 'my-action' do
         handler TestCommand
@@ -272,6 +284,7 @@ Available actions:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       action 'my-action' do
         handler TestCommand
@@ -302,6 +315,7 @@ Available actions:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       action 'my-action' do
         handler TestCommand
@@ -326,7 +340,6 @@ Available options:
 Available actions:
 
     my-action -- this is a test action
-    Type "my-command help my-action" to get more information about action "my-action"
     EOS
   end
 
@@ -334,6 +347,7 @@ Available actions:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       option 'option-1'
 
@@ -370,7 +384,6 @@ Available options:
 Available actions:
 
     my-action -- this is a test action
-    Type "my-command help my-action" to get more information about action "my-action"
 
     another-action -- this is another test action
     EOS
@@ -381,6 +394,7 @@ Available actions:
       Cliqr.interface do
         name 'my-command'
         handler TestCommand
+        help :disable
 
         option 'test-option-1'
         option 'test-option-2'
@@ -423,7 +437,6 @@ Available options:
 Available actions:
 
     my-action-1
-    Type "my-command help my-action-1" to get more information about action "my-action-1"
 
     another-action
     EOS
@@ -435,6 +448,7 @@ Available actions:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       option 'test-option' do
         default :a_symbol
@@ -482,6 +496,7 @@ Available options:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       option :another do
         short 'a'
@@ -508,6 +523,7 @@ Available options:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       option :another do
         short 'a'
@@ -534,6 +550,7 @@ Available options:
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      help :disable
 
       option :another do
         short 'a'

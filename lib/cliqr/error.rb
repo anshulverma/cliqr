@@ -83,5 +83,8 @@ module Cliqr
 
     # Indicates that a unknown validator type is being used in a class
     class UnknownValidatorType < CliqrError; end
+
+    # Indicates that a unknown action was invoked
+    class UnknownActionError < CliqrError; end
   end
 end

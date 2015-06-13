@@ -1,7 +1,7 @@
-<%= name %><% unless description.nil? || description.empty? %> -- <%= description %><% end %>
+<%= command %><% unless description.nil? || description.empty? %> -- <%= description %><% end %>
 
 USAGE:
-    <%= name %><%=
+    <%= command %><%=
     ' [actions]' if actions? %><%=
     ' [options]' if options? %><%=
     ' [arguments]' if arguments? %><%
@@ -13,14 +13,14 @@ Available options:
    options.each { |option|
 %>
     --<%=
-         '[no-]' if option.boolean?
+         '[no-]' if option.boolean? && option.name != 'help'
        %><%=
          option.name
        %><%=
             ", -#{option.short}" if option.short?
           %><%=
             if option.details?
-              "  :  #{"<#{option.type}> " if option.type? }#{"#{option.description} " if option.description?}#{"(default => #{option.default.inspect})" if option.default?}"
+              "  : #{" <#{option.type}>" if option.type? && !option.help?}#{" #{option.description}" if option.description?}#{" (default => #{option.default.inspect})" if option.default?}"
             end
           %><%
    }
@@ -29,11 +29,10 @@ end
 if actions? %>
 
 Available actions:
-<%
+<%= "[ Type \"#{command} help [action-name]\" to get more information about that action ]\n" if help? %><%
    actions.each { |action|
 %>
     <%= action.name %><%= " -- #{action.description}" if action.description? %>
-    <%= "Type \"#{name} help #{action.name}\" to get more information about action \"#{action.name}\"" if action.arguments? || action.options? || action.actions?%>
 <%
    }
 %>

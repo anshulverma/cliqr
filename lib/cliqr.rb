@@ -28,6 +28,7 @@ module Cliqr
     # @api public
     def interface(&block)
       config = CLI::Config.build(&block)
+      config.setup_defaults
       CLI::Interface.build(config)
     end
 

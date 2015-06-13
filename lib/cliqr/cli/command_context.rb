@@ -28,21 +28,23 @@ module Cliqr
       #
       # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed input object
+      # @param [Proc] executor Executes forwarded commands
       #
       # @return [Cliqr::CLI::CommandContext]
-      def self.build(config, parsed_input)
-        CommandContextBuilder.new(config, parsed_input).build
+      def self.build(config, parsed_input, &executor)
+        CommandContextBuilder.new(config, parsed_input, executor).build
       end
 
       # Initialize the command context (called by the CommandContextBuilder)
       #
       # @return [Cliqr::CLI::CommandContext]
-      def initialize(config, options, arguments)
+      def initialize(config, options, arguments, executor)
         @config = config
         @command = config.command
         @arguments = arguments
         @action_name = config.name
         @context = self
+        @executor = executor
 
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
@@ -81,10 +83,17 @@ module Cliqr
         @config.parent?
       end
 
+      # Forward a command to the executor
+      #
+      # return [Integer] Exit code
+      # def forward(args)
+      #   @executor.call(args)
+      # end
+
       # Handle the case when a method is invoked to get an option value
       #
       # @return [Object] Option's value
-      def method_missing(name)
+      def method_missing(name, *_args, &_block)
         option_name = name.to_s.chomp('?')
         existence_check = name.to_s.end_with?('?')
         existence_check ? option?(option_name) : option(option_name).value \
@@ -112,11 +121,13 @@ module Cliqr
       #
       # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed and validated command line arguments
+      # @param [Proc] executor Executes forwarded commands
       #
       # @return [Cliqr::CLI::CommandContextBuilder]
-      def initialize(config, parsed_input)
+      def initialize(config, parsed_input, executor)
         @config = config
         @parsed_input = parsed_input
+        @executor = executor
       end
 
       # Build a new instance of CommandContext
@@ -129,7 +140,8 @@ module Cliqr
 
         CommandContext.new @config,
                            option_contexts,
-                           @parsed_input.arguments
+                           @parsed_input.arguments,
+                           @executor
       end
     end
 

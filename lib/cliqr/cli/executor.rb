@@ -24,9 +24,12 @@ module Cliqr
       #
       # @return [Integer] Exit status of the command execution
       def execute(args, options)
+        # args = Cliqr::Util.sanitize_args(args, @config)
         action_config, parsed_input = parse(args)
         begin
-          command_context = CommandContext.build(action_config, parsed_input)
+          command_context = CommandContext.build(action_config, parsed_input) # do |forwarded_args|
+          # execute(forwarded_args, options)
+          # end
           Router.new(action_config).handle command_context, **options
         rescue StandardError => e
           raise Cliqr::Error::CommandRuntimeException.new(

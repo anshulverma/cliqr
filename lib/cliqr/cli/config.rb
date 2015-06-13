@@ -13,10 +13,10 @@ module Cliqr
     UNSET = Object.new
 
     # Configuration option to enable arguments for a command (default)
-    ENABLE_ARGUMENTS = :enable
+    ENABLE_CONFIG = :enable
 
     # Configuration option to disable arguments for a command
-    DISABLE_ARGUMENTS = :disable
+    DISABLE_CONFIG = :disable
 
     # Option type for regular options
     ANY_ARGUMENT_TYPE = :any
@@ -65,10 +65,10 @@ module Cliqr
 
       #  Dictates whether this command can take arbitrary arguments (optional)
       #
-      # @return [Symbol] Either <tt>#ENABLE_ARGUMENTS</tt> or <tt>#DISABLE_ARGUMENTS</tt>
+      # @return [Symbol] Either <tt>#ENABLE_CONFIG</tt> or <tt>#DISABLE_CONFIG</tt>
       attr_accessor :arguments
       validates :arguments,
-                inclusion: [ENABLE_ARGUMENTS, DISABLE_ARGUMENTS]
+                inclusion: [ENABLE_CONFIG, DISABLE_CONFIG]
 
       # Array of options applied to the base command
       #
@@ -84,10 +84,22 @@ module Cliqr
       validates :actions,
                 collection: true
 
+      # Enable or disable help command and option
+      #
+      # @return [Symbol] Either <tt>#ENABLE_CONFIG</tt> or <tt>#DISABLE_CONFIG</tt>
+      attr_accessor :help
+      validates :help,
+                inclusion: [ENABLE_CONFIG, DISABLE_CONFIG]
+
       # Parent configuration
       #
       # @return [Cliqr::CLI::Config]
-      attr_writer :parent
+      attr_accessor :parent
+
+      # Root config
+      #
+      # @return [Cliqr::CLI::Config]
+      attr_accessor :root
 
       # New config instance with all attributes set as UNSET
       def initialize
@@ -95,6 +107,7 @@ module Cliqr
         @description = UNSET
         @handler = UNSET
         @arguments = UNSET
+        @help = UNSET
 
         @options = []
         @option_index = {}
@@ -110,9 +123,19 @@ module Cliqr
         @name = '' if @name == UNSET
         @description = '' if @description == UNSET
         @handler = Util.ensure_instance(@handler == UNSET ? nil : @handler)
-        @arguments = ENABLE_ARGUMENTS if @arguments == UNSET
+        @arguments = ENABLE_CONFIG if @arguments == UNSET
+        @help = ENABLE_CONFIG if @help == UNSET
+        @root = self
 
         self
+      end
+
+      # Set up default attributes for this configuration
+      #
+      # @return [Cliqr::CLI::Config] Update config
+      def setup_defaults
+        add_help if help?
+        @actions.each(&:setup_defaults)
       end
 
       # Set value for a config option
@@ -167,7 +190,8 @@ module Cliqr
       #
       # @return [Boolean] <tt>true</tt> if the action exists in the configuration
       def action?(name)
-        @action_index.key?(name)
+        return false if name.nil?
+        @action_index.key?(name.to_sym)
       end
 
       # Get action config by name
@@ -176,14 +200,14 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Config] Configuration of the action
       def action(name)
-        @action_index[name]
+        @action_index[name.to_sym]
       end
 
       # Check if arguments are enabled for this configuration
       #
       # @return [Boolean] <tt>true</tt> if arguments are enabled
       def arguments?
-        @arguments == ENABLE_ARGUMENTS
+        @arguments == ENABLE_CONFIG
       end
 
       # Get name of the command along with the action upto this config
@@ -201,6 +225,13 @@ module Cliqr
         !@parent.nil?
       end
 
+      # Check if help is enabled for this command
+      #
+      # @return [Boolean] <tt>true</tt> if help is enabled
+      def help?
+        @help == ENABLE_CONFIG
+      end
+
       private
 
       # Set value for config option without evaluating a block
@@ -214,7 +245,7 @@ module Cliqr
         value
       end
 
-      # Add a new option for the command
+      # Handle configuration for a new option
       #
       # @param [Symbol] name Long name of the option
       # @param [Proc] block Populate the option's config in this funciton block
@@ -223,7 +254,13 @@ module Cliqr
       def handle_option(name, &block)
         option_config = OptionConfig.build(&block)
         option_config.name = name
+        add_option(option_config)
+      end
 
+      # Add a new option for the command
+      #
+      # @return [Cliqr::CLI::OptionConfig] Newly added option's config
+      def add_option(option_config)
         validate_option_name(option_config)
 
         @options.push(option_config)
@@ -233,7 +270,7 @@ module Cliqr
         option_config
       end
 
-      # Add a new action to the list of actions
+      # Handle configuration for a new action
       #
       # @param [String] name Name of the action
       # @param [Function] block The block which configures this action
@@ -242,12 +279,21 @@ module Cliqr
       def handle_action(name, &block)
         action_config = Config.build(&block)
         action_config.name = name
+        add_action(action_config)
+      end
+
+      # Add a new action
+      #
+      # @return [Cliqr::CLI::Config] The newly added action
+      def add_action(action_config)
         action_config.parent = self
+        action_config.root = root
 
         validate_action_name(action_config)
 
         @actions.push(action_config)
-        @action_index[action_config.name] = action_config
+        @action_index[action_config.name.to_sym] = action_config \
+          unless action_config.name.nil?
 
         action_config
       end
@@ -280,6 +326,14 @@ module Cliqr
              if action?(action_config.name)
 
         action_config
+      end
+
+      # Add help command and option to this config
+      #
+      # @return [Cliqr::CLI::Config] Updated config
+      def add_help
+        add_action(Cliqr::Util.build_help_action(self)) unless action?('help')
+        add_option(Cliqr::Util.build_help_option(self)) unless option?('help')
       end
     end
 
