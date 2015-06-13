@@ -85,7 +85,7 @@ module Cliqr
 
       # Forward a command to the executor
       #
-      # return [Integer] Exit code
+      # @return [Integer] Exit code
       def forward(args)
         @executor.call(args)
       end

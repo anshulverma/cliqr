@@ -59,16 +59,23 @@ module Cliqr
     # @return [Array<String>]
     def self.sanitize_args(args, config = nil)
       sanitized = []
-      if args.kind_of?(Array)
-        args.each { |arg| sanitized.concat(sanitize_args(arg))}
-      elsif args.kind_of?(String)
+      if args.is_a?(Array)
+        args.each { |arg| sanitized.concat(sanitize_args(arg)) }
+      elsif args.is_a?(String)
         sanitized = args.split(' ')
       end
-      unless config.nil?
-        sanitized = sanitized.drop(1) \
-          if sanitized.length > 0 && sanitized[0] == config.root.name.to_s
+      remove_base_command(sanitized, config)
+    end
+
+    # Remove base command form sanitized list of arguments
+    #
+    # @return [Array<String>]
+    def self.remove_base_command(sanitized, config)
+      if !config.nil? && sanitized[0] == config.root.name.to_s
+        sanitized.drop(1)
+      else
+        sanitized
       end
-      sanitized
     end
   end
 end
