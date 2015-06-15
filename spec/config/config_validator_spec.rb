@@ -35,14 +35,16 @@ describe Cliqr::CLI::Config do
                        "invalid Cliqr interface configuration - [value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-char-!\"]"))
   end
 
-  it 'does not allow command handler to be null' do
-    expect do
+  it 'does not allow command handler to be null if no action present' do
+    def define_interface
       Cliqr.interface do
         name 'my-command'
+        help :disable
       end
-    end.to(raise_error(Cliqr::Error::ValidationError,
-                       'invalid Cliqr interface configuration - [' \
-                         "invalid value for handler; fix one of - ['handler' cannot be nil]]"))
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               'invalid Cliqr interface configuration - [' \
+                                                 "invalid value for handler; fix one of - ['handler' cannot be nil]]"))
   end
 
   it 'only accepts command handler that extend from Cliqr::CLI::Command' do

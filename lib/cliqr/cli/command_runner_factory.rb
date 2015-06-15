@@ -49,8 +49,8 @@ module Cliqr
       def run
         old_stdout = $stdout
         old_stderr = $stderr
-        $stdout = StringIO.new('', 'w')
-        $stderr = StringIO.new('', 'w')
+        $stdout = old_stdout.is_a?(StringIO) ? old_stdout : StringIO.new('', 'w')
+        $stderr = old_stderr.is_a?(StringIO) ? old_stderr : StringIO.new('', 'w')
         yield
         {
             :stdout => $stdout.string,

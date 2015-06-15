@@ -135,6 +135,7 @@ module Cliqr
       # @return [Cliqr::CLI::Config] Update config
       def setup_defaults
         add_help if help?
+        @handler = Cliqr::Util.forward_to_help_handler if @handler.nil? && help? && actions?
         @actions.each(&:setup_defaults)
       end
 
@@ -192,6 +193,13 @@ module Cliqr
       def action?(name)
         return false if name.nil?
         @action_index.key?(name.to_sym)
+      end
+
+      # Check if this config has sub actions
+      #
+      # @return [Array<Cliqr::CLI::Config]>
+      def actions?
+        !@actions.empty?
       end
 
       # Get action config by name

@@ -77,5 +77,14 @@ module Cliqr
         sanitized
       end
     end
+
+    # Get handler that forwards command to the help action
+    #
+    # @return [Proc]
+    def self.forward_to_help_handler
+      proc do
+        forward "#{command} help"
+      end
+    end
   end
 end

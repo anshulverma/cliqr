@@ -731,7 +731,8 @@ USAGE:
         description 'test action'
         handler do
           puts 'in action_1'
-          puts forward 'my_command action_2 sub-action' # starting with base command name
+          forward 'my_command action_2 sub-action' # starting with base command name
+          puts 'back in action_1'
         end
       end
 
@@ -743,17 +744,78 @@ USAGE:
         action 'sub-action' do
           handler do
             puts 'in sub-action'
-            puts forward 'action_2' # not starting with base command name
+            forward 'action_2' # not starting with base command name
+            puts 'back in sub-action'
           end
         end
       end
     end
 
     result = cli.execute ['action_1'], output: :buffer
-    expect(result[:stdout]).to(
-      eq("in action_1\n" \
-           "{:stdout=>\"in sub-action\\n" \
-             "{:stdout=>\\\"in action_2\\\\n\\\", :stderr=>\\\"\\\", :status=>0}" \
-           "\\n\", :stderr=>\"\", :status=>0}\n"))
+    expect(result[:stdout]).to eq <<-EOS
+in action_1
+in sub-action
+in action_2
+back in sub-action
+back in action_1
+    EOS
+  end
+
+  it 'executes help for action without handler' do
+    cli = Cliqr.interface do
+      name :my_command
+      description 'test command has no description'
+
+      action :action_1 do
+        description 'test action'
+        handler TestCommand
+      end
+
+      action 'action_2' do
+        action 'sub-action' do
+          handler TestCommand
+        end
+      end
+    end
+
+    result = cli.execute %w(my_command), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+my_command -- test command has no description
+
+USAGE:
+    my_command [actions] [options] [arguments]
+
+Available options:
+
+    --help, -h  :  Get helpful information for action "my_command" along with its usage information.
+
+Available actions:
+[ Type "my_command help [action-name]" to get more information about that action ]
+
+    action_1 -- test action
+
+    action_2
+
+    help -- The help action for command "my_command" which provides details and usage information on how to use the command.
+    EOS
+
+    result = cli.execute %w(my_command action_2), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+my_command action_2
+
+USAGE:
+    my_command action_2 [actions] [options] [arguments]
+
+Available options:
+
+    --help, -h  :  Get helpful information for action "my_command action_2" along with its usage information.
+
+Available actions:
+[ Type "my_command action_2 help [action-name]" to get more information about that action ]
+
+    sub-action
+
+    help -- The help action for command "my_command action_2" which provides details and usage information on how to use the command.
+    EOS
   end
 end

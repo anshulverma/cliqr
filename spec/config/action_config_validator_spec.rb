@@ -74,14 +74,16 @@ describe Cliqr::CLI::Config do
                   "invalid Cliqr interface configuration - [action \"invalid-char-!\" - value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-char-!\"]"))
   end
 
-  it 'does not allow command handler to be null' do
+  it 'does not allow command handler to be null if help is disabled and action present' do
     def define_interface
       Cliqr.interface do
         name 'my-command'
         description 'a command used to test cliqr'
         handler TestCommand
 
-        action 'my-action'
+        action 'my-action' do
+          help :disable
+        end
       end
     end
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
@@ -117,9 +119,13 @@ describe Cliqr::CLI::Config do
         action 'my-action' do
           handler Object
 
-          action nil
+          action nil do
+            help :disable
+          end
 
-          action 'bla'
+          action 'bla' do
+            help :disable
+          end
         end
       end
     end
