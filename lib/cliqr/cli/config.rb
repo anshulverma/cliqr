@@ -91,6 +91,13 @@ module Cliqr
       validates :help,
                 inclusion: [ENABLE_CONFIG, DISABLE_CONFIG]
 
+      # Enable or disable the shell action for base config
+      #
+      # @return [Symbol] Either <tt>#ENABLE_CONFIG</tt> or <tt>#DISABLE_CONFIG</tt>
+      attr_accessor :shell
+      validates :shell,
+                inclusion: [ENABLE_CONFIG, DISABLE_CONFIG]
+
       # Parent configuration
       #
       # @return [Cliqr::CLI::Config]
@@ -108,6 +115,7 @@ module Cliqr
         @handler = UNSET
         @arguments = UNSET
         @help = UNSET
+        @shell = UNSET
 
         @options = []
         @option_index = {}
@@ -120,12 +128,13 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Config]
       def finalize
-        @name = '' if @name == UNSET
-        @description = '' if @description == UNSET
-        @handler = Util.ensure_instance(@handler == UNSET ? nil : @handler)
-        @arguments = ENABLE_CONFIG if @arguments == UNSET
-        @help = ENABLE_CONFIG if @help == UNSET
+        @name = Config.get_if_unset(@name, '')
+        @description = Config.get_if_unset(@description, '')
+        @handler = Util.ensure_instance(Config.get_if_unset(@handler, nil))
+        @arguments = Config.get_if_unset(@arguments, ENABLE_CONFIG)
+        @help = Config.get_if_unset(@help, ENABLE_CONFIG)
         @root = self
+        @shell = Config.get_if_unset(@shell, shell_default)
 
         self
       end
@@ -137,6 +146,7 @@ module Cliqr
         add_help if help?
         @handler = Cliqr::Util.forward_to_help_handler if @handler.nil? && help? && actions?
         @actions.each(&:setup_defaults)
+        add_shell if shell?
       end
 
       # Set value for a config option
@@ -238,6 +248,20 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if help is enabled
       def help?
         @help == ENABLE_CONFIG
+      end
+
+      # Check if this is the root config
+      #
+      # @return [Boolean]
+      def root?
+        self == @root
+      end
+
+      # Check if this configuration has shell action enabled
+      #
+      # @return [Boolean]
+      def shell?
+        @shell == ENABLE_CONFIG
       end
 
       private
@@ -343,6 +367,27 @@ module Cliqr
         add_action(Cliqr::Util.build_help_action(self)) unless action?('help')
         add_option(Cliqr::Util.build_help_option(self)) unless option?('help')
       end
+
+      # Add shell command
+      #
+      # @return [Cliqr::CLI::Config] Updated config
+      def add_shell
+        add_action(Cliqr::Util.build_shell_action(self)) unless action?('shell')
+      end
+
+      # Get default setting for shell attribute
+      #
+      # @return [Symbol]
+      def shell_default
+        root? && actions? ? ENABLE_CONFIG : DISABLE_CONFIG
+      end
+
+      # Get the passed param value if current attribute is unset
+      #
+      # @return [Object]
+      def self.get_if_unset(attribute_value, default_value)
+        attribute_value == UNSET ? default_value : attribute_value
+      end
     end
 
     # Config attributes for a command's option
@@ -420,12 +465,13 @@ module Cliqr
       #
       # @return [Cliqr::CLI::OptionConfig]
       def finalize
-        @name = get_if_unset(@name, nil)
-        @short = get_if_unset(@short, nil)
-        @description = get_if_unset(@description, nil)
-        @type = get_if_unset(@type, ANY_ARGUMENT_TYPE)
-        @operator = Util.ensure_instance(get_if_unset(@operator, ArgumentOperator.for_type(@type)))
-        @default = get_if_unset(@default, ARGUMENT_DEFAULTS[@type])
+        @name = Config.get_if_unset(@name, nil)
+        @short = Config.get_if_unset(@short, nil)
+        @description = Config.get_if_unset(@description, nil)
+        @type = Config.get_if_unset(@type, ANY_ARGUMENT_TYPE)
+        @operator = Util.ensure_instance(Config.get_if_unset(@operator,
+                                                             ArgumentOperator.for_type(@type)))
+        @default = Config.get_if_unset(@default, ARGUMENT_DEFAULTS[@type])
 
         self
       end
@@ -476,13 +522,6 @@ module Cliqr
       def handle_option_config(name, value)
         public_send("#{name}=", value)
         value
-      end
-
-      # Get the passed param value if current attribute is unset
-      #
-      # @return [Object]
-      def get_if_unset(attribute_value, default_value)
-        attribute_value == UNSET ? default_value : attribute_value
       end
     end
   end

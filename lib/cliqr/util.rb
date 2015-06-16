@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'cliqr/cli/shell_command'
+
 module Cliqr
   # Utility methods
   #
@@ -23,6 +25,7 @@ module Cliqr
                     'and usage information on how to use the command.'
         handler Util.help_action_handler(config)
         help :disable if config.help?
+        shell :disable
       end
       cli.config
     end
@@ -52,6 +55,19 @@ module Cliqr
         action_config = arguments.length == 0 ? config : config.action(arguments.first)
         puts Cliqr::CLI::UsageBuilder.build(action_config)
       end
+    end
+
+    # Build a shell action for a parent config
+    #
+    # @return [Cliqr::CLI::Config] New action config
+    def self.build_shell_action(config)
+      cli = Cliqr.interface do
+        name 'shell'
+        description "Execute a shell in the context of \"#{config.command}\" command."
+        handler Cliqr::CLI::ShellCommand
+        shell :disable
+      end
+      cli.config
     end
 
     # Sanitize raw command line arguments

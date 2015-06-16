@@ -236,6 +236,7 @@ Available options:
       name 'my-command'
       handler TestCommand
       help :disable
+      shell :disable
 
       action 'my-action' do
         handler TestCommand
@@ -260,6 +261,7 @@ Available actions:
       name 'my-command'
       handler TestCommand
       help :disable
+      shell :disable
 
       action 'my-action' do
         handler TestCommand
@@ -285,6 +287,7 @@ Available actions:
       name 'my-command'
       handler TestCommand
       help :disable
+      shell :disable
 
       action 'my-action' do
         handler TestCommand
@@ -316,6 +319,7 @@ Available actions:
       name 'my-command'
       handler TestCommand
       help :disable
+      shell :disable
 
       action 'my-action' do
         handler TestCommand
@@ -348,6 +352,7 @@ Available actions:
       name 'my-command'
       handler TestCommand
       help :disable
+      shell :disable
 
       option 'option-1'
 
@@ -395,6 +400,7 @@ Available actions:
         name 'my-command'
         handler TestCommand
         help :disable
+        shell :disable
 
         option 'test-option-1'
         option 'test-option-2'
@@ -571,6 +577,74 @@ USAGE:
 Available options:
 
     --[no-]another, -a  :  <boolean> another option (default => true)
+    EOS
+  end
+
+  ################ SHELL ACTION ################
+
+  it 'adds shell action to the base command only when there are sub actions' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+      help :disable
+
+      action :bla
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [actions] [arguments]
+
+Available actions:
+
+    bla
+
+    shell -- Execute a shell in the context of "my-command" command.
+    EOS
+  end
+
+  it 'does not add shell action to the base command if it does not have actions' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+      help :disable
+    end
+
+    expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [arguments]
+    EOS
+  end
+
+  it 'can add shell action to a sub-action which does not have actions' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      action :bla do
+        shell :enable
+      end
+    end
+    result = cli.execute %w(my-command bla), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+my-command bla
+
+USAGE:
+    my-command bla [actions] [options] [arguments]
+
+Available options:
+
+    --help, -h  :  Get helpful information for action "my-command bla" along with its usage information.
+
+Available actions:
+[ Type "my-command bla help [action-name]" to get more information about that action ]
+
+    help -- The help action for command "my-command bla" which provides details and usage information on how to use the command.
+
+    shell -- Execute a shell in the context of "my-command bla" command.
     EOS
   end
 end
