@@ -28,22 +28,24 @@ module Cliqr
       #
       # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed input object
+      # @param [Hash] options Options for command execution
       # @param [Proc] executor Executes forwarded commands
       #
       # @return [Cliqr::CLI::CommandContext]
-      def self.build(config, parsed_input, &executor)
-        CommandContextBuilder.new(config, parsed_input, executor).build
+      def self.build(config, parsed_input, options, &executor)
+        CommandContextBuilder.new(config, parsed_input, options, executor).build
       end
 
       # Initialize the command context (called by the CommandContextBuilder)
       #
       # @return [Cliqr::CLI::CommandContext]
-      def initialize(config, options, arguments, executor)
+      def initialize(config, options, arguments, environment, executor)
         @config = config
         @command = config.command
         @arguments = arguments
         @action_name = config.name
         @context = self
+        @environment = environment
         @executor = executor
 
         # make option map from array
@@ -86,8 +88,8 @@ module Cliqr
       # Forward a command to the executor
       #
       # @return [Integer] Exit code
-      def forward(args)
-        @executor.call(args)
+      def forward(args, options = {})
+        @executor.call(args, options)
       end
 
       # Handle the case when a method is invoked to get an option value
@@ -108,6 +110,13 @@ module Cliqr
         CommandOption.new([name, option_config.default], option_config)
       end
 
+      # Check if running in a bash environment
+      #
+      # @return [Boolean]
+      def bash?
+        @environment == :bash
+      end
+
       private :initialize, :default
     end
 
@@ -121,12 +130,14 @@ module Cliqr
       #
       # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed and validated command line arguments
+      # @param [Hash] options Options for command execution
       # @param [Proc] executor Executes forwarded commands
       #
       # @return [Cliqr::CLI::CommandContextBuilder]
-      def initialize(config, parsed_input, executor)
+      def initialize(config, parsed_input, options, executor)
         @config = config
         @parsed_input = parsed_input
+        @options = options
         @executor = executor
       end
 
@@ -141,6 +152,7 @@ module Cliqr
         CommandContext.new @config,
                            option_contexts,
                            @parsed_input.arguments,
+                           @options[:environment],
                            @executor
       end
     end

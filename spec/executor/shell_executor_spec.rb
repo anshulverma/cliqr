@@ -103,17 +103,6 @@ shell exited with code 0
       raise_error(Cliqr::Error::InvalidArgumentError, 'invalid command argument "shell"'))
   end
 
-  it 'does not allow shell action if there are no sub-actions' do
-    cli = Cliqr.interface do
-      name 'my-command'
-      help :disable
-      handler TestCommand
-      arguments :disable
-    end
-    expect { cli.execute %w(my-command shell) }.to(
-      raise_error(Cliqr::Error::InvalidArgumentError, 'invalid command argument "shell"'))
-  end
-
   it 'can handle errors in shell' do
     cli = Cliqr.interface do
       name 'my-command'
@@ -146,6 +135,78 @@ Cause: StandardError - I failed!
 my-command > exit.
 shell exited with code 0
       EOS
+    end
+  end
+
+  describe 'illegal shell operations' do
+    it 'does not allow shell action if there are no sub-actions' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        help :disable
+        handler TestCommand
+        arguments :disable
+      end
+      expect { cli.execute %w(my-command shell) }.to(
+        raise_error(Cliqr::Error::InvalidArgumentError, 'invalid command argument "shell"'))
+    end
+
+    it 'does not allow shell in shell for base command' do
+      cli = Cliqr.interface do
+        name 'my-command'
+
+        action :foo do
+          action :bar
+        end
+      end
+
+      with_input(['shell']) do
+        result = cli.execute %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+my-command > shell.
+command 'my-command shell' failed
+
+Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell
+my-command > exit.
+shell exited with code 0
+        EOS
+      end
+    end
+
+    it 'does not allow shell in shell for sub action' do
+      cli = Cliqr.interface do
+        name 'my-command'
+
+        action :foo do
+          action :bar
+        end
+      end
+
+      with_input(['shell']) do
+        result = cli.execute %w(my-command foo shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command foo"
+my-command foo > shell.
+command 'my-command foo shell' failed
+
+Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell
+my-command foo > exit.
+shell exited with code 0
+        EOS
+      end
+
+      with_input(['foo shell']) do
+        result = cli.execute %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+my-command > foo shell.
+command 'my-command foo shell' failed
+
+Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell
+my-command > exit.
+shell exited with code 0
+        EOS
+      end
     end
   end
 end

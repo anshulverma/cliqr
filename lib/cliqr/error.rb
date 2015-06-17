@@ -86,5 +86,8 @@ module Cliqr
 
     # Indicates that a unknown action was invoked
     class UnknownActionError < CliqrError; end
+
+    # Raised when a command is executed that is not supposed to run
+    class IllegalCommandError < CliqrError; end
   end
 end

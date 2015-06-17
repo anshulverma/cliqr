@@ -39,7 +39,8 @@ module Cliqr
       # @return [Integer] Exit code of the command execution
       def execute(args = [], **options)
         options = {
-            :output => :default
+            :output => :default,
+            :environment => :bash
         }.merge(options)
         @executor.execute(args, options)
       end

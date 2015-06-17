@@ -13,6 +13,9 @@ module Cliqr
       #
       # @return [Integer] Exit code
       def execute(context)
+        fail(Cliqr::Error::IllegalCommandError,
+             'Cannot run another shell within an already running shell') unless context.bash?
+
         base_command = context.command[0...(context.command.rindex('shell'))].strip
         puts "Starting shell for command \"#{base_command}\""
         exit_code = ShellRunner.new(base_command, context).run
@@ -49,7 +52,7 @@ module Cliqr
       #
       # @return [Integer] Exit code of the command executed
       def execute(command)
-        @context.forward "#{@base_command} #{command}"
+        @context.forward("#{@base_command} #{command}", :environment => :cliqr_shell)
       rescue StandardError => e
         puts e.message
       end
