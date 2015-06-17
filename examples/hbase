@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+# A fake hbase shell example
+#
+# This script mainly features how to build a custom shell
+
+require 'cliqr'
+
+cli = Cliqr.interface do
+  name 'hbase'
+  version '0.98.13RC2'
+  arguments :disable
+
+  # from hbase git repository https://github.com/apache/hbase
+  description <<-EOS
+Apache HBase is an open-source, distributed, versioned, column-oriented
+store modeled after Google' Bigtable: A Distributed Storage System for
+Structured Data by Chang et al. Just as Bigtable leverages the distributed
+data storage provided by the Google File System, HBase provides Bigtable-like
+capabilities on top of Apache Hadoop.
+  EOS
+
+  option :server do
+    description 'to select the "server" VM'
+    default 'server'
+  end
+
+  TABLES = %w(people address phone_number)
+  action :list do
+    description 'List all tables in hbase.'
+
+    handler do
+      puts 'TABLE'
+      TABLES.each { |item| puts item }
+      puts '3 row(s) in 1.3310 seconds'
+    end
+    arguments :disable
+  end
+
+  action :scan do
+    description 'Scan a table.'
+
+    handler do
+      fail StandardError, 'please specify table name' unless arguments.length > 0
+      fail StandardError, 'too many arguments' if arguments.length > 1
+      table_name = arguments.first
+      fail StandardError, "unknown table \"#{table_name}\"" unless TABLES.include?(table_name)
+      puts <<-EOS
+ROW                                                 COLUMN+CELL
+ my-test:1                        column=c1, timestamp=1432748503634, value=0.5
+ my-test:2                        column=c1, timestamp=1432748503781, value=1.5
+2 row(s) in 0.4250 seconds
+      EOS
+    end
+  end
+end
+
+cli.execute(ARGV)
