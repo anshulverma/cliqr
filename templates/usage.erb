@@ -13,14 +13,14 @@ Available options:
    options.each { |option|
 %>
     --<%=
-         '[no-]' if option.boolean? && option.name != 'help'
+         '[no-]' if option.boolean?
        %><%=
          option.name
        %><%=
             ", -#{option.short}" if option.short?
           %><%=
             if option.details?
-              "  : #{" <#{option.type}>" if option.type? && !option.help?}#{" #{option.description}" if option.description?}#{" (default => #{option.default.inspect})" if option.default?}"
+              "  : #{" <#{option.type}>" if option.type?}#{" #{option.description}" if option.description?}#{" (default => #{option.default.inspect})" if option.default?}"
             end
           %><%
    }

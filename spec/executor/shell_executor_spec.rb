@@ -32,9 +32,9 @@ Available actions:
 
     bla
 
-    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
-
     shell -- Execute a shell in the context of "my-command" command.
+
+    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
 my-command > exit.
 shell exited with code 0
       EOS

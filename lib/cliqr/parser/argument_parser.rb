@@ -15,12 +15,7 @@ module Cliqr
     # @return [Hash] Parsed action config and hash of command line arguments
     def self.parse(config, args)
       tree_walker = ArgumentTreeWalker.new(config)
-      action_config, parsed_input = tree_walker.walk(args)
-      if parsed_input.option('help') && action_config.help?
-        action_config = action_config.action(:help)
-        parsed_input.remove_option('help')
-      end
-      [action_config, parsed_input]
+      tree_walker.walk(args)
     end
   end
 end

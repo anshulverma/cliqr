@@ -45,6 +45,35 @@ module Cliqr
       end
     end
 
+    # Build a version action for a parent config
+    #
+    # @return [Cliqr::CLI::Config] New action config
+    def self.build_version_action(config)
+      cli = Cliqr.interface do
+        name 'version'
+        description "Get version information for command \"#{config.command}\"."
+        handler do
+          puts config.version
+        end
+        shell :disable
+      end
+      cli.config
+    end
+
+    # Build a version option for a parent config
+    #
+    # @return [Cliqr::CLI::OptionConfig] New option config
+    def self.build_version_option(config)
+      Cliqr::CLI::OptionConfig.new.tap do |option_config|
+        option_config.name = 'version'
+        option_config.short = 'v'
+        option_config.description = "Get version information for command \"#{config.command}\"."
+        option_config.type = Cliqr::CLI::BOOLEAN_ARGUMENT_TYPE
+        option_config.operator = Cliqr::CLI::ArgumentOperator::DEFAULT_ARGUMENT_OPERATOR
+        option_config.finalize
+      end
+    end
+
     # Action handler for help action
     #
     # @return [Proc]

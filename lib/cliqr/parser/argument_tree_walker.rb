@@ -22,7 +22,7 @@ module Cliqr
       #
       # @param [Array<String>] raw_args List of arguments that needs to parsed
       #
-      # @return [Hash] Parsed hash of command line arguments
+      # @return [Array] Action config and parsed hash of command line arguments
       def walk(raw_args)
         action_config, args = parse_action(raw_args)
         input_builder = ParsedInputBuilder.new(@config, action_config)
@@ -33,7 +33,7 @@ module Cliqr
         end
         fail Cliqr::Error::OptionValueMissing, \
              "a value must be defined for argument \"#{token.arg}\"" if token.active?
-        [action_config, input_builder.build]
+        ensure_default_action(action_config, input_builder)
       end
 
       private
@@ -68,6 +68,19 @@ module Cliqr
         token.collect(input_builder)
 
         token
+      end
+
+      # Make sure default options are processed by overriding action
+      #
+      # @return [Array] Action config and parsed hash of command line arguments
+      def ensure_default_action(action_config, input_builder)
+        parsed_input = input_builder.build
+        default_action_name = parsed_input.default_action(action_config)
+        unless default_action_name.nil?
+          action_config = action_config.action(default_action_name)
+          parsed_input.remove_option(default_action_name)
+        end
+        [action_config, parsed_input]
       end
     end
   end

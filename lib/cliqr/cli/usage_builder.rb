@@ -142,7 +142,7 @@ module Cliqr
 
       # Check if current option is a boolean option
       def boolean?
-        @option_config.boolean?
+        @option_config.boolean? && !help? && !version?
       end
 
       # Check if the option has a short name
@@ -162,17 +162,22 @@ module Cliqr
 
       # Check if the option has a non-default type
       def type?
-        @option_config.type?
+        @option_config.type? && !help? && !version?
       end
 
       # check if the option should display default setting
       def default?
-        @option_config.default? && !help?
+        @option_config.default? && !help? && !version?
       end
 
       # Check if the option is for getting help
       def help?
         @option_config.name == 'help'
+      end
+
+      # Check if the option is for version
+      def version?
+        @option_config.name == 'version'
       end
     end
   end

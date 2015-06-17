@@ -98,6 +98,11 @@ module Cliqr
       validates :shell,
                 inclusion: [ENABLE_CONFIG, DISABLE_CONFIG]
 
+      # Version tag for this configuration
+      #
+      # @return [Stirng]
+      attr_accessor :version
+
       # Parent configuration
       #
       # @return [Cliqr::CLI::Config]
@@ -116,6 +121,7 @@ module Cliqr
         @arguments = UNSET
         @help = UNSET
         @shell = UNSET
+        @version = UNSET
 
         @options = []
         @option_index = {}
@@ -135,6 +141,7 @@ module Cliqr
         @help = Config.get_if_unset(@help, ENABLE_CONFIG)
         @root = self
         @shell = Config.get_if_unset(@shell, shell_default)
+        @version = Config.get_if_unset(@version, nil)
 
         self
       end
@@ -143,10 +150,11 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Config] Update config
       def setup_defaults
-        add_help if help?
+        add_shell
+        add_version
+        add_help
         @handler = Cliqr::Util.forward_to_help_handler if @handler.nil? && help? && actions?
         @actions.each(&:setup_defaults)
-        add_shell if shell?
       end
 
       # Set value for a config option
@@ -248,6 +256,13 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if help is enabled
       def help?
         @help == ENABLE_CONFIG
+      end
+
+      # Check if version is enabled for this command
+      #
+      # @return [Boolean] <tt>true</tt> if help is enabled
+      def version?
+        !@version.nil?
       end
 
       # Check if this is the root config
@@ -364,14 +379,25 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Config] Updated config
       def add_help
+        return self unless help?
         add_action(Cliqr::Util.build_help_action(self)) unless action?('help')
         add_option(Cliqr::Util.build_help_option(self)) unless option?('help')
+      end
+
+      # Add version command and option to this config
+      #
+      # @return [Cliqr::CLI::Config] Updated config
+      def add_version
+        return self unless version?
+        add_action(Cliqr::Util.build_version_action(self)) unless action?('version')
+        add_option(Cliqr::Util.build_version_option(self)) unless option?('version')
       end
 
       # Add shell command
       #
       # @return [Cliqr::CLI::Config] Updated config
       def add_shell
+        return self unless shell?
         add_action(Cliqr::Util.build_shell_action(self)) unless action?('shell')
       end
 

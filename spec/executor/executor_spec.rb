@@ -408,4 +408,48 @@ false
 false
     EOS
   end
+
+  it 'can use version action on base command' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      version '1234'
+    end
+
+    result = cli.execute ['version'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+1234
+    EOS
+  end
+
+  it 'can get version by option on base command' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      version '1234'
+    end
+
+    result = cli.execute ['--version'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+1234
+    EOS
+
+    result = cli.execute ['-v'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+1234
+    EOS
+  end
+
+  it 'can use version action on action command' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      action :bla do
+        version '1234'
+      end
+    end
+
+    result = cli.execute ['bla version'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+1234
+    EOS
+  end
 end

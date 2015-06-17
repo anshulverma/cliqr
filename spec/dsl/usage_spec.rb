@@ -642,9 +642,64 @@ Available options:
 Available actions:
 [ Type "my-command bla help [action-name]" to get more information about that action ]
 
-    help -- The help action for command "my-command bla" which provides details and usage information on how to use the command.
-
     shell -- Execute a shell in the context of "my-command bla" command.
+
+    help -- The help action for command "my-command bla" which provides details and usage information on how to use the command.
+    EOS
+  end
+
+  it 'can add version to base command' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      version '1234'
+    end
+    result = cli.execute %w(help), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [actions] [options] [arguments]
+
+Available options:
+
+    --version, -v  :  Get version information for command "my-command".
+    --help, -h  :  Get helpful information for action "my-command" along with its usage information.
+
+Available actions:
+[ Type "my-command help [action-name]" to get more information about that action ]
+
+    version -- Get version information for command "my-command".
+
+    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
+    EOS
+  end
+
+  it 'can add version to any action' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      action :bla do
+        version '1234'
+      end
+    end
+    result = cli.execute %w(bla help), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+my-command bla
+
+USAGE:
+    my-command bla [actions] [options] [arguments]
+
+Available options:
+
+    --version, -v  :  Get version information for command "my-command bla".
+    --help, -h  :  Get helpful information for action "my-command bla" along with its usage information.
+
+Available actions:
+[ Type "my-command bla help [action-name]" to get more information about that action ]
+
+    version -- Get version information for command "my-command bla".
+
+    help -- The help action for command "my-command bla" which provides details and usage information on how to use the command.
     EOS
   end
 end
