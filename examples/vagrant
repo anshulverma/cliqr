@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+
+# A fake vagrant command example.
+#
+# In this example you can find:
+# - A Command wih action and sub-actions
+# - Command handler returning non-zero exit code
+# - Command options and their types
+# - Overriding default option argument values
+# - Enable/Disable command arguments
+
+require 'cliqr'
+
+cli = Cliqr.interface do
+  name 'vagrant'
+  description <<-EOS
+Vagrant is a tool for building and distributing development environments.
+
+http://www.vagrantup.com
+EOS
+  version '1.7.2'
+  shell :disable
+
+  action :box do
+    description 'manages boxes: installation, removal, etc.'
+    shell :disable
+
+    action :add do
+      shell :disable
+      handler do
+        puts 'This command was not invoked properly. The help for this command is available below.'
+        forward 'vagrant box add help'
+        1 # non-zero exit code
+      end
+
+      option :clean do
+        short 'c'
+        description 'Clean any temporary download files'
+        type :boolean
+      end
+
+      option :force do
+        short 'f'
+        description 'Overwrite an existing box if it exists'
+        type :boolean
+      end
+
+      option :insecure do
+        description 'Do not validate SSL certificates'
+      end
+
+      option :cacert do
+        description 'CA certificate for SSL download'
+      end
+    end
+  end
+
+  action :up do
+    description 'starts and provisions the vagrant environment'
+    shell :disable
+    arguments :disable
+    handler do
+      puts 'A Vagrant environment or target machine is required to run this command. ' \
+           'Then there is also that fact that this is a fake demo :)'
+      1 # non-zero exit code
+    end
+
+    option :provision do
+      description 'Enable or disable provisioning'
+      type :boolean
+    end
+
+    option 'destroy-on-error' do
+      description 'Destroy machine if any fatal error happens'
+      type :boolean
+      default true
+    end
+
+    option :parallel do
+      description 'Enable or disable parallelism if provider supports it'
+      type :boolean
+    end
+
+    option :provider do
+      description 'Back the machine with a specific provider'
+    end
+  end
+end
+
+cli.execute(ARGV)
