@@ -18,7 +18,7 @@ describe Cliqr::ArgumentValidation::Validator do
       end
     end
 
-    result = cli.execute %w(--test-option 123), output: :buffer
+    result = cli.execute_internal %w(--test-option 123), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 123
     EOS
@@ -35,7 +35,7 @@ describe Cliqr::ArgumentValidation::Validator do
     end
 
     expect do
-      cli.execute %w(--age abcd)
+      cli.execute_internal %w(--age abcd)
     end.to raise_error(Cliqr::Error::IllegalArgumentError,
                        "illegal argument error - only values of type 'numeric' allowed for option 'age'")
   end
@@ -50,7 +50,7 @@ describe Cliqr::ArgumentValidation::Validator do
       end
     end
 
-    result = cli.execute %w(--test-option), output: :buffer
+    result = cli.execute_internal %w(--test-option), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 true
     EOS
@@ -67,7 +67,7 @@ true
       end
     end
 
-    result = cli.execute %w(-t), output: :buffer
+    result = cli.execute_internal %w(-t), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 true
     EOS
@@ -83,7 +83,7 @@ true
       end
     end
 
-    result = cli.execute %w(--no-test-option), output: :buffer
+    result = cli.execute_internal %w(--no-test-option), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 false
     EOS
@@ -101,7 +101,7 @@ false
     end
 
     expect do
-      cli.execute %w(--opt qwe)
+      cli.execute_internal %w(--opt qwe)
     end.to raise_error(Cliqr::Error::IllegalArgumentError,
                        "invalid command argument \"qwe\"")
   end
@@ -117,7 +117,7 @@ false
       end
     end
 
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test command executed
     EOS
@@ -134,7 +134,7 @@ test command executed
       end
     end
 
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test command executed
     EOS

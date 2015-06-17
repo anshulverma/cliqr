@@ -19,7 +19,7 @@ describe Cliqr::CLI::Executor do
         handler TestCommand
       end
     end
-    result = cli.execute ['my-action'], output: :buffer
+    result = cli.execute_internal ['my-action'], output: :buffer
     expect(result[:stdout]).to eq "test command executed\n"
   end
 
@@ -51,7 +51,7 @@ describe Cliqr::CLI::Executor do
         option 'test-option'
       end
     end
-    result = cli.execute %w(my-action --test-option some-value), output: :buffer
+    result = cli.execute_internal %w(my-action --test-option some-value), output: :buffer
     expect(result[:stdout]).to eq "test command executed\n"
   end
 
@@ -67,7 +67,7 @@ describe Cliqr::CLI::Executor do
         option 'test-option-2'
       end
     end
-    result = cli.execute %w(my-action --test-option-1 some-value --test-option-2 v2), output: :buffer
+    result = cli.execute_internal %w(my-action --test-option-1 some-value --test-option-2 v2), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 command = my-command my-action
 
@@ -97,7 +97,7 @@ executing action = my-action
         end
       end
     end
-    result = cli.execute %w(my-action-1 --test-option-1 some-value my-action-2 --test-option-2 v2 my-action-3), output: :buffer
+    result = cli.execute_internal %w(my-action-1 --test-option-1 some-value my-action-2 --test-option-2 v2 my-action-3), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 command = my-command my-action-1 my-action-2 my-action-3
 
@@ -118,7 +118,7 @@ executing action = my-action-3
         option 'test-option'
       end
     end
-    result = cli.execute %w(--test-option some-value my-action), output: :buffer
+    result = cli.execute_internal %w(--test-option some-value my-action), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 command = my-command my-action
 
@@ -137,7 +137,7 @@ executing action = my-action
         option 'test-option'
       end
     end
-    result = cli.execute %w(my-action --test-option some-value), output: :buffer
+    result = cli.execute_internal %w(my-action --test-option some-value), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 some-value
     EOS
@@ -163,17 +163,17 @@ some-value
         option 'third-option'
       end
     end
-    result = cli.execute %w(my-action --test-option some-value), output: :buffer
+    result = cli.execute_internal %w(my-action --test-option some-value), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 some-value
     EOS
 
-    result = cli.execute %w(another-action --test-option another), output: :buffer
+    result = cli.execute_internal %w(another-action --test-option another), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 another
     EOS
 
-    result = cli.execute %w(third-action --third-option 3), output: :buffer
+    result = cli.execute_internal %w(third-action --third-option 3), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 command = my-command third-action
 
@@ -195,7 +195,7 @@ executing action = third-action
       end
     end
 
-    result = cli.execute %w(my-action value1 --test-option qwerty value2 value3), output: :buffer
+    result = cli.execute_internal %w(my-action value1 --test-option qwerty value2 value3), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 value1
 value2

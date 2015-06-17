@@ -23,7 +23,7 @@ describe Cliqr::CLI::Executor do
       name 'my-command'
       handler TestCommand
     end
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq "test command executed\n"
   end
 
@@ -32,7 +32,7 @@ describe Cliqr::CLI::Executor do
       name 'my-command'
       handler TestCommand.new
     end
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq "test command executed\n"
   end
 
@@ -53,7 +53,7 @@ describe Cliqr::CLI::Executor do
 
       option 'test-option'
     end
-    result = cli.execute %w(--test-option some-value), output: :buffer
+    result = cli.execute_internal %w(--test-option some-value), output: :buffer
     expect(result[:stdout]).to eq "test command executed\n"
   end
 
@@ -64,7 +64,7 @@ describe Cliqr::CLI::Executor do
 
       option 'test-option'
     end
-    result = cli.execute %w(--test-option some-value), output: :buffer
+    result = cli.execute_internal %w(--test-option some-value), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command
 
@@ -79,7 +79,7 @@ my-command
 
       option 'test-option'
     end
-    result = cli.execute %w(--test-option some-value), output: :buffer
+    result = cli.execute_internal %w(--test-option some-value), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 some-value
     EOS
@@ -109,7 +109,7 @@ some-value
       end
     end
 
-    result = cli.execute %w(--test-option), output: :buffer
+    result = cli.execute_internal %w(--test-option), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test-option is defined
     EOS
@@ -124,7 +124,7 @@ test-option is defined
       option 'test-option'
     end
 
-    result = cli.execute %w(value1 --test-option qwerty value2 value3), output: :buffer
+    result = cli.execute_internal %w(value1 --test-option qwerty value2 value3), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 value1
 value2
@@ -140,7 +140,7 @@ value3
       option 'test-option'
     end
 
-    result = cli.execute %w(--test-option qwerty), output: :buffer
+    result = cli.execute_internal %w(--test-option qwerty), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test-option is of type String
     EOS
@@ -156,12 +156,12 @@ test-option is of type String
       end
     end
 
-    result = cli.execute %w(--test-option), output: :buffer
+    result = cli.execute_internal %w(--test-option), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test-option is of type TrueClass
     EOS
 
-    result = cli.execute %w(--no-test-option), output: :buffer
+    result = cli.execute_internal %w(--no-test-option), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test-option is of type FalseClass
     EOS
@@ -177,7 +177,7 @@ test-option is of type FalseClass
       end
     end
 
-    result = cli.execute %w(--test-option 123), output: :buffer
+    result = cli.execute_internal %w(--test-option 123), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 test-option is of type Fixnum
     EOS
@@ -193,7 +193,7 @@ test-option is of type Fixnum
       end
     end
 
-    result = cli.execute %w(--test-option a,b,c,d), output: :buffer
+    result = cli.execute_internal %w(--test-option a,b,c,d), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 a
 b
@@ -213,7 +213,7 @@ d
       option 'test-option'
     end
 
-    result = cli.execute %w(--test-option executor-inline), output: :buffer
+    result = cli.execute_internal %w(--test-option executor-inline), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 value = executor-inline
     EOS
@@ -231,7 +231,7 @@ value = executor-inline
       end
     end
 
-    result = cli.execute %w(--test-option operator-inline), output: :buffer
+    result = cli.execute_internal %w(--test-option operator-inline), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 value = operator-inline
     EOS
@@ -268,7 +268,7 @@ value = operator-inline
       end
     end
 
-    result = cli.execute %w(--option-1 val1 --option-2 val2), output: :buffer
+    result = cli.execute_internal %w(--option-1 val1 --option-2 val2), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 in my-command
 option-1 => val1
@@ -279,7 +279,7 @@ true
 false
     EOS
 
-    result = cli.execute %w(my-action --option-3 val3), output: :buffer
+    result = cli.execute_internal %w(my-action --option-3 val3), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 in my-action
 option-3 => val3
@@ -308,14 +308,14 @@ true
       end
     end
 
-    result = cli.execute %w(--test_option executor-inline --second_option), output: :buffer
+    result = cli.execute_internal %w(--test_option executor-inline --second_option), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 executor-inline
 true
 true
     EOS
 
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 
 false
@@ -337,7 +337,7 @@ false
       end
     end
 
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 false
 false
@@ -359,7 +359,7 @@ false
       end
     end
 
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 true
 false
@@ -380,7 +380,7 @@ false
       end
     end
 
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 0
 false
@@ -402,7 +402,7 @@ false
       end
     end
 
-    result = cli.execute [], output: :buffer
+    result = cli.execute_internal [], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 123
 false
@@ -415,7 +415,7 @@ false
       version '1234'
     end
 
-    result = cli.execute ['version'], output: :buffer
+    result = cli.execute_internal ['version'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 1234
     EOS
@@ -427,12 +427,12 @@ false
       version '1234'
     end
 
-    result = cli.execute ['--version'], output: :buffer
+    result = cli.execute_internal ['--version'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 1234
     EOS
 
-    result = cli.execute ['-v'], output: :buffer
+    result = cli.execute_internal ['-v'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 1234
     EOS
@@ -447,13 +447,31 @@ false
       end
     end
 
-    result = cli.execute ['bla version'], output: :buffer
+    result = cli.execute_internal ['bla version'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 1234
     EOS
   end
 
   describe 'error handling' do
+    it 'returns 0 if no error' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler do
+          puts 'I am happy!'
+        end
+      end
+
+      old_stdout = $stdout
+      $stdout = old_stdout.is_a?(StringIO) ? old_stdout : StringIO.new('', 'w')
+      begin
+        expect(cli.execute).to(eq(0))
+        expect($stdout.string).to(eq("I am happy!\n"))
+      ensure
+        $stdout = old_stdout
+      end
+    end
+
     it 'can handle errors in command handler' do
       cli = Cliqr.interface do
         name 'my-command'

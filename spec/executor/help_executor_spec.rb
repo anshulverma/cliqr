@@ -14,7 +14,7 @@ describe Cliqr::CLI::Executor do
       handler TestCommand
     end
 
-    result = cli.execute ['help'], output: :buffer
+    result = cli.execute_internal ['help'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command -- test command has no description
 
@@ -39,7 +39,7 @@ Available actions:
       handler TestCommand
     end
 
-    result = cli.execute ['--help'], output: :buffer
+    result = cli.execute_internal ['--help'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command -- test command has no description
 
@@ -84,7 +84,7 @@ Available actions:
       end
     end
 
-    result = cli.execute %w(help action_1), output: :buffer
+    result = cli.execute_internal %w(help action_1), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command action_1 -- test action
 
@@ -131,7 +131,7 @@ Available actions:
       end
     end
 
-    result = cli.execute %w(action_2 --help), output: :buffer
+    result = cli.execute_internal %w(action_2 --help), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command action_2 -- another cool action for the base command
 
@@ -176,7 +176,7 @@ Available actions:
       end
     end
 
-    result = cli.execute %w(help), output: :buffer
+    result = cli.execute_internal %w(help), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command -- test command has no description
 
@@ -205,7 +205,7 @@ Available actions:
       handler TestCommand
     end
 
-    result = cli.execute ['--help'], output: :buffer
+    result = cli.execute_internal ['--help'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command -- test command has no description
 
@@ -234,7 +234,7 @@ Available actions:
       end
     end
 
-    result = cli.execute %w(--help action_1), output: :buffer
+    result = cli.execute_internal %w(--help action_1), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command action_1
 
@@ -264,7 +264,7 @@ Available actions:
       end
     end
 
-    result = cli.execute %w(action_1 help), output: :buffer
+    result = cli.execute_internal %w(action_1 help), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command action_1 -- test action
 
@@ -294,7 +294,7 @@ Available actions:
       end
     end
 
-    result = cli.execute %w(help help), output: :buffer
+    result = cli.execute_internal %w(help help), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command help -- The help action for command "my_command" which provides details and usage information on how to use the command.
 
@@ -351,7 +351,7 @@ USAGE:
       end
     end
 
-    result = cli.execute ['action_1'], output: :buffer
+    result = cli.execute_internal ['action_1'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 in action_1
 in sub-action
@@ -381,7 +381,7 @@ back in action_1
       end
     end
 
-    result = cli.execute %w(my_command), output: :buffer
+    result = cli.execute_internal %w(my_command), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command -- test command has no description
 
@@ -402,7 +402,7 @@ Available actions:
     help -- The help action for command "my_command" which provides details and usage information on how to use the command.
     EOS
 
-    result = cli.execute %w(my_command action_2), output: :buffer
+    result = cli.execute_internal %w(my_command action_2), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my_command action_2
 

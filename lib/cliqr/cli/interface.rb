@@ -45,14 +45,11 @@ module Cliqr
       #
       # @return [Integer] Exit code of the command execution
       def execute(args = [], **options)
-        begin
-          execute_internal(args, options)
-          Cliqr::CLI::EXIT_CODE[:success]
-        rescue Cliqr::Error::CliqrError => e
-          puts e.message
-          Cliqr::CLI::EXIT_CODE[e.class.to_s.to_sym]
-        end
-
+        execute_internal(args, options)
+        Cliqr::CLI::EXIT_CODE[:success]
+      rescue Cliqr::Error::CliqrError => e
+        puts e.message
+        Cliqr::CLI::EXIT_CODE[e.class.to_s.to_sym]
       end
 
       # Executes a command without handling error conditions

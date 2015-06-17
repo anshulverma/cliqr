@@ -19,7 +19,7 @@ describe Cliqr::ArgumentValidation::Validator do
         handler TestCommand
       end
     end
-    expect { cli.execute %w(my-action another-action) }.to(
+    expect { cli.execute_internal %w(my-action another-action) }.to(
       raise_error(Cliqr::Error::IllegalArgumentError, "invalid command argument \"another-action\""))
   end
 
@@ -44,7 +44,7 @@ describe Cliqr::ArgumentValidation::Validator do
         arguments :disable
       end
     end
-    expect { cli.execute %w(another-action third-action) }.to(
+    expect { cli.execute_internal %w(another-action third-action) }.to(
       raise_error(Cliqr::Error::IllegalArgumentError, "invalid command argument \"third-action\""))
   end
 end

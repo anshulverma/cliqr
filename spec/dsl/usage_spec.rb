@@ -628,7 +628,7 @@ USAGE:
         shell :enable
       end
     end
-    result = cli.execute %w(my-command bla), output: :buffer
+    result = cli.execute_internal %w(my-command bla), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command bla
 
@@ -653,7 +653,7 @@ Available actions:
       name 'my-command'
       version '1234'
     end
-    result = cli.execute %w(help), output: :buffer
+    result = cli.execute_internal %w(help), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command
 
@@ -682,7 +682,7 @@ Available actions:
         version '1234'
       end
     end
-    result = cli.execute %w(bla help), output: :buffer
+    result = cli.execute_internal %w(bla help), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command bla
 

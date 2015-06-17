@@ -14,7 +14,7 @@ describe Cliqr::CLI::Executor do
     end
 
     with_input(['help']) do
-      result = cli.execute %w(my-command shell), output: :buffer
+      result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > help.
@@ -62,7 +62,7 @@ shell exited with code 0
     end
 
     with_input(['', 'my-command', 'foo', 'foo bar', 'foo bar help']) do
-      result = cli.execute %w(my-command shell), output: :buffer
+      result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > .
@@ -99,7 +99,7 @@ shell exited with code 0
       shell :disable
       arguments :disable
     end
-    expect { cli.execute %w(my-command shell) }.to(
+    expect { cli.execute_internal %w(my-command shell) }.to(
       raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"'))
   end
 
@@ -121,7 +121,7 @@ shell exited with code 0
     end
 
     with_input(['unknown', '--opt-1 val', 'foo']) do
-      result = cli.execute %w(my-command shell), output: :buffer
+      result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > unknown.
@@ -146,7 +146,7 @@ shell exited with code 0
         handler TestCommand
         arguments :disable
       end
-      expect { cli.execute %w(my-command shell) }.to(
+      expect { cli.execute_internal %w(my-command shell) }.to(
         raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"'))
     end
 
@@ -160,7 +160,7 @@ shell exited with code 0
       end
 
       with_input(['shell']) do
-        result = cli.execute %w(my-command shell), output: :buffer
+        result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > shell.
@@ -183,7 +183,7 @@ shell exited with code 0
       end
 
       with_input(['shell']) do
-        result = cli.execute %w(my-command foo shell), output: :buffer
+        result = cli.execute_internal %w(my-command foo shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command foo"
 my-command foo > shell.
@@ -196,7 +196,7 @@ shell exited with code 0
       end
 
       with_input(['foo shell']) do
-        result = cli.execute %w(my-command shell), output: :buffer
+        result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > foo shell.
