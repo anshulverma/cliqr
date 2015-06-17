@@ -55,7 +55,7 @@ module Cliqr
     class ValidationError < CliqrError; end
 
     # Encapsulates the error that gets thrown during a command execution
-    class CommandRuntimeException < CliqrError; end
+    class CommandRuntimeError < CliqrError; end
 
     # Error to signify that a command's runner is not available
     class UnknownCommandRunnerException < CliqrError; end
@@ -74,9 +74,6 @@ module Cliqr
 
     # Raised if multiple actions are defined with same name at the same nesting level
     class DuplicateActions < CliqrError; end
-
-    # Raised if an option is not defined properly
-    class InvalidArgumentError < CliqrError; end
 
     # Raised if an argument does not conform to the option's type
     class IllegalArgumentError < CliqrError; end

@@ -20,7 +20,7 @@ describe Cliqr::ArgumentValidation::Validator do
       end
     end
     expect { cli.execute %w(my-action another-action) }.to(
-      raise_error(Cliqr::Error::InvalidArgumentError, "invalid command argument \"another-action\""))
+      raise_error(Cliqr::Error::IllegalArgumentError, "invalid command argument \"another-action\""))
   end
 
   it 'does not allow illegal nesting of actions in a command' do
@@ -45,6 +45,6 @@ describe Cliqr::ArgumentValidation::Validator do
       end
     end
     expect { cli.execute %w(another-action third-action) }.to(
-      raise_error(Cliqr::Error::InvalidArgumentError, "invalid command argument \"third-action\""))
+      raise_error(Cliqr::Error::IllegalArgumentError, "invalid command argument \"third-action\""))
   end
 end

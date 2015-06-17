@@ -41,8 +41,8 @@ describe Cliqr::CLI::Executor do
       name 'my-command'
       handler AlwaysErrorCommand
     end
-    expect { cli.execute [] }.to(
-      raise_error(Cliqr::Error::CommandRuntimeException,
+    expect { cli.execute_internal [] }.to(
+      raise_error(Cliqr::Error::CommandRuntimeError,
                   "command 'my-command' failed\n\nCause: StandardError - I always throw an error\n"))
   end
 
@@ -451,5 +451,41 @@ false
     expect(result[:stdout]).to eq <<-EOS
 1234
     EOS
+  end
+
+  describe 'error handling' do
+    it 'can handle errors in command handler' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler do
+          fail StandardError, 'I am not a happy handler!'
+        end
+      end
+
+      old_stdout = $stdout
+      $stdout = old_stdout.is_a?(StringIO) ? old_stdout : StringIO.new('', 'w')
+      begin
+        expect(cli.execute(['abcd'])).to(eq(1))
+        expect($stdout.string).to(eq("command 'my-command' failed\n\nCause: StandardError - I am not a happy handler!\n"))
+      ensure
+        $stdout = old_stdout
+      end
+    end
+
+    it 'can handle errors in command arguments' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        arguments :disable
+      end
+
+      old_stdout = $stdout
+      $stdout = old_stdout.is_a?(StringIO) ? old_stdout : StringIO.new('', 'w')
+      begin
+        expect(cli.execute(['abcd'])).to(eq(2))
+        expect($stdout.string).to(eq("invalid command argument \"abcd\"\n"))
+      ensure
+        $stdout = old_stdout
+      end
+    end
   end
 end

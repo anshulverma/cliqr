@@ -36,8 +36,8 @@ describe Cliqr::CLI::Executor do
         end
       end
     end
-    expect { cli.execute %w(my-action-1 my-action-2) }.to raise_error(Cliqr::Error::CommandRuntimeException,
-                                                                      "command 'my-command my-action-1 my-action-2' failed\n\nCause: StandardError - I always throw an error\n")
+    expect { cli.execute_internal %w(my-action-1 my-action-2) }.to raise_error(Cliqr::Error::CommandRuntimeError,
+                                                                               "command 'my-command my-action-1 my-action-2' failed\n\nCause: StandardError - I always throw an error\n")
   end
 
   it 'routes to a action with option values' do

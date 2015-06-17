@@ -71,9 +71,9 @@ describe Cliqr::Parser do
 
   it 'cannot parse invalid options' do
     expect { Cliqr::Parser.parse(CONFIG, %w(--1)) }.to(
-      raise_error(Cliqr::Error::InvalidArgumentError, 'invalid command argument "--1"'))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "--1"'))
     expect { Cliqr::Parser.parse(CONFIG, %w(-$)) }.to(
-      raise_error(Cliqr::Error::InvalidArgumentError, 'invalid command argument "-$"'))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "-$"'))
   end
 
   it 'cannot parse option without value if required' do

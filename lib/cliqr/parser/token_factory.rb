@@ -35,7 +35,7 @@ module Cliqr
             option_config = get_option_config(Regexp.last_match(2), arg)
             build_token(option_config, arg)
           else
-            fail Cliqr::Error::InvalidArgumentError, "invalid command argument \"#{arg}\"" \
+            fail Cliqr::Error::IllegalArgumentError, "invalid command argument \"#{arg}\"" \
               unless @config.arguments?
             ArgumentToken.new(arg)
           end

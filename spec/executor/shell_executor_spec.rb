@@ -100,7 +100,7 @@ shell exited with code 0
       arguments :disable
     end
     expect { cli.execute %w(my-command shell) }.to(
-      raise_error(Cliqr::Error::InvalidArgumentError, 'invalid command argument "shell"'))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"'))
   end
 
   it 'can handle errors in shell' do
@@ -147,7 +147,7 @@ shell exited with code 0
         arguments :disable
       end
       expect { cli.execute %w(my-command shell) }.to(
-        raise_error(Cliqr::Error::InvalidArgumentError, 'invalid command argument "shell"'))
+        raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"'))
     end
 
     it 'does not allow shell in shell for base command' do

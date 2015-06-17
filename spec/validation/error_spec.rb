@@ -13,7 +13,7 @@ Cause: NoMethodError - undefined method `non_existent' for {}:Hash
       begin
         {}.non_existent
       rescue StandardError => e
-        raise Cliqr::Error::CommandRuntimeException.new('something went wrong', e)
+        raise Cliqr::Error::CommandRuntimeError.new('something went wrong', e)
       end
     rescue Cliqr::Error::CliqrError => e
       expect(e.to_s).to eq(expected_error_message)

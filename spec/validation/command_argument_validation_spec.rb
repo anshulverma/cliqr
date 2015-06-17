@@ -102,7 +102,7 @@ false
 
     expect do
       cli.execute %w(--opt qwe)
-    end.to raise_error(Cliqr::Error::InvalidArgumentError,
+    end.to raise_error(Cliqr::Error::IllegalArgumentError,
                        "invalid command argument \"qwe\"")
   end
 

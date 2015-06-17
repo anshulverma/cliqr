@@ -33,7 +33,7 @@ module Cliqr
             end
           Router.new(action_config).handle(command_context, **options)
         rescue StandardError => e
-          raise Cliqr::Error::CommandRuntimeException.new(
+          raise Cliqr::Error::CommandRuntimeError.new(
             "command '#{action_config.command}' failed", e)
         end
       end

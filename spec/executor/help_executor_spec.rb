@@ -315,8 +315,8 @@ USAGE:
       end
     end
 
-    expect { cli.execute %w(help action_1 arg2), output: :buffer }.to(
-      raise_error(Cliqr::Error::CommandRuntimeException,
+    expect { cli.execute_internal %w(help action_1 arg2), output: :buffer }.to(
+      raise_error(Cliqr::Error::CommandRuntimeError,
                   "command 'my_command help' failed\n\n" \
                   "Cause: Cliqr::Error::IllegalArgumentError - too many arguments for \"my_command help\" command\n"))
   end

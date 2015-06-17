@@ -7,6 +7,13 @@ require 'cliqr/cli/usage_builder'
 module Cliqr
   # Definition and builder for command line interface
   module CLI
+    # Exit code hash map
+    EXIT_CODE = {
+        success: 0,
+        'Cliqr::Error::CommandRuntimeError'.to_sym => 1,
+        'Cliqr::Error::IllegalArgumentError'.to_sym => 2
+    }
+
     # A CLI interface instance which is the entry point for all CLI commands.
     #
     # @api private
@@ -38,6 +45,20 @@ module Cliqr
       #
       # @return [Integer] Exit code of the command execution
       def execute(args = [], **options)
+        begin
+          execute_internal(args, options)
+          Cliqr::CLI::EXIT_CODE[:success]
+        rescue Cliqr::Error::CliqrError => e
+          puts e.message
+          Cliqr::CLI::EXIT_CODE[e.class.to_s.to_sym]
+        end
+
+      end
+
+      # Executes a command without handling error conditions
+      #
+      # @return [Integer] Exit code
+      def execute_internal(args = [], **options)
         options = {
             :output => :default,
             :environment => :bash
