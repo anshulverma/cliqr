@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+
+# Here is an example on how to use a custom command handler
+#
+# This example also shows :boolean and :numeric option types
+# with their default value settings
+
+require 'cliqr'
+
+# a custom command handler for base command
+class MyCommandHandler < Cliqr.command
+  def execute(context)
+    puts 'executing my awesome command'
+    puts "value for option 'an-option' is '#{context.option('an-option').value}'"
+    puts "value for option 'count' is '#{context.option('count').value}'"
+    puts "value for option 'single' is '#{context.option('single').value}'"
+    puts "value for option 'test-1' is '#{context.option('test-1').value}'"
+    puts "has 'count' argument" if context.option?('count')
+    puts "does not have 'test-2' argument" unless context.option?('test-2')
+  end
+end
+
+# another custom command handler for a action
+class MyActionHandler < Cliqr.command
+  def execute(context)
+    puts "command executed : #{context.command}"
+  end
+end
+
+cli = Cliqr.interface do
+  name 'my-command'
+  description 'this is an awesome command...try it out'
+  handler MyCommandHandler
+
+  option 'an-option' do
+    short 'a'
+    description 'this is a option'
+    default :tag => 'qwerty'
+  end
+
+  option 'count' do
+    short 'c'
+    description 'count of something'
+    type :numeric
+    default 10
+  end
+
+  option 'single' do
+    short 's'
+    description 'a boolean option'
+    type :boolean
+  end
+
+  option 'test-1'
+  option 'test-2'
+
+  action 'my-action' do
+    handler MyActionHandler
+    description 'a simple action handler'
+  end
+end
+
+cli.execute(ARGV)
