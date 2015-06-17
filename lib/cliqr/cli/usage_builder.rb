@@ -2,6 +2,7 @@
 
 require 'cliqr/error'
 require 'cliqr/cli/executor'
+require 'erb'
 
 module Cliqr
   module CLI
