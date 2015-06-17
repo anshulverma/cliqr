@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
                        EOS
   spec.license       = 'MIT'
 
-  spec.files         = Dir['Rakefile', '{lib,spec}/**/*', 'README*', 'LICENSE*', 'CHANGELOG*']
+  spec.files         = Dir['Rakefile', '{lib,spec,tasks,templates,examples}/**/*', 'README*', 'LICENSE*', 'CHANGELOG*']
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
