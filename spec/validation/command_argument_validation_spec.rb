@@ -24,6 +24,24 @@ describe Cliqr::ArgumentValidation::Validator do
     EOS
   end
 
+  it 'does not allow string for numeric option types in action' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+
+      action :bla do
+        option 'age' do
+          type :numeric
+        end
+      end
+    end
+
+    expect do
+      cli.execute_internal %w(bla --age abcd)
+    end.to raise_error(Cliqr::Error::IllegalArgumentError,
+                       "illegal argument error - only values of type 'numeric' allowed for option 'age'")
+  end
+
   it 'does not allow string for numeric option types' do
     cli = Cliqr.interface do
       name 'my-command'
