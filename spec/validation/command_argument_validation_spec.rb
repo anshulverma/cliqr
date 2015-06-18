@@ -47,7 +47,7 @@ describe Cliqr::ArgumentValidation::Validator do
       name 'my-command'
       handler TestCommand
 
-      option 'age' do
+      option :age do
         type :numeric
       end
     end
