@@ -5,6 +5,30 @@ item in this nested table for further details.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
+- [1.2.0 / 2015-06-18](#120--2015-06-18)
+    - [Features](#features)
+        - [Nested actions](#nested-actions)
+        - [Ability to operate on arguments](#ability-to-operate-on-arguments)
+        - [Anonymous Proc for command handling and argument operation](#anonymous-proc-for-command-handling-and-argument-operation)
+        - [Default value for options](#default-value-for-options)
+        - [Default command actions](#default-command-actions)
+            - [Help](#help)
+            - [Version](#version)
+            - [Shell](#shell)
+        - [Forward command from one handler to another](#forward-command-from-one-handler-to-another)
+    - [Improvements](#improvements)
+        - [Use name instead of basename](#use-name-instead-of-basename)
+        - [Reorganize tests](#reorganize-tests)
+        - [Can get value in operator by calling `value`](#can-get-value-in-operator-by-calling-value)
+        - [Run anonymous command handler in the the context of `CommandContext`](#run-anonymous-command-handler-in-the-the-context-of-commandcontext)
+        - [Call `help` action by default](#call-help-action-by-default)
+        - [Add Examples for using `Cliqr`](#add-examples-for-using-cliqr)
+        - [Update `README` to make it more relevant](#update-readme-to-make-it-more-relevant)
+    - [Bug-fixes](#bug-fixes)
+        - [Fix option parsing for option with symbolic name](#fix-option-parsing-for-option-with-symbolic-name)
+        - [Handle errors gracefully](#handle-errors-gracefully)
+        - [Include template in gem](#include-template-in-gem)
+        - [Fix shell in shell issue](#fix-shell-in-shell-issue)
 - [1.1.0 / 2015-06-05](#110--2015-06-05)
     - [Features](#features)
         - [Support for arbitrary arguments in a command](#support-for-arbitrary-arguments-in-a-command)
@@ -67,6 +91,109 @@ item in this nested table for further details.
 
 <!-- markdown-toc end -->
 
+1.2.0 / 2015-06-18
+==================
+
+This is a pretty loaded release in terms of features, improvements and
+bug-fixes. Here is a detailed list.
+
+## Features
+
+### Nested actions
+
+Every command is a action and in this release, we add support for
+building nested command structure.
+
+For example:
+
+``` bash
+$ vagrant up --provision
+```
+
+This command has:
+
+- Base-command: vagrant
+  - Sub action: up
+    - Option: provision
+
+### Ability to operate on arguments
+
+You can now specify a operator that can pre-process the option arguments
+and, if needed, do validation as well.
+
+### Anonymous Proc for command handling and argument operation
+
+No need to define a separate class to handle a command or operate on
+arguments.
+
+### Default value for options
+
+Options can now have a default value. In some cases this is derived from
+option type attribute.
+
+### Default command actions
+
+Several default actions were added to a command.
+
+#### Help
+
+Help is added by default to every action. This includes a help action
+and option.
+
+#### Version
+
+If specified, a version action and boolean option is added to the action.
+
+#### Shell
+
+Shell is enabled by default if there are any sub-actions for a command.
+
+### Forward command from one handler to another
+
+A new method `forward` can be called with arguments that are parsed and
+executed again.
+
+## Improvements
+
+### Use name instead of basename
+
+The only reason for this was to make things simple and consistent.
+
+### Reorganize tests
+
+Divide tests by functionality. In some cases group them together.
+
+### Can get value in operator by calling `value`
+
+### Run anonymous command handler in the the context of `CommandContext`
+
+### Call `help` action by default
+
+If you call a command without specifying any arguments, its help action
+will be invoked (assuming it is enabled).
+
+### Add Examples for using `Cliqr`
+
+Examples for some popular commands like `vagrant` and `hbase` along with
+some custom commands were added.
+
+### Update `README` to make it more relevant
+
+## Bug-fixes
+
+### Fix option parsing for option with symbolic name
+
+### Handle errors gracefully
+
+Errors do not kill the running script anymore and they do not show stack
+trace.
+
+### Include template in gem
+
+### Fix shell in shell issue
+
+It should be not allowed to run a shell within another shell.
+
 1.1.0 / 2015-06-05
 ==================
 
@@ -77,7 +204,7 @@ for arbitrary arguments.
 
 ### Support for arbitrary arguments in a command
 
-For the first time you can invoke a command with a non-option arguments.
+For the first time you can invoke a command with non-option arguments.
 
 ## Minor Improvements
 
