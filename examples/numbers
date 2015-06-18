@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+
+# The simple sort script from root README
+
+require 'cliqr'
+
+cli = Cliqr.interface do
+  name 'numbers'
+  description 'A simplistic example for quickly getting started with cliqr.'
+  version '0.0.1' # optional; adds a version action to our simple command
+
+  # main command handler
+  handler do
+    puts "Hi #{name}" if name?
+    puts 'Nothing to do here. Please try the sort action.'
+  end
+
+  option :name do
+    description 'Your name.'
+    operator do
+      value.split(' ').first # only get the first name
+    end
+  end
+
+  action :sort do
+    description 'Sort a set of random numbers'
+    shell :disable
+
+    handler do
+      fail StandardError, 'count should be a non-zero positive number' unless count > 0
+      result = [].tap { |numbers| count.times { numbers << rand(9999) } }.sort
+      result = result.reverse if order? && order == :descending
+      puts result
+    end
+
+    option :count do
+      short 'c' # optional, but usually a good idea to have it
+      description 'Count of something.'
+      type :numeric # restricts values for this option to numbers
+    end
+
+    option :order do
+      short 'o'
+      description 'Order of sort.'
+
+      # This is how you can make sure that the input is valid.
+      operator do
+        fail StandardError, "Unknown order #{value}" unless [:ascending, :descending].include?(value.to_sym)
+        value.to_sym
+      end
+    end
+  end
+end
+
+cli.execute(ARGV)

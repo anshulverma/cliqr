@@ -1,4 +1,5 @@
-# cliqr [![Version](http://img.shields.io/gem/v/cliqr.svg?style=flat-square)](https://rubygems.org/gems/cliqr)
+# cliqr
+[![Version](http://img.shields.io/gem/v/cliqr.svg?style=flat-square)](https://rubygems.org/gems/cliqr)
 
 [![Build](http://img.shields.io/travis-ci/anshulverma/cliqr.svg?style=flat-square)](https://travis-ci.org/anshulverma/cliqr)
 [![Coverage](http://img.shields.io/codeclimate/coverage/github/anshulverma/cliqr.svg?style=flat-square)](https://codeclimate.com/github/anshulverma/cliqr)
@@ -13,7 +14,7 @@
 - [cliqr](#cliqr)
     - [Summary](#summary)
     - [Examples](#examples)
-        - [Simple CLI app example](#simple-cli-app-example)
+    - [Quickstart](#quickstart)
     - [Installation](#installation)
     - [Building](#building)
     - [Contributing](#contributing)
@@ -34,99 +35,108 @@ to define the interface of a application. Some of the features included:
 - Nested command actions
 - Multiple command handler based on arguments
 - Command routing to appropriate handler
+- Inbuilt shell extension for your command
 
 ## Examples
 
 The DSL provides several helper methods to build interfaces of different
-styles.
+styles. Please refer to the examples folder to find some useful tips on
+how to use `cliqr`.
 
-### Simple CLI app example
+## Quickstart
 
-Here is a simple hello-world example for using Cliqr.
+To get things started quickly here is an example of a basic `cliqr`
+based CLI application (lets call this script `numbers`):
 
 ``` ruby
+#!/usr/bin/env ruby
+
 require 'cliqr'
 
-# a custom command handler
-class MyCommandHandler < Cliqr.command
-  def execute(context)
-    puts 'executing my awesome command'
-    puts "value for option 'an-option' is '#{context.option('an-option').value}'"
-    puts "value for option 'count' is '#{context.option('count').value}'"
-    puts "value for option 'single' is '#{context.option('single').value}'"
-    puts "value for option 'test-1' is '#{context.option('test-1').value}'"
-    puts "has 'count' argument" if context.option?('count')
-    puts "does not have 'test-2' argument" unless context.option?('test-2')
-  end
-end
-
-class MyActionHandler < Cliqr.command
-  def execute(context)
-    puts "command executed : #{context.command}"
-  end
-end
-
 cli = Cliqr.interface do
-  name 'my-command'
-  description 'this is an awesome command...try it out'
-  handler MyCommandHandler
+  name 'numbers'
+  description 'A simplistic example for quickly getting started with cliqr.'
+  version '0.0.1' # optional; adds a version action to our simple command
 
-  option 'an-option' do
-    short 'a'
-    description 'this is a option'
+  # main command handler
+  handler do
+    puts "Hi #{name}" if name?
+    puts 'Nothing to do here. Please try the sort action.'
   end
 
-  option 'count' do
-    short 'c'
-    description 'count of something'
-    type :numeric
+  option :name do
+    description 'Your name.'
+    operator do
+      value.split(' ').first # only get the first name
+    end
   end
 
-  option 'single' do
-    short 's'
-    description 'a boolean option'
-    type :boolean
-  end
+  action :sort do
+    description 'Sort a set of random numbers'
+    shell :disable
 
-  option 'test-1'
-  option 'test-2'
+    handler do
+      fail StandardError, 'count should be a non-zero positive number' unless count > 0
+      result = [].tap { |numbers| count.times { numbers << rand(9999) } }.sort
+      result = result.reverse if order? && order == :descending
+      puts result
+    end
 
-  action 'my-action' do
-    handler MyActionHandler
-    description 'a simple action handler'
+    option :count do
+      short 'c' # optional, but usually a good idea to have it
+      description 'Count of something.'
+      type :numeric # restricts values for this option to numbers
+    end
+
+    option :order do
+      short 'o'
+      description 'Order of sort.'
+
+      # This is how you can make sure that the input is valid.
+      operator do
+        fail StandardError, "Unknown order #{value}" unless [:ascending, :descending].include?(value.to_sym)
+        value.to_sym
+      end
+    end
   end
 end
 
-puts cli.usage
-# my-command -- this is an awesome command...try it out
-#
-# USAGE:
-#     my-command [actions] [options] [arguments]
-#
-# Available options:
-#
-#     --an-option, -a  :  this is a option
-#     --count, -c  :  <numeric> count of something
-#     --[no-]single, -s  :  <boolean> a boolean option
-#     --test-1
-#     --test-2
-#
-# Available actions:
-#
-#     my-action -- a simple action handler
-#     Type "my-command help my-action" to get more information about action "my-action"
+cli.execute(ARGV)
+```
 
-cli.execute %w(--an-option qwerty -c 86 --no-single --test-1 some-value)
-# executing my awesome command
-# value for option 'an-option' is 'qwerty'
-# value for option 'count' is '86'
-# value for option 'single' is 'false'
-# value for option 'test-1' is 'some-value'
-# has 'count' argument
-# does not have 'test-2' argument
+Now you can execute this script:
 
-cli.execute ['my-action']
-# command executed : my-command my-action
+``` bash
+$ ./numbers
+Nothing to do here. Please try the sort action.
+$ ./numbers  --name "Anshul Verma"
+Hi Anshul
+Nothing to do here. Please try the sort action.
+$ ./numbers sort -c 5
+4519
+5612
+6038
+6872
+8259
+$ ./numbers sort -c 5 --order descending
+8742
+7995
+6593
+2730
+806
+```
+
+A shell command is auto generated for you by `cliqr`. Here is how it works:
+
+``` bash
+$ ./numbers shell
+Starting shell for command "numbers"
+numbers > sort -c 5
+1259
+2031
+4864
+8355
+9824
 ```
 
 ## Installation
