@@ -59,7 +59,7 @@ cli = Cliqr.interface do
 
   # main command handler
   handler do
-    puts "Hi #{name}" if name?
+    puts "Hi #{name}" if name? # name is command's option defined below
     puts 'Nothing to do here. Please try the sort action.'
   end
 
@@ -89,7 +89,7 @@ cli = Cliqr.interface do
 
     option :order do
       short 'o'
-      description 'Order of sort.'
+      description 'Order of sort (either :ascending or :descending).'
 
       # This is how you can make sure that the input is valid.
       operator do
@@ -136,6 +136,27 @@ numbers > sort -c 5
 4864
 8355
 9824
+```
+
+You can get help info on the sort action:
+
+``` bash
+$ ./numbers help sort
+numbers sort -- Sort a set of random numbers
+
+USAGE:
+    numbers sort [actions] [options] [arguments]
+
+Available options:
+
+    --count, -c  :  <numeric> Count of something. (default => 0)
+    --order, -o  :  Order of sort (either :ascending or :descending).
+    --help, -h  :  Get helpful information for action "numbers sort" along with its usage information.
+
+Available actions:
+[ Type "numbers sort help [action-name]" to get more information about that action ]
+
+    help -- The help action for command "numbers sort" which provides details and usage information on how to use the command.
 ```
 
 ## Installation

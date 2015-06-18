@@ -41,7 +41,7 @@ cli = Cliqr.interface do
 
     option :order do
       short 'o'
-      description 'Order of sort.'
+      description 'Order of sort (either :ascending or :descending).'
 
       # This is how you can make sure that the input is valid.
       operator do
