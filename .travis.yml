@@ -23,6 +23,7 @@ matrix:
     - rvm: jruby-20mode
     - rvm: jruby-21mode
     - rvm: rbx-2
+    - os: osx
   fast_finish: true
 branches:
   only: master
