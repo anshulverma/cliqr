@@ -1,39 +1,4 @@
-<%= command %><% unless description.nil? || description.empty? %> -- <%= description %><% end %>
+<%= render(:command_name) %>
 
-USAGE:
-    <%= command %><%=
-    ' [actions]' if actions? %><%=
-    ' [options]' if options? %><%=
-    ' [arguments]' if arguments? %><%
-
-if options? %>
-
-Available options:
-<%
-   options.each { |option|
-%>
-    --<%=
-         '[no-]' if option.boolean?
-       %><%=
-         option.name
-       %><%=
-            ", -#{option.short}" if option.short?
-          %><%=
-            if option.details?
-              "  : #{" <#{option.type}>" if option.type?}#{" #{option.description}" if option.description?}#{" (default => #{option.default.inspect})" if option.default?}"
-            end
-          %><%
-   }
-end
-
-if actions? %>
-
-Available actions:
-<%= "[ Type \"#{command} help [action-name]\" to get more information about that action ]\n" if help? %><%
-   actions.each { |action|
-%>
-    <%= action.name %><%= " -- #{action.description}" if action.description? %>
-<%
-   }
-%>
-<% end %>
+<%= render(:usage_info) %>
+<%= render(:option_list) %><%= "\n" if options? %><%= render(:action_list) %>

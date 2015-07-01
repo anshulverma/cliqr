@@ -74,6 +74,11 @@ module Cliqr
         @config.help?
       end
 
+      # Check if running inside shell
+      def shell?
+        @type == :shell
+      end
+
       private
 
       # Check if a obj is non-empty

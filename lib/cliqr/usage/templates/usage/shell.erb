@@ -1,9 +1,2 @@
 <%= render(:command_name) %>
-<% if actions? %>Available actions:
-<%= "[ Type \"help [action-name]\" to get more information about that action ]\n" if help? %><%
-   actions.each { |action|
-%>
-    <%= action.name %><%= " -- #{action.description}" if action.description? %><%
-   }
-%>
-<% end %>
+<%= render(:action_list) %>

@@ -389,7 +389,6 @@ Available options:
 Available actions:
 
     my-action -- this is a test action
-
     another-action -- this is another test action
     EOS
   end
@@ -443,7 +442,6 @@ Available options:
 Available actions:
 
     my-action-1
-
     another-action
     EOS
   end
@@ -600,7 +598,6 @@ USAGE:
 Available actions:
 
     bla
-
     shell -- Execute a shell in the context of "my-command" command.
     EOS
   end
@@ -654,7 +651,6 @@ Available actions:
 [ Type "my-command help [action-name]" to get more information about that action ]
 
     help -- The help action for command "my-command" which provides details and usage information on how to use the command.
-
     version -- Get version information for command "my-command".
     EOS
   end

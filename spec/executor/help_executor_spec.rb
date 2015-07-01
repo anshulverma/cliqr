@@ -74,7 +74,6 @@ Available actions:
 [ Type "my_command action_1 help [action-name]" to get more information about that action ]
 
     sub_action -- This is a sub action.
-
     help -- The help action for command "my_command action_1" which provides details and usage information on how to use the command.
     EOS
   end
@@ -165,9 +164,7 @@ Available actions:
 [ Type "my_command help [action-name]" to get more information about that action ]
 
     action_1 -- test action
-
     action_2 -- another cool action for the base command
-
     help -- The help action for command "my_command" which provides details and usage information on how to use the command.
     EOS
   end
@@ -368,9 +365,7 @@ Available actions:
 [ Type "my_command help [action-name]" to get more information about that action ]
 
     action_1 -- test action
-
     action_2
-
     help -- The help action for command "my_command" which provides details and usage information on how to use the command.
     EOS
 
@@ -389,7 +384,6 @@ Available actions:
 [ Type "my_command action_2 help [action-name]" to get more information about that action ]
 
     sub-action
-
     help -- The help action for command "my_command action_2" which provides details and usage information on how to use the command.
     EOS
   end

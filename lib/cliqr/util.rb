@@ -133,5 +133,18 @@ module Cliqr
         forward "#{command} help"
       end
     end
+
+    # Remove newlines from the end of a string
+    #
+    # @return [String]
+    def self.trim_newlines(str)
+      index = str.length - 1
+      count = 0
+      while str[index] == "\n" && index >= 0
+        count += 1
+        index -= 1
+      end
+      str[0...-count]
+    end
   end
 end

@@ -36,7 +36,8 @@ module Cliqr
           end
         end
 
-        TemplateRenderer.render(@template_file, usage_context)
+        # Add a extra newline at the end of usage text
+        "#{TemplateRenderer.render(@template_file, usage_context)}\n"
       end
     end
 
@@ -51,9 +52,7 @@ module Cliqr
         template_file_path = File.expand_path(template_file_path, __FILE__)
         template = ERB.new(File.new(template_file_path).read, nil, '%')
         result = template.result(context.instance_eval { binding })
-
-        # remove multiple newlines from the end of usage
-        "#{result.strip}\n"
+        Cliqr::Util.trim_newlines(result)
       end
     end
   end
