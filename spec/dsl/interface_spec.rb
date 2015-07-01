@@ -4,10 +4,10 @@ require 'spec_helper'
 
 require 'fixtures/test_command'
 
-describe Cliqr::CLI::Interface do
+describe Cliqr::Interface do
   it 'does not allow empty config' do
     expect do
-      Cliqr::CLI::Interface.build(nil)
+      Cliqr::Interface.build(nil)
     end.to(raise_error(Cliqr::Error::ConfigNotFound, 'a valid config should be defined'))
   end
 

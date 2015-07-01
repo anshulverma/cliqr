@@ -9,7 +9,7 @@ require 'fixtures/test_option_reader_command'
 require 'fixtures/test_option_checker_command'
 require 'fixtures/argument_reader_command'
 
-describe Cliqr::CLI::Executor do
+describe Cliqr::Executor do
   it 'routes to action command with no arguments' do
     cli = Cliqr.interface do
       name 'my-command'

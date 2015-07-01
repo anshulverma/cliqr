@@ -1,10 +1,10 @@
 # encoding: utf-8
 
-require 'cliqr/cli/argument_operator_context'
+require 'cliqr/command/argument_operator_context'
 
 module Cliqr
   # Definition and builder for command context
-  module CLI
+  module Command
     # Manages things like arguments and input/output for a command
     #
     # @api private
@@ -24,21 +24,26 @@ module Cliqr
       # @return [String]
       attr_accessor :action_name
 
+      # Environment type
+      #
+      # @return [String]
+      attr_reader :environment
+
       # Build a instance of command context based on the parsed set of arguments
       #
-      # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
+      # @param [Cliqr::Config::CommandConfig] config The configuration settings
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed input object
       # @param [Hash] options Options for command execution
       # @param [Proc] executor Executes forwarded commands
       #
-      # @return [Cliqr::CLI::CommandContext]
+      # @return [Cliqr::Command::CommandContext]
       def self.build(config, parsed_input, options, &executor)
         CommandContextBuilder.new(config, parsed_input, options, executor).build
       end
 
       # Initialize the command context (called by the CommandContextBuilder)
       #
-      # @return [Cliqr::CLI::CommandContext]
+      # @return [Cliqr::Command::CommandContext]
       def initialize(config, options, arguments, environment, executor)
         @config = config
         @command = config.command
@@ -54,7 +59,7 @@ module Cliqr
 
       # List of parsed options
       #
-      # @return [Array<Cliqr::CLI::CommandOption>]
+      # @return [Array<Cliqr::Command::CommandOption>]
       def options
         @options.values
       end
@@ -63,7 +68,7 @@ module Cliqr
       #
       # @param [String] name Name of the option
       #
-      # @return [Cliqr::CLI::CommandOption] Instance of CommandOption for option
+      # @return [Cliqr::Command::CommandOption] Instance of CommandOption for option
       def option(name)
         return @options[name] if option?(name)
         default(name)
@@ -78,10 +83,17 @@ module Cliqr
         @options.key?(name)
       end
 
-      # Check whether the current context is based off of a sub-action
+      # Check whether a action is valid in current context
       #
-      # @return [Boolean] <tt>true</tt> if this context is based off a sub-action
-      def action?
+      # @param [String] name Name of the action to check
+      #
+      # @return [Boolean] <tt>true</tt> if this context has the requested action
+      def action?(name)
+        @config.action?(name)
+      end
+
+      # Check if the current context if for a action
+      def action_type?
         @config.parent?
       end
 
@@ -114,7 +126,19 @@ module Cliqr
       #
       # @return [Boolean]
       def bash?
-        @environment == :bash
+        @environment == :cli
+      end
+
+      # Transform this context to the root context
+      #
+      # @param [Symbol] environment_type Optional environment type
+      #
+      # @return [Cliqr::Command::CommandContext]
+      def root(environment_type = nil)
+        environment_type = @environment if environment_type.nil?
+        root_config = @config
+        root_config = @config.root if @config.respond_to?(:root)
+        CommandContext.new(root_config, [], [], environment_type, @executor)
       end
 
       private :initialize, :default
@@ -128,12 +152,12 @@ module Cliqr
     class CommandContextBuilder
       # Initialize builder for CommandContext
       #
-      # @param [Cliqr::CLI::Config] config The configuration settings for command's action config
+      # @param [Cliqr::Command::Config] config The configuration settings
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed and validated command line arguments
       # @param [Hash] options Options for command execution
       # @param [Proc] executor Executes forwarded commands
       #
-      # @return [Cliqr::CLI::CommandContextBuilder]
+      # @return [Cliqr::Command::CommandContextBuilder]
       def initialize(config, parsed_input, options, executor)
         @config = config
         @parsed_input = parsed_input
@@ -143,7 +167,7 @@ module Cliqr
 
       # Build a new instance of CommandContext
       #
-      # @return [Cliqr::CLI::CommandContext] A newly created CommandContext instance
+      # @return [Cliqr::Command::CommandContext] A newly created CommandContext instance
       def build
         option_contexts = @parsed_input.options.map do |option|
           CommandOption.new(option, @config.option(option.first))
@@ -174,9 +198,9 @@ module Cliqr
       # Create a new command line option instance
       #
       # @param [Array] option Parsed arguments for creating a command line option
-      # @param [Cliqr::CLI::OptionConfig] option_config Option's config settings
+      # @param [Cliqr::Config::OptionConfig] option_config Option's config settings
       #
-      # @return [Cliqr::CLI::CommandContext] A new CommandOption object
+      # @return [Cliqr::Command::CommandContext] A new CommandOption object
       def initialize(option, option_config)
         @value = run_value_operator(option.pop, option_config.operator)
         @name = option.pop
@@ -189,7 +213,7 @@ module Cliqr
       # @return [Nothing]
       def run_value_operator(value, operator)
         if operator.is_a?(Proc)
-          ArgumentOperatorContext.new(value).instance_eval(&operator)
+          Command::ArgumentOperatorContext.new(value).instance_eval(&operator)
         else
           operator.operate(value)
         end

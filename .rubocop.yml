@@ -4,7 +4,7 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   Exclude:
-    - 'templates/**/*'
+    - 'lib/cliqr/usage/templates/**/*'
 
 Style/Encoding:
   Enabled: true
@@ -19,9 +19,10 @@ Metrics/MethodLength:
   Max: 15
   Exclude:
     - 'spec/**/*_spec.rb'
+    - 'lib/cliqr/config/dsl.rb'
 
 Metrics/AbcSize:
-  Max: 15
+  Max: 16.16
   Exclude:
     - 'spec/**/*_spec.rb'
 
@@ -31,4 +32,4 @@ Metrics/ClassLength:
   CountComments: false
   Max: 100
   Exclude:
-    - 'lib/cliqr/cli/config.rb'
+    - 'lib/cliqr/config/action_config.rb'

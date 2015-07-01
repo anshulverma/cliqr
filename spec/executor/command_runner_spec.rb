@@ -2,21 +2,19 @@
 
 require 'spec_helper'
 
-require 'cliqr/cli/command_runner_factory'
-
-describe Cliqr::CLI::CommandRunnerFactory do
+describe Cliqr::Executor::CommandRunnerFactory do
   it 'returns standard runner for default output' do
-    runner = Cliqr::CLI::CommandRunnerFactory.get(output: :default)
-    expect(runner).to be_kind_of(Cliqr::CLI::StandardCommandRunner)
+    runner = Cliqr::Executor::CommandRunnerFactory.get(output: :default)
+    expect(runner).to be_kind_of(Cliqr::Executor::StandardCommandRunner)
   end
 
   it 'returns buffered runner for buffer output' do
-    runner = Cliqr::CLI::CommandRunnerFactory.get(output: :buffer)
-    expect(runner).to be_kind_of(Cliqr::CLI::BufferedCommandRunner)
+    runner = Cliqr::Executor::CommandRunnerFactory.get(output: :buffer)
+    expect(runner).to be_kind_of(Cliqr::Executor::BufferedCommandRunner)
   end
 
   it 'throws error for default output type' do
-    expect { Cliqr::CLI::CommandRunnerFactory.get(output: :unknown) }.to(
+    expect { Cliqr::Executor::CommandRunnerFactory.get(output: :unknown) }.to(
       raise_error(be_kind_of(Cliqr::Error::UnknownCommandRunnerException))
     )
   end

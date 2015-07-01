@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 module Cliqr
-  module CLI
+  module Command
     # Operates on the value of a argument after it has been validated
     #
     # @api private
@@ -14,7 +14,7 @@ module Cliqr
       # @return [Cliqr::CLI::ArgumentOperator]
       def self.for_type(type)
         case type
-        when CLI::NUMERIC_ARGUMENT_TYPE
+        when Config::NUMERIC_ARGUMENT_TYPE
           NumericArgumentOperator.new
         else
           DEFAULT_ARGUMENT_OPERATOR

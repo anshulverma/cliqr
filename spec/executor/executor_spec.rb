@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 require 'cliqr/error'
+require 'cliqr/executor/runner'
 
 require 'fixtures/test_command'
 require 'fixtures/always_error_command'
@@ -13,7 +14,7 @@ require 'fixtures/argument_reader_command'
 require 'fixtures/test_option_type_checker_command'
 require 'fixtures/csv_argument_operator'
 
-describe Cliqr::CLI::Executor do
+describe Cliqr::Executor::Runner do
   it 'returns code 0 for default command runner' do
     expect(Cliqr.command.new.execute(nil)).to eq(0)
   end
@@ -244,7 +245,7 @@ value = operator-inline
       handler do
         puts 'in my-command'
         puts options.map { |option| "#{option.name} => #{option.value}" }
-        puts action?
+        puts action_type?
         puts option?('option-1')
         puts option?('option-2')
         puts option?('option-3')
@@ -258,7 +259,7 @@ value = operator-inline
           puts 'in my-action'
           puts options.map { |option| "#{option.name} => #{option.value}" }
           puts option('option-3').value
-          puts action?
+          puts action_type?
           puts option?('option-1')
           puts option?('option-2')
           puts option?('option-3')
@@ -438,19 +439,17 @@ false
     EOS
   end
 
-  it 'can use version action on action command' do
-    cli = Cliqr.interface do
-      name 'my-command'
+  it 'can not use version action on action command' do
+    def define_interface
+      Cliqr.interface do
+        name 'my-command'
 
-      action :bla do
-        version '1234'
+        action :bla do
+          version '1234'
+        end
       end
     end
-
-    result = cli.execute_internal ['bla version'], output: :buffer
-    expect(result[:stdout]).to eq <<-EOS
-1234
-    EOS
+    expect { define_interface }.to(raise_error(NoMethodError))
   end
 
   describe 'error handling' do
@@ -483,7 +482,7 @@ false
       old_stdout = $stdout
       $stdout = old_stdout.is_a?(StringIO) ? old_stdout : StringIO.new('', 'w')
       begin
-        expect(cli.execute(['abcd'])).to(eq(1))
+        expect(cli.execute(['abcd'])).to(eq(101))
         expect($stdout.string).to(eq("command 'my-command' failed\n\nCause: StandardError - I am not a happy handler!\n"))
       ensure
         $stdout = old_stdout
@@ -499,7 +498,7 @@ false
       old_stdout = $stdout
       $stdout = old_stdout.is_a?(StringIO) ? old_stdout : StringIO.new('', 'w')
       begin
-        expect(cli.execute(['abcd'])).to(eq(2))
+        expect(cli.execute(['abcd'])).to(eq(102))
         expect($stdout.string).to(eq("invalid command argument \"abcd\"\n"))
       ensure
         $stdout = old_stdout

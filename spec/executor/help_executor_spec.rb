@@ -6,7 +6,7 @@ require 'cliqr/error'
 
 require 'fixtures/test_command'
 
-describe Cliqr::CLI::Executor do
+describe Cliqr::Executor do
   it 'can execute help action to get help for base command' do
     cli = Cliqr.interface do
       name 'my-command'
@@ -15,31 +15,6 @@ describe Cliqr::CLI::Executor do
     end
 
     result = cli.execute_internal ['help'], output: :buffer
-    expect(result[:stdout]).to eq <<-EOS
-my-command -- test command has no description
-
-USAGE:
-    my-command [actions] [options] [arguments]
-
-Available options:
-
-    --help, -h  :  Get helpful information for action "my-command" along with its usage information.
-
-Available actions:
-[ Type "my-command help [action-name]" to get more information about that action ]
-
-    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
-    EOS
-  end
-
-  it 'can execute help option to get help for base command' do
-    cli = Cliqr.interface do
-      name 'my-command'
-      description 'test command has no description'
-      handler TestCommand
-    end
-
-    result = cli.execute_internal ['--help'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 my-command -- test command has no description
 
@@ -66,7 +41,6 @@ Available actions:
       action :action_1 do
         description 'test action'
         handler TestCommand
-        shell :disable
 
         action :sub_action do
           description 'This is a sub action.'
@@ -373,8 +347,6 @@ back in action_1
       end
 
       action 'action_2' do
-        shell :disable
-
         action 'sub-action' do
           handler TestCommand
         end

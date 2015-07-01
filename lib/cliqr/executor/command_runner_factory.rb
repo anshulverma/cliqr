@@ -3,7 +3,7 @@
 require 'stringio'
 
 module Cliqr
-  module CLI
+  module Executor
     # Factory class to get instance of CommandRunner based on input options
     #
     # @api private
@@ -12,8 +12,8 @@ module Cliqr
       #
       # @param [Hash] options Used to build a command runner instance
       #
-      # @return [Cliqr::CLI::StandardCommandRunner] If default output is require from command
-      # @return [Cliqr::CLI::BufferedCommandRunner] If command's output needs to be buffered
+      # @return [Cliqr::Executor::StandardCommandRunner] If default output is require from command
+      # @return [Cliqr::Executor::BufferedCommandRunner] If command's output needs to be buffered
       def self.get(**options)
         case options[:output]
         when :default

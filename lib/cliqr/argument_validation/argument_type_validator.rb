@@ -17,9 +17,9 @@ module Cliqr
       # Check if a type of a argument matches a required type
       def type_of?(argument, required_type)
         case required_type
-        when CLI::NUMERIC_ARGUMENT_TYPE
+        when Config::NUMERIC_ARGUMENT_TYPE
           Integer(argument)
-        when CLI::BOOLEAN_ARGUMENT_TYPE
+        when Config::BOOLEAN_ARGUMENT_TYPE
           fail ArgumentError unless argument.class == TrueClass || argument.class == FalseClass
         end
         true

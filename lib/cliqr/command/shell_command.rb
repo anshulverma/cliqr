@@ -1,14 +1,12 @@
 # encoding: utf-8
 
-require 'cliqr/cli/command'
-
 module Cliqr
   # @api private
-  module CLI
+  module Command
     # The default command executed to run a shell action
     #
     # @api private
-    class ShellCommand < Cliqr::CLI::Command
+    class ShellCommand < Cliqr::Command::BaseCommand
       # Start a shell in the context of some other command
       #
       # @return [Integer] Exit code
@@ -18,7 +16,8 @@ module Cliqr
 
         base_command = context.command[0...(context.command.rindex('shell'))].strip
         puts "Starting shell for command \"#{base_command}\""
-        exit_code = ShellRunner.new(base_command, context).run
+
+        exit_code = ShellRunner.new(base_command, context.root(:shell)).run
         puts "shell exited with code #{exit_code}"
         exit_code
       end
@@ -52,7 +51,13 @@ module Cliqr
       #
       # @return [Integer] Exit code of the command executed
       def execute(command)
-        @context.forward("#{@base_command} #{command}", :environment => :cliqr_shell)
+        return if command.empty?
+        action_name = command.split(' ').first
+        unless @context.action?(action_name)
+          puts "unknown action \"#{action_name}\""
+          return Cliqr::Executor::ExitCode.code(nil)
+        end
+        @context.forward("#{@base_command} #{command}", :environment => @context.environment)
       rescue StandardError => e
         puts e.message
       end

@@ -1,17 +1,18 @@
 # encoding: utf-8
 
-require 'cliqr/cli/router'
-require 'cliqr/cli/command_context'
 require 'cliqr/argument_validation/validator'
 require 'cliqr/parser/argument_parser'
+require 'cliqr/command/command_context'
+require 'cliqr/executor/router'
 
 module Cliqr
-  module CLI
-    # Handles command execution with error handling
-    #
-    # @api private
-    class Executor
-      # Create a new command executor
+  # Handles command execution with error handling
+  #
+  # @api private
+  module Executor
+    # The command runner that handles errors as well
+    class Runner
+      # Create a new command runner
       def initialize(config)
         @config = config
         @validator = Cliqr::ArgumentValidation::Validator.new
@@ -27,11 +28,11 @@ module Cliqr
         args = Cliqr::Util.sanitize_args(args, @config)
         action_config, parsed_input = parse(args)
         begin
-          command_context = CommandContext.build(action_config, parsed_input, options) \
+          command_context = Command::CommandContext.build(action_config, parsed_input, options) \
             do |forwarded_args, forwarded_options|
               execute(forwarded_args, options.merge(forwarded_options))
             end
-          Router.new(action_config).handle(command_context, **options)
+          Executor::Router.new(action_config).handle(command_context, **options)
         rescue StandardError => e
           raise Cliqr::Error::CommandRuntimeError.new(
             "command '#{action_config.command}' failed", e)
@@ -53,6 +54,20 @@ module Cliqr
         action_config, parsed_input = Parser.parse(@config, args)
         @validator.validate(parsed_input, action_config)
         [action_config, parsed_input]
+      end
+    end
+
+    # Exit code mapper based on error type
+    #
+    # @api private
+    class ExitCode
+      # Get exit code based on type
+      #
+      # @return [Integer]
+      def self.code(type)
+        return 0 if type == :success
+        return type.class.error_code if type.class.respond_to?(:error_code)
+        99
       end
     end
   end

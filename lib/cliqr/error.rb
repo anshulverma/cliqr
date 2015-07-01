@@ -6,6 +6,15 @@ module Cliqr
     #
     # @api private
     class CliqrError < StandardError
+      class << self
+        # The error code based on the error condition
+        #
+        # @return [Integer]
+        attr_accessor :error_code
+      end
+
+      @error_code = 100
+
       # Set up the error to wrap another error's trace
       #
       # @param [String] error_message A short error description
@@ -55,7 +64,14 @@ module Cliqr
     class ValidationError < CliqrError; end
 
     # Encapsulates the error that gets thrown during a command execution
-    class CommandRuntimeError < CliqrError; end
+    class CommandRuntimeError < CliqrError
+      @error_code = 101
+    end
+
+    # Raised if an argument does not conform to the option's type
+    class IllegalArgumentError < CliqrError
+      @error_code = 102
+    end
 
     # Error to signify that a command's runner is not available
     class UnknownCommandRunnerException < CliqrError; end
@@ -74,9 +90,6 @@ module Cliqr
 
     # Raised if multiple actions are defined with same name at the same nesting level
     class DuplicateActions < CliqrError; end
-
-    # Raised if an argument does not conform to the option's type
-    class IllegalArgumentError < CliqrError; end
 
     # Indicates that a unknown validator type is being used in a class
     class UnknownValidatorType < CliqrError; end

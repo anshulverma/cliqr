@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'cliqr/cli/shell_command'
+require 'cliqr/command/shell_command'
 
 module Cliqr
   # Utility methods
@@ -34,13 +34,13 @@ module Cliqr
     #
     # @return [Cliqr::CLI::OptionConfig] New option config
     def self.build_help_option(config)
-      Cliqr::CLI::OptionConfig.new.tap do |option_config|
+      Cliqr::Config::OptionConfig.new.tap do |option_config|
         option_config.name = 'help'
         option_config.short = 'h'
         option_config.description = "Get helpful information for action \"#{config.command}\" " \
                                     'along with its usage information.'
-        option_config.type = Cliqr::CLI::BOOLEAN_ARGUMENT_TYPE
-        option_config.operator = Cliqr::CLI::ArgumentOperator::DEFAULT_ARGUMENT_OPERATOR
+        option_config.type = Cliqr::Config::BOOLEAN_ARGUMENT_TYPE
+        option_config.operator = Cliqr::Command::ArgumentOperator::DEFAULT_ARGUMENT_OPERATOR
         option_config.finalize
       end
     end
@@ -64,12 +64,12 @@ module Cliqr
     #
     # @return [Cliqr::CLI::OptionConfig] New option config
     def self.build_version_option(config)
-      Cliqr::CLI::OptionConfig.new.tap do |option_config|
+      Cliqr::Config::OptionConfig.new.tap do |option_config|
         option_config.name = 'version'
         option_config.short = 'v'
         option_config.description = "Get version information for command \"#{config.command}\"."
-        option_config.type = Cliqr::CLI::BOOLEAN_ARGUMENT_TYPE
-        option_config.operator = Cliqr::CLI::ArgumentOperator::DEFAULT_ARGUMENT_OPERATOR
+        option_config.type = Cliqr::Config::BOOLEAN_ARGUMENT_TYPE
+        option_config.operator = Cliqr::Command::ArgumentOperator::DEFAULT_ARGUMENT_OPERATOR
         option_config.finalize
       end
     end
@@ -82,7 +82,7 @@ module Cliqr
         fail Cliqr::Error::IllegalArgumentError,
              "too many arguments for \"#{command}\" command" if arguments.length > 1
         action_config = arguments.length == 0 ? config : config.action(arguments.first)
-        puts Cliqr::CLI::UsageBuilder.build(action_config)
+        puts Cliqr::Usage::UsageBuilder.new(environment).build(action_config)
       end
     end
 
@@ -93,7 +93,7 @@ module Cliqr
       cli = Cliqr.interface do
         name 'shell'
         description "Execute a shell in the context of \"#{config.command}\" command."
-        handler Cliqr::CLI::ShellCommand
+        handler Cliqr::Command::ShellCommand
         shell :disable
       end
       cli.config
@@ -128,6 +128,8 @@ module Cliqr
     # @return [Proc]
     def self.forward_to_help_handler
       proc do
+        fail Cliqr::Error::IllegalArgumentError,
+             'no arguments allowed for default help action' unless arguments.empty?
         forward "#{command} help"
       end
     end

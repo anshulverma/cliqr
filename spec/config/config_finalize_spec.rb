@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-describe Cliqr::CLI::Config do
+describe Cliqr::Config do
   it 'sets proper defaults for unset values' do
-    config = Cliqr::CLI::Config.new
+    config = Cliqr::Config::CommandConfig.new
     config.finalize
     expect(config.name).to eq('')
     expect(config.description).to eq('')

@@ -1,11 +1,11 @@
 # encoding: utf-8
 
 module Cliqr
-  module CLI
+  module Command
     # Base class for all commands to extend from
     #
     # @api private
-    class Command
+    class BaseCommand
       # Execute the command
       #
       # @return [Integer] Exit status of the command execution

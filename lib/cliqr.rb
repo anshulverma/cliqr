@@ -1,11 +1,9 @@
 # encoding: utf-8
 
+require 'cliqr/interface'
 require 'cliqr/version'
 require 'cliqr/error'
-
-require 'cliqr/cli/config'
-require 'cliqr/cli/interface'
-require 'cliqr/cli/command'
+require 'cliqr/config/command_config'
 
 # Top level namespace for the Cliqr gem
 #
@@ -27,9 +25,9 @@ module Cliqr
     #
     # @api public
     def interface(&block)
-      config = CLI::Config.build(&block)
+      config = Cliqr::Config::CommandConfig.build(&block)
       config.setup_defaults
-      CLI::Interface.build(config)
+      Cliqr::Interface.build(config)
     end
 
     # All cliqr commands should extend from this. Here is an example:
@@ -43,7 +41,7 @@ module Cliqr
     #
     # @return [Cliqr::CLI::Command]
     def command
-      CLI::Command
+      Command::BaseCommand
     end
 
     # A argument operator must extend from [Cliqr::CLI::ArgumentOperator]
@@ -57,7 +55,7 @@ module Cliqr
     #
     # @return [Cliar::CLI::ArgumentOperator]
     def operator
-      CLI::ArgumentOperator
+      Command::ArgumentOperator
     end
   end
 end

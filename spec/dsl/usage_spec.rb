@@ -6,7 +6,7 @@ require 'fixtures/test_command'
 require 'fixtures/action_reader_command'
 require 'fixtures/csv_argument_operator'
 
-describe Cliqr::CLI::UsageBuilder do
+describe Cliqr::Usage::UsageBuilder do
   ################ BASE COMMAND ################
 
   it 'builds a base command with name' do
@@ -620,32 +620,17 @@ USAGE:
     EOS
   end
 
-  it 'can add shell action to a sub-action which does not have actions' do
-    cli = Cliqr.interface do
-      name 'my-command'
+  it 'can not add shell action to a sub-action' do
+    def define_interface
+      Cliqr.interface do
+        name 'my-command'
 
-      action :bla do
-        shell :enable
+        action :bla do
+          shell :enable
+        end
       end
     end
-    result = cli.execute_internal %w(my-command bla), output: :buffer
-    expect(result[:stdout]).to eq <<-EOS
-my-command bla
-
-USAGE:
-    my-command bla [actions] [options] [arguments]
-
-Available options:
-
-    --help, -h  :  Get helpful information for action "my-command bla" along with its usage information.
-
-Available actions:
-[ Type "my-command bla help [action-name]" to get more information about that action ]
-
-    shell -- Execute a shell in the context of "my-command bla" command.
-
-    help -- The help action for command "my-command bla" which provides details and usage information on how to use the command.
-    EOS
+    expect { define_interface }.to(raise_error(NoMethodError))
   end
 
   it 'can add version to base command' do
@@ -662,44 +647,28 @@ USAGE:
 
 Available options:
 
-    --version, -v  :  Get version information for command "my-command".
     --help, -h  :  Get helpful information for action "my-command" along with its usage information.
+    --version, -v  :  Get version information for command "my-command".
 
 Available actions:
 [ Type "my-command help [action-name]" to get more information about that action ]
 
-    version -- Get version information for command "my-command".
-
     help -- The help action for command "my-command" which provides details and usage information on how to use the command.
+
+    version -- Get version information for command "my-command".
     EOS
   end
 
-  it 'can add version to any action' do
-    cli = Cliqr.interface do
-      name 'my-command'
+  it 'cannot add version to action' do
+    def define_interface
+      Cliqr.interface do
+        name 'my-command'
 
-      action :bla do
-        version '1234'
+        action :bla do
+          version '1234'
+        end
       end
     end
-    result = cli.execute_internal %w(bla help), output: :buffer
-    expect(result[:stdout]).to eq <<-EOS
-my-command bla
-
-USAGE:
-    my-command bla [actions] [options] [arguments]
-
-Available options:
-
-    --version, -v  :  Get version information for command "my-command bla".
-    --help, -h  :  Get helpful information for action "my-command bla" along with its usage information.
-
-Available actions:
-[ Type "my-command bla help [action-name]" to get more information about that action ]
-
-    version -- Get version information for command "my-command bla".
-
-    help -- The help action for command "my-command bla" which provides details and usage information on how to use the command.
-    EOS
+    expect { define_interface }.to(raise_error(NoMethodError))
   end
 end

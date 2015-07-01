@@ -4,37 +4,56 @@ require 'spec_helper'
 
 require 'fixtures/test_command'
 
-describe Cliqr::CLI::Executor do
+describe Cliqr::Executor do
   it 'can execute help in command shell' do
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
+      description 'this is a test command'
 
-      action :bla
+      action :foo do
+        description 'the foo action'
+      end
+
+      action :bar do
+        description 'bar command'
+
+        action :baz
+      end
     end
 
-    with_input(['help']) do
+    with_input(%w(help -h)) do
       result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > help.
-my-command
-
-USAGE:
-    my-command [actions] [options] [arguments]
-
-Available options:
-
-    --help, -h  :  Get helpful information for action "my-command" along with its usage information.
+my-command -- this is a test command
 
 Available actions:
-[ Type "my-command help [action-name]" to get more information about that action ]
+[ Type "help [action-name]" to get more information about that action ]
 
-    bla
-
-    shell -- Execute a shell in the context of "my-command" command.
-
+    foo -- the foo action
+    bar -- bar command
     help -- The help action for command "my-command" which provides details and usage information on how to use the command.
+my-command > -h.
+unknown action "-h"
+my-command > exit.
+shell exited with code 0
+      EOS
+    end
+
+    with_input(['help bar']) do
+      result = cli.execute_internal %w(my-command shell), output: :buffer
+      expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+my-command > help bar.
+my-command bar -- bar command
+
+Available actions:
+[ Type "help [action-name]" to get more information about that action ]
+
+    baz
+    help -- The help action for command "my-command bar" which provides details and usage information on how to use the command.
 my-command > exit.
 shell exited with code 0
       EOS
@@ -56,35 +75,33 @@ shell exited with code 0
         action :bar do
           handler do
             puts 'bar executed'
+            puts "option: #{opt}" if opt?
           end
+
+          option :opt
         end
       end
     end
 
-    with_input(['', 'my-command', 'foo', 'foo bar', 'foo bar help']) do
+    with_input(['', 'my-command', 'foo', 'foo bar', 'foo bar --opt yes', 'foo bar help']) do
       result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > .
-base command executed
 my-command > my-command.
-base command executed
+unknown action "my-command"
 my-command > foo.
 foo executed
 my-command > foo bar.
 bar executed
+my-command > foo bar --opt yes.
+bar executed
+option: yes
 my-command > foo bar help.
 my-command foo bar
 
-USAGE:
-    my-command foo bar [actions] [options] [arguments]
-
-Available options:
-
-    --help, -h  :  Get helpful information for action "my-command foo bar" along with its usage information.
-
 Available actions:
-[ Type "my-command foo bar help [action-name]" to get more information about that action ]
+[ Type "help [action-name]" to get more information about that action ]
 
     help -- The help action for command "my-command foo bar" which provides details and usage information on how to use the command.
 my-command > exit.
@@ -125,9 +142,9 @@ shell exited with code 0
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > unknown.
-invalid command argument "unknown"
+unknown action "unknown"
 my-command > --opt-1 val.
-unknown option "--opt-1"
+unknown action "--opt-1"
 my-command > foo.
 command 'my-command foo' failed
 
@@ -182,27 +199,18 @@ shell exited with code 0
         end
       end
 
-      with_input(['shell']) do
-        result = cli.execute_internal %w(my-command foo shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command foo"
-my-command foo > shell.
-command 'my-command foo shell' failed
-
-Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell
-my-command foo > exit.
-shell exited with code 0
-        EOS
-      end
+      expect { cli.execute_internal %w(my-command foo shell) }.to(
+        raise_error(Cliqr::Error::CommandRuntimeError,
+                    "command 'my-command foo' failed\n\nCause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action\n"))
 
       with_input(['foo shell']) do
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
 my-command > foo shell.
-command 'my-command foo shell' failed
+command 'my-command foo' failed
 
-Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell
+Cause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action
 my-command > exit.
 shell exited with code 0
         EOS

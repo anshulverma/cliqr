@@ -1,18 +1,18 @@
 # encoding: utf-8
 
-require 'cliqr/cli/command_runner_factory'
+require 'cliqr/executor/command_runner_factory'
 
 module Cliqr
-  module CLI
+  module Executor
     # Used for routing the command to the appropriate command handler based on the interface config
     #
     # @api private
     class Router
       # Create a new Router instance
       #
-      # @param [Cliqr::CLI::Config] config Command line configuration
+      # @param [Cliqr::Config::CommandConfig] config Command line configuration
       #
-      # @return [Cliqr::CLI::Router]
+      # @return [Cliqr::Interface::Router]
       def initialize(config)
         @config = config
       end

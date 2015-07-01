@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require 'fixtures/test_command'
 
-describe Cliqr::CLI::Config do
+describe Cliqr::Config do
   it 'does not allow multiple actions with same name' do
     def define_interface
       Cliqr.interface do
@@ -91,7 +91,7 @@ describe Cliqr::CLI::Config do
                                                  "action \"my-action\" - invalid value for handler; fix one of - ['handler' cannot be nil]]"))
   end
 
-  it 'only accepts command handler that extend from Cliqr::CLI::Command' do
+  it 'only accepts command handler that extend from Cliqr::Command::BaseCommand' do
     def define_interface
       Cliqr.interface do
         name 'my-command'
@@ -106,7 +106,7 @@ describe Cliqr::CLI::Config do
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - [' \
                                                  "action \"my-action\" - invalid value for handler; fix one of - [" \
-                                                   "handler of type 'Object' does not extend from 'Cliqr::CLI::Command', " \
+                                                   "handler of type 'Object' does not extend from 'Cliqr::Command::BaseCommand', " \
                                                    "handler should be a 'Proc' not 'Object']]"))
   end
 
@@ -134,10 +134,10 @@ describe Cliqr::CLI::Config do
                   'invalid Cliqr interface configuration - [' \
                     "value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-name-!@#\", " \
                     'invalid value for handler; fix one of - [' \
-                      "handler of type 'Object' does not extend from 'Cliqr::CLI::Command', " \
+                      "handler of type 'Object' does not extend from 'Cliqr::Command::BaseCommand', " \
                       "handler should be a 'Proc' not 'Object'], " \
                     "action \"my-action\" - invalid value for handler; fix one of - [" \
-                      "handler of type 'Object' does not extend from 'Cliqr::CLI::Command', " \
+                      "handler of type 'Object' does not extend from 'Cliqr::Command::BaseCommand', " \
                       "handler should be a 'Proc' not 'Object'], " \
                     "action \"my-action\" - actions[1] - 'name' cannot be nil, " \
                     "action \"my-action\" - actions[1] - invalid value for handler; fix one of - ['handler' cannot be nil], " \
