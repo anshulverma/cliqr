@@ -1,6 +1,7 @@
 # encoding: utf-8
 
-require 'cliqr/command/shell_prompt'
+require 'cliqr/command/shell_prompt_builder'
+require 'cliqr/command/shell_banner_builder'
 
 module Cliqr
   module Config
@@ -22,7 +23,18 @@ module Cliqr
       attr_accessor :prompt
       validates :prompt,
                 one_of: [
-                  { extend: Command::ShellPrompt },
+                  { extend: Command::ShellPromptBuilder },
+                  { type_of: Proc },
+                  { type_of: String }
+                ]
+
+      # Banner that is displayed when shell starts
+      #
+      # @return [String]
+      attr_accessor :banner
+      validates :banner,
+                one_of: [
+                  { extend: Command::ShellBannerBuilder },
                   { type_of: Proc },
                   { type_of: String }
                 ]
@@ -33,6 +45,7 @@ module Cliqr
 
         @enabled = UNSET
         @prompt = UNSET
+        @banner = UNSET
       end
 
       # Finalize shell's config by adding default values for unset values
@@ -47,7 +60,8 @@ module Cliqr
         when UNSET
           @enabled = true
         end
-        @prompt = Config.get_if_unset(@prompt, Command::ShellPrompt::DEFAULT_PROMPT)
+        @prompt = Config.get_if_unset(@prompt, Command::ShellPromptBuilder::DEFAULT_PROMPT)
+        @banner = Config.get_if_unset(@banner, Command::ShellBannerBuilder::DEFAULT_BANNER)
 
         self
       end

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 require 'fixtures/test_command'
 require 'fixtures/test_shell_prompt'
+require 'fixtures/test_shell_banner'
 
 describe Cliqr::Command::ShellCommand do
   it 'can execute help in command shell' do
@@ -219,7 +220,7 @@ shell exited with code 0
     end
   end
 
-  describe 'shell prompt' do
+  describe Cliqr::Command::ShellPromptBuilder do
     it 'allows a custom prompt string for shell prompt' do
       cli = Cliqr.interface do
         name 'my-command'
@@ -308,6 +309,127 @@ test-prompt [3] > foo.
 foo executed
 test-prompt [4] > .
 test-prompt [5] > exit.
+shell exited with code 0
+        EOS
+      end
+    end
+
+    it 'allows a default prompt' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler TestCommand
+        shell :enable
+
+        action :foo do
+          handler do
+            puts 'foo executed'
+          end
+        end
+      end
+
+      with_input(['', '', 'foo', '']) do
+        result = cli.execute_internal %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+my-command > .
+my-command > .
+my-command > foo.
+foo executed
+my-command > .
+my-command > exit.
+shell exited with code 0
+        EOS
+      end
+    end
+  end
+
+  describe Cliqr::Command::ShellBannerBuilder do
+    it 'allows a custom prompt string for shell banner' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler TestCommand
+        shell :enable do
+          banner 'Welcome to my-command!!!'
+        end
+
+        action :foo do
+          handler do
+            puts 'foo executed'
+          end
+        end
+      end
+
+      with_input(['', '', 'foo']) do
+        result = cli.execute_internal %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Welcome to my-command!!!
+my-command > .
+my-command > .
+my-command > foo.
+foo executed
+my-command > exit.
+shell exited with code 0
+        EOS
+      end
+    end
+
+    it 'allows a custom prompt function for shell banner' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler TestCommand
+        shell :enable do
+          banner do
+            "welcome to #{command}"
+          end
+        end
+
+        action :foo do
+          handler do
+            puts 'foo executed'
+          end
+        end
+      end
+
+      with_input(['', '', 'foo', '']) do
+        result = cli.execute_internal %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+welcome to my-command
+my-command > .
+my-command > .
+my-command > foo.
+foo executed
+my-command > .
+my-command > exit.
+shell exited with code 0
+        EOS
+      end
+    end
+
+    it 'allows a custom prompt class for shell banner' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler TestCommand
+        shell :enable do
+          banner TestShellBanner
+        end
+
+        action :foo do
+          handler do
+            puts 'foo executed'
+          end
+        end
+      end
+
+      with_input(['', '', 'foo', '']) do
+        result = cli.execute_internal %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+welcome to the command my-command
+my-command > .
+my-command > .
+my-command > foo.
+foo executed
+my-command > .
+my-command > exit.
 shell exited with code 0
         EOS
       end

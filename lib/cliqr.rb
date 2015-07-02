@@ -4,7 +4,7 @@ require 'cliqr/interface'
 require 'cliqr/version'
 require 'cliqr/error'
 require 'cliqr/config/command_config'
-require 'cliqr/command/shell_prompt'
+require 'cliqr/command/shell_prompt_builder'
 
 # Top level namespace for the Cliqr gem
 #
@@ -59,7 +59,7 @@ module Cliqr
       Command::ArgumentOperator
     end
 
-    # A custom shell prompt that must extend from [Cliqr::Command::ShellPrompt]
+    # A custom shell prompt builder must extend from this
     #
     # @example
     #   class MyOperator < Cliqr.shell_prompt
@@ -68,9 +68,23 @@ module Cliqr
     #     end
     #   end
     #
-    # @return [Cliar::Command::ShellPrompt]
+    # @return [Cliqr::Command::ShellPromptBuilder]
     def shell_prompt
-      Command::ShellPrompt
+      Command::ShellPromptBuilder
+    end
+
+    # A custom shell banner builder must extend from this
+    #
+    # @example
+    #   class MyOperator < Cliqr.shell_banner
+    #     def prompt(context)
+    #       # build a banner string
+    #     end
+    #   end
+    #
+    # @return [Cliqr::Command::ShellBannerBuilder]
+    def shell_banner
+      Command::ShellBannerBuilder
     end
   end
 end

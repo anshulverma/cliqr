@@ -1,12 +1,12 @@
 # encoding: utf-8
 
-# A command that echoes the value for option named 'test-option'
+# A custom test command prompt
 class TestShellPrompt < Cliqr.shell_prompt
   def initialize
     @count = 0
   end
 
-  def prompt(_context)
+  def build(_context)
     @count += 1
     "test-prompt [#{@count}] > "
   end

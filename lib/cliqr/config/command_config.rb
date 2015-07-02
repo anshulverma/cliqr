@@ -92,8 +92,10 @@ module Cliqr
       # @return [Cliqr::Config::ShellConfig] Newly created shell config
       def handle_shell(setting, &block)
         @shell = ShellConfig.build(&block).tap do |shell_config|
-          shell_config.enabled = setting
-          shell_config.finalize
+          unless setting.nil?
+            shell_config.enabled = setting
+            shell_config.finalize
+          end
         end
       end
 

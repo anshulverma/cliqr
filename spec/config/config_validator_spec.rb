@@ -98,21 +98,51 @@ describe Cliqr::Config do
       raise_error(NoMethodError, "undefined method `valid?' for nil:NilClass"))
   end
 
+  it 'validates shell enable setting' do
+    def define_interface
+      Cliqr.interface do
+        name 'test-command'
+        handler TestCommand
+        shell Object
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               "invalid Cliqr interface configuration - [shell - invalid type 'Object']"))
+  end
+
   it 'validates shell enable and prompt setting' do
     def define_interface
       Cliqr.interface do
         name 'test-command'
         handler TestCommand
-        shell Object do
+        shell do
           prompt Object
         end
       end
     end
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - [' \
-                                                 "shell - invalid type 'Object', " \
                                                  'shell - invalid value for prompt; fix one of - [' \
-                                                   "prompt of type 'Class' does not extend from 'Cliqr::Command::ShellPrompt', " \
-                                                   "prompt should be a 'Proc' not 'Class', prompt should be a 'String' not 'Class']]"))
+                                                   "prompt of type 'Class' does not extend from 'Cliqr::Command::ShellPromptBuilder', " \
+                                                   "prompt should be a 'Proc' not 'Class', " \
+                                                   "prompt should be a 'String' not 'Class']]"))
+  end
+
+  it 'validates shell banner to be a string' do
+    def define_interface
+      Cliqr.interface do
+        name 'test-command'
+        handler TestCommand
+        shell do
+          banner Object
+        end
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError, \
+                                               'invalid Cliqr interface configuration - [' \
+                                                 'shell - invalid value for banner; fix one of - [' \
+                                                   "banner of type 'Class' does not extend from 'Cliqr::Command::ShellBannerBuilder', " \
+                                                   "banner should be a 'Proc' not 'Class', " \
+                                                   "banner should be a 'String' not 'Class']]"))
   end
 end

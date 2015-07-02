@@ -16,32 +16,56 @@ module Cliqr
       #
       # @return [Integer] Exit code
       def execute(context)
-        fail(Cliqr::Error::IllegalCommandError,
-             'Cannot run another shell within an already running shell') unless context.bash?
+        validate_environment(context)
 
-        base_command = context.command[0...(context.command.rindex('shell'))].strip
-        puts "Starting shell for command \"#{base_command}\""
+        root_context = context.root(:shell)
 
-        exit_code = ShellRunner.new(base_command, context.root(:shell), build_prompt).run
+        puts banner(root_context, build_proc(@shell_config.banner))
+
+        exit_code = build_runner(context, root_context).run
         puts "shell exited with code #{exit_code}"
         exit_code
       end
 
-      # Build a anonymous method to get prompt string
+      private
+
+      # Build an instance of the ShellRunner
+      #
+      # @return [Cliqr::Command::ShellRunner]
+      def build_runner(context, root_context)
+        ShellRunner.new(context.command[0...(context.command.rindex('shell'))].strip,
+                        root_context,
+                        build_proc(@shell_config.prompt))
+      end
+
+      # Make sure a shell cannot be run inside an already running shell
+      #
+      # @return Nothing
+      def validate_environment(context)
+        fail(Cliqr::Error::IllegalCommandError,
+             'Cannot run another shell within an already running shell') unless context.bash?
+      end
+
+      # Banner string for current command
+      #
+      # @return [String]
+      def banner(context, block)
+        context.instance_eval(&block)
+      end
+
+      # Build an anonymous method to wrap an attribute value
       #
       # @return [Proc]
-      def build_prompt
-        if @shell_config.prompt.is_a?(String)
-          shell_prompt = @shell_config.prompt
-          proc do
-            shell_prompt
-          end
-        elsif @shell_config.prompt.is_a?(Proc)
-          return @shell_config.prompt
+      def build_proc(value)
+        if value.is_a?(String)
+          proc { value }
+        elsif value.is_a?(Proc)
+          return value
         else
-          shell_prompt = @shell_config.prompt.new
+          builder = value
+          builder = value.new if value.is_a?(Class)
           proc do
-            shell_prompt.prompt(self)
+            builder.build(self)
           end
         end
       end

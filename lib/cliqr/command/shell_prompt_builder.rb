@@ -5,14 +5,15 @@ module Cliqr
     # Builds a shell prompt
     #
     # @api private
-    class ShellPrompt
+    class ShellPromptBuilder
       # Default shell prompt
-      DEFAULT_PROMPT = ShellPrompt.new
+      DEFAULT_PROMPT = ShellPromptBuilder.new
 
-      # Return the command in the current context
+      # Build a prompt for current command
       #
       # @return [String]
-      def prompt(_context)
+      def build(context)
+        "#{context.command} > "
       end
     end
   end
