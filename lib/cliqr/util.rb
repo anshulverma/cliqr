@@ -17,17 +17,17 @@ module Cliqr
 
     # Build a help action for a parent config
     #
-    # @return [Cliqr::CLI::Config] New action config
+    # @return [Cliqr::CLI::ActionConfig] New action config
     def self.build_help_action(config)
-      cli = Cliqr.interface do
-        name 'help'
-        description "The help action for command \"#{config.command}\" which provides details " \
-                    'and usage information on how to use the command.'
-        handler Util.help_action_handler(config)
-        help :disable if config.help?
-        shell :disable
+      Cliqr::Config::ActionConfig.new.tap do |action_config|
+        action_config.name = 'help'
+        action_config.description = \
+          "The help action for command \"#{config.command}\" which provides details " \
+          'and usage information on how to use the command.'
+        action_config.handler = Util.help_action_handler(config)
+        action_config.help = :disable if config.help?
+        action_config.finalize
       end
-      cli.config
     end
 
     # Build a help option for a parent config
@@ -47,17 +47,16 @@ module Cliqr
 
     # Build a version action for a parent config
     #
-    # @return [Cliqr::CLI::Config] New action config
+    # @return [Cliqr::CLI::ActionConfig] New action config
     def self.build_version_action(config)
-      cli = Cliqr.interface do
-        name 'version'
-        description "Get version information for command \"#{config.command}\"."
-        handler do
+      Cliqr::Config::ActionConfig.new.tap do |action_config|
+        action_config.name = 'version'
+        action_config.description = "Get version information for command \"#{config.command}\"."
+        action_config.handler = proc do
           puts config.version
         end
-        shell :disable
+        action_config.finalize
       end
-      cli.config
     end
 
     # Build a version option for a parent config
@@ -88,15 +87,25 @@ module Cliqr
 
     # Build a shell action for a parent config
     #
-    # @return [Cliqr::CLI::Config] New action config
-    def self.build_shell_action(config)
-      cli = Cliqr.interface do
-        name 'shell'
-        description "Execute a shell in the context of \"#{config.command}\" command."
-        handler Cliqr::Command::ShellCommand
-        shell :disable
+    # @return [Cliqr::CLI::ActionConfig] New action config
+    def self.build_shell_action(config, shell_config)
+      Cliqr::Config::ActionConfig.new.tap do |action_config|
+        action_config.name = 'shell'
+        action_config.description = "Execute a shell in the context of \"#{config.command}\" command."
+        action_config.handler = Cliqr::Command::ShellCommand.new(shell_config)
+        action_config.finalize
       end
-      cli.config
+    end
+
+    # Build shell config for a parent config
+    #
+    # @return [Cliqr::CLI::ShellConfig] New action config
+    def self.build_shell_config(config)
+      Cliqr::Config::ShellConfig.new.tap do |shell_config|
+        shell_config.enabled = config.actions?
+        shell_config.prompt = "#{config.name} > "
+        shell_config.finalize
+      end
     end
 
     # Sanitize raw command line arguments

@@ -7,6 +7,11 @@ module Cliqr
     #
     # @api private
     class ShellCommand < Cliqr::Command::BaseCommand
+      # Create a new shell command handler
+      def initialize(shell_config)
+        @shell_config = shell_config
+      end
+
       # Start a shell in the context of some other command
       #
       # @return [Integer] Exit code
@@ -17,9 +22,28 @@ module Cliqr
         base_command = context.command[0...(context.command.rindex('shell'))].strip
         puts "Starting shell for command \"#{base_command}\""
 
-        exit_code = ShellRunner.new(base_command, context.root(:shell)).run
+        exit_code = ShellRunner.new(base_command, context.root(:shell), build_prompt).run
         puts "shell exited with code #{exit_code}"
         exit_code
+      end
+
+      # Build a anonymous method to get prompt string
+      #
+      # @return [Proc]
+      def build_prompt
+        if @shell_config.prompt.is_a?(String)
+          shell_prompt = @shell_config.prompt
+          proc do
+            shell_prompt
+          end
+        elsif @shell_config.prompt.is_a?(Proc)
+          return @shell_config.prompt
+        else
+          shell_prompt = @shell_config.prompt.new
+          proc do
+            shell_prompt.prompt(self)
+          end
+        end
       end
     end
 
@@ -28,9 +52,10 @@ module Cliqr
     # The runner for shell command
     class ShellRunner
       # Create the runner instance
-      def initialize(base_command, context)
+      def initialize(base_command, context, prompt)
         @base_command = base_command
         @context = context
+        @prompt = prompt
       end
 
       # Start shell
@@ -38,7 +63,7 @@ module Cliqr
       # @return [Integer] Exit code
       def run
         loop do
-          command = prompt("#{@base_command} > ")
+          command = prompt
           execute(command) unless command == 'exit'
           break if command == 'exit'
         end
@@ -65,8 +90,8 @@ module Cliqr
       # Show a prompt and ask for input
       #
       # @return [String]
-      def prompt(prefix = '')
-        print prefix
+      def prompt
+        print @context.instance_eval(&@prompt)
         $stdin.gets.chomp
       end
     end

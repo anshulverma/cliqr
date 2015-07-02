@@ -193,8 +193,12 @@ module Cliqr
           #
           # @return [Boolean] <tt>true</tt> if there were any errors during validation
           def do_validate(name, value, errors)
-            return if value.is_a?(@super_type) || \
-                      (value.respond_to?(:<) ? value < @super_type : value.is_a?(@super_type))
+            begin
+              return if value.is_a?(@super_type) || \
+                        (value.respond_to?(:<) ? value < @super_type : value.is_a?(@super_type))
+            rescue ArgumentError
+              # the comparison failed which indicates that the validation also failed
+            end
             errors.add("#{name} of type '#{value.class.name}' " \
                        "does not extend from '#{@super_type}'")
           end
@@ -269,9 +273,10 @@ module Cliqr
         # Run multiple validators on a value to assert at-least one of them passes
         class OneOfValidator < Validator
           # Create a new <tt>:one_of</tt> validator
-          def initialize(validators)
-            @validators = validators.map do |type, config|
-              ValidatorFactory.get(type, config)
+          def initialize(validator_configs)
+            @validators = []
+            validator_configs.each do |config|
+              @validators.push(ValidatorFactory.get(config.first[0], config.first[1]))
             end
           end
 
@@ -294,6 +299,26 @@ module Cliqr
           end
         end
 
+        # Validates child element
+        class ChildValidator < Validator
+          # Create a new child validator
+          def initialize(_config)
+          end
+
+          protected
+
+          # Validate the child element
+          #
+          # @return [Boolean] <tt>true</tt> if there were any errors during validation
+          def do_validate(name, value, errors)
+            return true if value.valid?
+            value.errors.each do |error|
+              errors.add("#{name} - #{error}")
+            end
+            false
+          end
+        end
+
         # A hash of validator type id to validator class
         VALIDATORS = {
             :non_empty => NonEmptyValidator,
@@ -304,7 +329,8 @@ module Cliqr
             :collection => CollectionValidator,
             :inclusion => InclusionValidator,
             :one_of => OneOfValidator,
-            :type_of => TypeOfValidator
+            :type_of => TypeOfValidator,
+            :child => ChildValidator
         }
 
         # Get a new validator based on the type and config param

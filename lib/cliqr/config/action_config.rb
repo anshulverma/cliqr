@@ -10,16 +10,16 @@ module Cliqr
     # Configuration setting for an action
     #
     # @api private
-    class ActionConfig < Cliqr::Config::BaseConfig
+    class ActionConfig < Cliqr::Config::NamedConfig
       # Command handler for the base command
       #
       # @return [Class<Cliqr::Command::BaseCommand>]
       attr_accessor :handler
       validates :handler,
-                one_of: {
-                    extend: Cliqr::Command::BaseCommand,
-                    type_of: Proc
-                }
+                one_of: [
+                  { extend: Cliqr::Command::BaseCommand },
+                  { type_of: Proc }
+                ]
 
       #  Dictates whether this command can take arbitrary arguments (optional)
       #
@@ -196,19 +196,12 @@ module Cliqr
         @help == ENABLE_CONFIG
       end
 
-      # Check if this is the root config
-      #
-      # @return [Boolean]
-      def root?
-        self == @root
-      end
-
       private
 
       # Handle configuration for a new option
       #
       # @param [Symbol] name Long name of the option
-      # @param [Proc] block Populate the option's config in this funciton block
+      # @param [Proc] block Populate the option's config in this function block
       #
       # @return [Cliqr::Config::OptionConfig] Newly created option's config
       def handle_option(name, &block)

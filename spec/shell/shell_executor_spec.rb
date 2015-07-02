@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 require 'fixtures/test_command'
+require 'fixtures/test_shell_prompt'
 
-describe Cliqr::Executor do
+describe Cliqr::Command::ShellCommand do
   it 'can execute help in command shell' do
     cli = Cliqr.interface do
       name 'my-command'
@@ -212,6 +213,101 @@ command 'my-command foo' failed
 
 Cause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action
 my-command > exit.
+shell exited with code 0
+        EOS
+      end
+    end
+  end
+
+  describe 'shell prompt' do
+    it 'allows a custom prompt string for shell prompt' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler TestCommand
+        shell :enable do
+          prompt 'test-prompt $ '
+        end
+
+        action :foo do
+          handler do
+            puts 'foo executed'
+          end
+        end
+      end
+
+      with_input(['', '', 'foo']) do
+        result = cli.execute_internal %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+test-prompt $ .
+test-prompt $ .
+test-prompt $ foo.
+foo executed
+test-prompt $ exit.
+shell exited with code 0
+        EOS
+      end
+    end
+
+    it 'allows a custom prompt function for shell prompt' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler TestCommand
+        shell :enable do
+          count = 0
+          prompt do
+            count += 1
+            "my-command [#{count}]$ "
+          end
+        end
+
+        action :foo do
+          handler do
+            puts 'foo executed'
+          end
+        end
+      end
+
+      with_input(['', '', 'foo', '']) do
+        result = cli.execute_internal %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+my-command [1]$ .
+my-command [2]$ .
+my-command [3]$ foo.
+foo executed
+my-command [4]$ .
+my-command [5]$ exit.
+shell exited with code 0
+        EOS
+      end
+    end
+
+    it 'allows a custom prompt class for shell prompt' do
+      cli = Cliqr.interface do
+        name 'my-command'
+        handler TestCommand
+        shell :enable do
+          prompt TestShellPrompt
+        end
+
+        action :foo do
+          handler do
+            puts 'foo executed'
+          end
+        end
+      end
+
+      with_input(['', '', 'foo', '']) do
+        result = cli.execute_internal %w(my-command shell), output: :buffer
+        expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+test-prompt [1] > .
+test-prompt [2] > .
+test-prompt [3] > foo.
+foo executed
+test-prompt [4] > .
+test-prompt [5] > exit.
 shell exited with code 0
         EOS
       end

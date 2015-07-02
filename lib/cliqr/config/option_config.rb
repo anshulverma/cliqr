@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'cliqr/config/named_config'
 require 'cliqr/command/argument_operator'
 
 module Cliqr
@@ -7,7 +8,7 @@ module Cliqr
     # Config attributes for a command's option
     #
     # @api private
-    class OptionConfig < Cliqr::Config::BaseConfig
+    class OptionConfig < Cliqr::Config::NamedConfig
       # Optional short name for the option
       #
       # @return [String]
@@ -27,10 +28,10 @@ module Cliqr
       # @return [Class<Cliqr::Command::ArgumentOperator>]
       attr_accessor :operator
       validates :operator,
-                one_of: {
-                    extend: Cliqr::Command::ArgumentOperator,
-                    type_of: Proc
-                }
+                one_of: [
+                  { extend: Cliqr::Command::ArgumentOperator },
+                  { type_of: Proc }
+                ]
 
       # Default value for this option
       #

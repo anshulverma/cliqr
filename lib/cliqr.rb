@@ -4,6 +4,7 @@ require 'cliqr/interface'
 require 'cliqr/version'
 require 'cliqr/error'
 require 'cliqr/config/command_config'
+require 'cliqr/command/shell_prompt'
 
 # Top level namespace for the Cliqr gem
 #
@@ -21,7 +22,7 @@ module Cliqr
     #     option
     #   end
     #
-    # @return [Cliqr::CLI::Interface]
+    # @return [Cliqr::Interface]
     #
     # @api public
     def interface(&block)
@@ -39,12 +40,12 @@ module Cliqr
     #     end
     #   end
     #
-    # @return [Cliqr::CLI::Command]
+    # @return [Cliqr::Command::BaseCommand]
     def command
       Command::BaseCommand
     end
 
-    # A argument operator must extend from [Cliqr::CLI::ArgumentOperator]
+    # A argument operator must extend from [Cliqr::Command::ArgumentOperator]
     #
     # @example
     #   class MyOperator < Cliqr.operator
@@ -56,6 +57,20 @@ module Cliqr
     # @return [Cliar::CLI::ArgumentOperator]
     def operator
       Command::ArgumentOperator
+    end
+
+    # A custom shell prompt that must extend from [Cliqr::Command::ShellPrompt]
+    #
+    # @example
+    #   class MyOperator < Cliqr.shell_prompt
+    #     def prompt(context)
+    #       # build a prompt string
+    #     end
+    #   end
+    #
+    # @return [Cliar::Command::ShellPrompt]
+    def shell_prompt
+      Command::ShellPrompt
     end
   end
 end

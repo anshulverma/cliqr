@@ -87,4 +87,32 @@ describe Cliqr::Config do
                                                    "handler of type 'Object' does not extend from 'Cliqr::Command::BaseCommand', " \
                                                    "handler should be a 'Proc' not 'Object']]"))
   end
+
+  it 'expects that shell be non-nil for command config' do
+    config = Cliqr::Config::CommandConfig.new
+    config.name = 'my-command'
+    config.handler = TestCommand
+    config.shell = nil
+    config.finalize
+    expect { Cliqr::Interface.build(config) }.to(
+      raise_error(NoMethodError, "undefined method `valid?' for nil:NilClass"))
+  end
+
+  it 'validates shell enable and prompt setting' do
+    def define_interface
+      Cliqr.interface do
+        name 'test-command'
+        handler TestCommand
+        shell Object do
+          prompt Object
+        end
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               'invalid Cliqr interface configuration - [' \
+                                                 "shell - invalid type 'Object', " \
+                                                 'shell - invalid value for prompt; fix one of - [' \
+                                                   "prompt of type 'Class' does not extend from 'Cliqr::Command::ShellPrompt', " \
+                                                   "prompt should be a 'Proc' not 'Class', prompt should be a 'String' not 'Class']]"))
+  end
 end

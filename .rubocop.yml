@@ -13,6 +13,7 @@ Metrics/LineLength:
   Max: 100
   Exclude:
     - 'spec/**/*_spec.rb'
+    - 'lib/cliqr/util.rb'
 
 Metrics/MethodLength:
   CountComments: false
@@ -33,3 +34,4 @@ Metrics/ClassLength:
   Max: 100
   Exclude:
     - 'lib/cliqr/config/action_config.rb'
+    - 'lib/cliqr/util.rb'
