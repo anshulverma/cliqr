@@ -6,7 +6,10 @@ module Cliqr
     #
     # @api private
     module Color
-      @colors_enabled = true
+      def initialize(config)
+        # check and disable colors if needed
+        check_color_setting(config)
+      end
 
       # Colorize a string with black color
       #
@@ -132,6 +135,21 @@ module Cliqr
       # @return [String]
       def reverse_color(str)
         colorize(str, 7, 27)
+      end
+
+      protected
+
+      # Check if color is disabled
+      #
+      # @return [Cliqr::Command::CommandContext]
+      def check_color_setting(config)
+        return self if config.root.color?
+
+        instance_eval do
+          def colorize(str, *_args)
+            str
+          end
+        end
       end
 
       private

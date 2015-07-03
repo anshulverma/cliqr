@@ -1,1 +1,3 @@
-<%= command %><% unless description.nil? || description.empty? %> -- <%= description %><% end %>
+<% parts = command.to_s.split(' ')
+%><%= "#{black(parts[0...-1].join(' '))}#{parts.length > 1 ? ' ' : ''}#{bold(yellow(parts[parts.length - 1]))}"
+%><% unless description.nil? || description.empty? %> -- <%= description %><% end %>

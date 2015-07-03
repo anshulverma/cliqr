@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 require 'fixtures/test_command'
-require 'fixtures/action_reader_command'
-require 'fixtures/csv_argument_operator'
 
 describe Cliqr::Usage::UsageBuilder do
   ################ BASE COMMAND ################
@@ -16,6 +14,7 @@ describe Cliqr::Usage::UsageBuilder do
       handler TestCommand
       arguments :disable
       help :disable
+      color :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -32,6 +31,7 @@ USAGE:
       handler TestCommand
       arguments :disable
       help :disable
+      color :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -51,6 +51,7 @@ USAGE:
       handler TestCommand
       arguments :disable
       help :disable
+      color :disable
 
       option 'option-1' do
         short 'p'
@@ -77,6 +78,7 @@ Available options:
       handler TestCommand
       arguments :disable
       help :disable
+      color :disable
 
       option 'option-1'
     end
@@ -116,6 +118,7 @@ Available options:
       handler TestCommand
       arguments :disable
       help :disable
+      color :disable
 
       option 'option-1' do
         description 'a numeric option'
@@ -143,6 +146,7 @@ Available options:
       handler TestCommand
       arguments :disable
       help :disable
+      color :disable
 
       option 'option-1' do
         description 'a boolean option'
@@ -170,6 +174,7 @@ Available options:
       handler TestCommand
       arguments :disable
       help :disable
+      color :disable
 
       option 'option-1' do
         short 'p'
@@ -197,6 +202,7 @@ Available options:
       handler TestCommand
       arguments :enable
       help :disable
+      color :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -213,6 +219,7 @@ USAGE:
       handler TestCommand
       arguments :enable
       help :disable
+      color :disable
 
       option 'option-1'
     end
@@ -237,9 +244,9 @@ Available options:
       handler TestCommand
       help :disable
       shell :disable
+      color :disable
 
       action 'my-action' do
-        handler TestCommand
         arguments :disable
       end
     end
@@ -262,9 +269,9 @@ Available actions:
       handler TestCommand
       help :disable
       shell :disable
+      color :disable
 
       action 'my-action' do
-        handler TestCommand
         description 'this is a test action'
         arguments :disable
       end
@@ -288,9 +295,9 @@ Available actions:
       handler TestCommand
       help :disable
       shell :disable
+      color :disable
 
       action 'my-action' do
-        handler TestCommand
         description 'this is a test action'
         arguments :disable
       end
@@ -320,9 +327,9 @@ Available actions:
       handler TestCommand
       help :disable
       shell :disable
+      color :disable
 
       action 'my-action' do
-        handler TestCommand
         description 'this is a test action'
 
         option 'action-option'
@@ -353,11 +360,11 @@ Available actions:
       handler TestCommand
       help :disable
       shell :disable
+      color :disable
 
       option 'option-1'
 
       action 'my-action' do
-        handler TestCommand
         description 'this is a test action'
 
         option 'action-option'
@@ -366,7 +373,6 @@ Available actions:
       option 'option-2'
 
       action 'another-action' do
-        handler TestCommand
         description 'this is another test action'
         arguments :disable
       end
@@ -400,22 +406,18 @@ Available actions:
         handler TestCommand
         help :disable
         shell :disable
+        color :disable
 
         option 'test-option-1'
         option 'test-option-2'
 
         action 'my-action-1' do
-          handler ActionReaderCommand
 
           action 'my-action-1' do
-            handler ActionReaderCommand
-
             option 'test-option-1'
             option 'test-option-2'
 
             action 'my-action-1' do
-              handler ActionReaderCommand
-
               option 'test-option-1'
               option 'test-option-2'
             end
@@ -423,7 +425,6 @@ Available actions:
         end
 
         action 'another-action' do
-          handler ActionReaderCommand
           arguments :disable
         end
       end
@@ -453,6 +454,7 @@ Available actions:
       name 'my-command'
       handler TestCommand
       help :disable
+      color :disable
 
       option 'test-option' do
         default :a_symbol
@@ -463,8 +465,6 @@ Available actions:
         description 'another option'
         type :numeric
         default %w(test array default)
-
-        operator CSVArgumentOperator
       end
 
       option 'nil-option' do
@@ -501,13 +501,12 @@ Available options:
       name 'my-command'
       handler TestCommand
       help :disable
+      color :disable
 
       option :another do
         short 'a'
         description 'another option'
         type :boolean
-
-        operator CSVArgumentOperator
       end
     end
 
@@ -528,13 +527,12 @@ Available options:
       name 'my-command'
       handler TestCommand
       help :disable
+      color :disable
 
       option :another do
         short 'a'
         description 'another option'
         type :numeric
-
-        operator CSVArgumentOperator
       end
     end
 
@@ -555,14 +553,13 @@ Available options:
       name 'my-command'
       handler TestCommand
       help :disable
+      color :disable
 
       option :another do
         short 'a'
         description 'another option'
         type :boolean
         default true
-
-        operator CSVArgumentOperator
       end
     end
 
@@ -585,6 +582,7 @@ Available options:
       name 'my-command'
       handler TestCommand
       help :disable
+      color :disable
 
       action :bla
     end
@@ -607,6 +605,7 @@ Available actions:
       name 'my-command'
       handler TestCommand
       help :disable
+      color :disable
     end
 
     expect(cli.usage).to eq <<-EOS
@@ -634,6 +633,7 @@ USAGE:
     cli = Cliqr.interface do
       name 'my-command'
       version '1234'
+      color :disable
     end
     result = cli.execute_internal %w(help), output: :buffer
     expect(result[:stdout]).to eq <<-EOS

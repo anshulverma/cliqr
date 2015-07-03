@@ -452,6 +452,45 @@ false
     expect { define_interface }.to(raise_error(NoMethodError))
   end
 
+  it 'can forward command to another action' do
+    cli = Cliqr.interface do
+      name :my_command
+      description 'test command has no description'
+
+      action :action_1 do
+        description 'test action'
+        handler do
+          puts 'in action_1'
+          forward 'my_command action_2 sub-action' # starting with base command name
+          puts 'back in action_1'
+        end
+      end
+
+      action 'action_2' do
+        handler do
+          puts 'in action_2'
+        end
+
+        action 'sub-action' do
+          handler do
+            puts 'in sub-action'
+            forward 'action_2' # not starting with base command name
+            puts 'back in sub-action'
+          end
+        end
+      end
+    end
+
+    result = cli.execute_internal ['action_1'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+in action_1
+in sub-action
+in action_2
+back in sub-action
+back in action_1
+    EOS
+  end
+
   describe 'error handling' do
     it 'returns 0 if no error' do
       cli = Cliqr.interface do

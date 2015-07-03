@@ -8,6 +8,8 @@ module Cliqr
     #
     # @api private
     class CommandUsageContext
+      include Cliqr::Command::Color
+
       # Name of the current command in context
       #
       # @return [String]
@@ -35,6 +37,8 @@ module Cliqr
 
       # Wrap a [Cliqr::CLI::Config] instance for usage template
       def initialize(type, config)
+        super(config)
+
         @type = type
         @config = config
 

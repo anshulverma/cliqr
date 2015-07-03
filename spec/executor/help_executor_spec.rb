@@ -4,14 +4,12 @@ require 'spec_helper'
 
 require 'cliqr/error'
 
-require 'fixtures/test_command'
-
 describe Cliqr::Executor do
   it 'can execute help action to get help for base command' do
     cli = Cliqr.interface do
       name 'my-command'
       description 'test command has no description'
-      handler TestCommand
+      color :disable
     end
 
     result = cli.execute_internal ['help'], output: :buffer
@@ -36,15 +34,13 @@ Available actions:
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
-      handler TestCommand
+      color :disable
 
       action :action_1 do
         description 'test action'
-        handler TestCommand
 
         action :sub_action do
           description 'This is a sub action.'
-          handler TestCommand
         end
 
         option :temp do
@@ -54,7 +50,6 @@ Available actions:
 
       action :action_2 do
         description 'another cool action for the base command'
-        handler TestCommand
       end
     end
 
@@ -82,15 +77,13 @@ Available actions:
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
-      handler TestCommand
+      color :disable
 
       action :action_1 do
         description 'test action'
-        handler TestCommand
 
         action :sub_action do
           description 'This is a sub action.'
-          handler TestCommand
         end
 
         option :temp do
@@ -100,7 +93,6 @@ Available actions:
 
       action :action_2 do
         description 'another cool action for the base command'
-        handler TestCommand
       end
     end
 
@@ -126,16 +118,14 @@ Available actions:
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
-      handler TestCommand
       shell :disable
+      color :disable
 
       action :action_1 do
         description 'test action'
-        handler TestCommand
 
         action :sub_action do
           description 'This is a sub action.'
-          handler TestCommand
         end
 
         option :temp do
@@ -145,7 +135,6 @@ Available actions:
 
       action :action_2 do
         description 'another cool action for the base command'
-        handler TestCommand
       end
     end
 
@@ -173,7 +162,7 @@ Available actions:
     cli = Cliqr.interface do
       name 'my-command'
       description 'test command has no description'
-      handler TestCommand
+      color :disable
     end
 
     result = cli.execute_internal ['--help'], output: :buffer
@@ -198,11 +187,9 @@ Available actions:
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
-      handler TestCommand
+      color :disable
 
-      action :action_1 do
-        handler TestCommand
-      end
+      action :action_1
     end
 
     result = cli.execute_internal %w(--help action_1), output: :buffer
@@ -227,11 +214,10 @@ Available actions:
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
-      handler TestCommand
+      color :disable
 
       action :action_1 do
         description 'test action'
-        handler TestCommand
       end
     end
 
@@ -257,11 +243,10 @@ Available actions:
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
-      handler TestCommand
+      color :disable
 
       action :action_1 do
         description 'test action'
-        handler TestCommand
       end
     end
 
@@ -278,11 +263,9 @@ USAGE:
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
-      handler TestCommand
 
       action :action_1 do
         description 'test action'
-        handler TestCommand
       end
     end
 
@@ -292,61 +275,19 @@ USAGE:
                   "Cause: Cliqr::Error::IllegalArgumentError - too many arguments for \"my_command help\" command\n"))
   end
 
-  it 'can forward command to another action' do
-    cli = Cliqr.interface do
-      name :my_command
-      description 'test command has no description'
-      handler TestCommand
-
-      action :action_1 do
-        description 'test action'
-        handler do
-          puts 'in action_1'
-          forward 'my_command action_2 sub-action' # starting with base command name
-          puts 'back in action_1'
-        end
-      end
-
-      action 'action_2' do
-        handler do
-          puts 'in action_2'
-        end
-
-        action 'sub-action' do
-          handler do
-            puts 'in sub-action'
-            forward 'action_2' # not starting with base command name
-            puts 'back in sub-action'
-          end
-        end
-      end
-    end
-
-    result = cli.execute_internal ['action_1'], output: :buffer
-    expect(result[:stdout]).to eq <<-EOS
-in action_1
-in sub-action
-in action_2
-back in sub-action
-back in action_1
-    EOS
-  end
-
   it 'executes help for action without handler' do
     cli = Cliqr.interface do
       name :my_command
       description 'test command has no description'
       shell :disable
+      color :disable
 
       action :action_1 do
         description 'test action'
-        handler TestCommand
       end
 
       action 'action_2' do
-        action 'sub-action' do
-          handler TestCommand
-        end
+        action 'sub-action'
       end
     end
 
@@ -385,6 +326,45 @@ Available actions:
 
     sub-action
     help -- The help action for command "my_command action_2" which provides details and usage information on how to use the command.
+    EOS
+  end
+
+  it 'can display help in color' do
+    cli = Cliqr.interface do
+      name :my_command
+      description 'test command has no description'
+
+      action :foo do
+        description 'test action'
+
+        action :bar do
+          description 'this is a bar'
+
+          option :opt1 do
+            type :numeric
+            default 123
+            description 'a temporary option'
+          end
+        end
+      end
+    end
+
+    result = cli.execute_internal %w(foo help bar), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+[30mmy_command foo[0m [1m[33mbar[0m[22m -- this is a bar
+
+[1mUSAGE:[22m
+    my_command foo bar [actions] [options] [arguments]
+
+[1mAvailable options:[22m
+
+    --opt1  :  <numeric> a temporary option (default => 123)
+    --help, -h  :  Get helpful information for action "my_command foo bar" along with its usage information.
+
+[1mAvailable actions:[22m
+[30m[ Type "my_command foo bar help [action-name]" to get more information about that action ]
+[0m
+    [32mhelp[0m -- The help action for command "my_command foo bar" which provides details and usage information on how to use the command.
     EOS
   end
 end

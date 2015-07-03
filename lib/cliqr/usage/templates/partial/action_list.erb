@@ -1,9 +1,9 @@
 <% if actions? %>
-Available actions:
-<%= "[ Type \"#{"#{command} " unless shell?}help [action-name]\" to get more information about that action ]\n" if help? %>
+<%= bold('Available actions:') %>
+<%= black("[ Type \"#{"#{command} " unless shell?}help [action-name]\" to get more information about that action ]\n") if help? %>
 <%
    actions.each { |action|
-%>    <%= action.name %><%= " -- #{action.description}" if action.description? %>
+%>    <%= green(action.name) %><%= " -- #{action.description}" if action.description? %>
 <%
    }
 %>

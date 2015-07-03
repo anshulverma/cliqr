@@ -10,8 +10,8 @@ describe Cliqr::Command::ShellCommand do
   it 'can execute help in command shell' do
     cli = Cliqr.interface do
       name 'my-command'
-      handler TestCommand
       description 'this is a test command'
+      color :disable
 
       action :foo do
         description 'the foo action'
@@ -65,6 +65,8 @@ shell exited with code 0
   it 'can execute a sub action from shell' do
     cli = Cliqr.interface do
       name 'my-command'
+      color :disable
+
       handler do
         puts 'base command executed'
       end
@@ -125,7 +127,6 @@ shell exited with code 0
   it 'can handle errors in shell' do
     cli = Cliqr.interface do
       name 'my-command'
-      handler TestCommand
       arguments :disable
 
       action :foo do
@@ -133,9 +134,7 @@ shell exited with code 0
           fail StandardError, 'I failed!'
         end
 
-        action :bar do
-          handler TestCommand
-        end
+        action :bar
       end
     end
 
@@ -224,7 +223,7 @@ shell exited with code 0
     it 'allows a custom prompt string for shell prompt' do
       cli = Cliqr.interface do
         name 'my-command'
-        handler TestCommand
+        color :disable
         shell :enable do
           prompt 'test-prompt $ '
         end
@@ -253,7 +252,7 @@ shell exited with code 0
     it 'allows a custom prompt function for shell prompt' do
       cli = Cliqr.interface do
         name 'my-command'
-        handler TestCommand
+        color :disable
         shell :enable do
           count = 0
           prompt do
@@ -287,7 +286,7 @@ shell exited with code 0
     it 'allows a custom prompt class for shell prompt' do
       cli = Cliqr.interface do
         name 'my-command'
-        handler TestCommand
+        color :disable
         shell :enable do
           prompt TestShellPrompt
         end
@@ -317,7 +316,7 @@ shell exited with code 0
     it 'allows a default prompt' do
       cli = Cliqr.interface do
         name 'my-command'
-        handler TestCommand
+        color :disable
         shell :enable
 
         action :foo do
@@ -347,7 +346,7 @@ shell exited with code 0
     it 'allows a custom prompt string for shell banner' do
       cli = Cliqr.interface do
         name 'my-command'
-        handler TestCommand
+        color :disable
         shell :enable do
           banner 'Welcome to my-command!!!'
         end
@@ -376,7 +375,7 @@ shell exited with code 0
     it 'allows a custom prompt function for shell banner' do
       cli = Cliqr.interface do
         name 'my-command'
-        handler TestCommand
+        color :disable
         shell :enable do
           banner do
             "welcome to #{command}"
@@ -408,7 +407,7 @@ shell exited with code 0
     it 'allows a custom prompt class for shell banner' do
       cli = Cliqr.interface do
         name 'my-command'
-        handler TestCommand
+        color :disable
         shell :enable do
           banner TestShellBanner
         end
