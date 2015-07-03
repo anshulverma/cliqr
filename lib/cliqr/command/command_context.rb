@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'cliqr/command/color'
 require 'cliqr/command/argument_operator_context'
 
 module Cliqr
@@ -9,6 +10,8 @@ module Cliqr
     #
     # @api private
     class CommandContext
+      include Cliqr::Command::Color
+
       # Command name
       #
       # @return [String]
