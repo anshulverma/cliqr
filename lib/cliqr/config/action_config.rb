@@ -54,11 +54,6 @@ module Cliqr
       # @return [Cliqr::Config::CommandConfig]
       attr_accessor :parent
 
-      # Root config
-      #
-      # @return [Cliqr::Config::CommandConfig]
-      attr_accessor :root
-
       # New config instance with all attributes set as UNSET
       def initialize
         super
@@ -83,7 +78,6 @@ module Cliqr
         @handler = Util.ensure_instance(Config.get_if_unset(@handler, nil))
         @arguments = Config.get_if_unset(@arguments, ENABLE_CONFIG)
         @help = Config.get_if_unset(@help, ENABLE_CONFIG)
-        @root = self
 
         self
       end
@@ -239,8 +233,13 @@ module Cliqr
       #
       # @return [Cliqr::Config::ActionConfig] The newly added action
       def add_action(action_config)
-        action_config.parent = self
-        action_config.root = root
+        parent = self
+        action_config.parent = parent
+        action_config.instance_eval do
+          def root
+            parent.root
+          end
+        end
 
         validate_action_name(action_config)
 

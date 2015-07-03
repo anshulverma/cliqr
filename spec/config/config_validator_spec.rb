@@ -145,4 +145,15 @@ describe Cliqr::Config do
                                                    "banner should be a 'Proc' not 'Class', " \
                                                    "banner should be a 'String' not 'Class']]"))
   end
+
+  it 'does not allow anything except :enable or :disable for color' do
+    def define_interface
+      Cliqr.interface do
+        name 'my-command'
+        color Object
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               "invalid Cliqr interface configuration - [invalid type 'Object']"))
+  end
 end

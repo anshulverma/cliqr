@@ -10,9 +10,9 @@ module Cliqr
     #
     # @api private
     class CommandConfig < Cliqr::Config::ActionConfig
-      # Enable or disable the shell action for base config
+      # Configuration for the shell for this command
       #
-      # @return [Symbol] Either <tt>#ENABLE_CONFIG</tt> or <tt>#DISABLE_CONFIG</tt>
+      # @return [Cliqr::Command::ShellConfig]
       attr_accessor :shell
       validates :shell,
                 child: true
@@ -22,12 +22,20 @@ module Cliqr
       # @return [Stirng]
       attr_accessor :version
 
+      # Enable or disable colors in a command handler (default enabled)
+      #
+      # @return [Symbol]
+      attr_accessor :color
+      validates :color,
+                inclusion: [Cliqr::Config::ENABLE_CONFIG, Cliqr::Config::DISABLE_CONFIG]
+
       # New config instance with all attributes set as UNSET
       def initialize
         super
 
         @shell = UNSET
         @version = UNSET
+        @color = UNSET
       end
 
       # Finalize config by adding default values for unset values
@@ -38,6 +46,7 @@ module Cliqr
 
         @shell = Config.get_if_unset(@shell, Cliqr::Util.build_shell_config(self))
         @version = Config.get_if_unset(@version, nil)
+        @color = Config.get_if_unset(@color, Cliqr::Config::ENABLE_CONFIG)
 
         self
       end
@@ -80,6 +89,18 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if help is enabled
       def version?
         !@version.nil?
+      end
+
+      # The root of command config is itself
+      #
+      # @return [Cliqr::Config::CommandConfig]
+      def root
+        self
+      end
+
+      # Check if colors are enabled for this setting
+      def color?
+        @color == Cliqr::Config::ENABLE_CONFIG
       end
 
       private

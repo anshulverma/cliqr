@@ -6,6 +6,8 @@ module Cliqr
     #
     # @api private
     module Color
+      @colors_enabled = true
+
       # Colorize a string with black color
       #
       # @return [String]

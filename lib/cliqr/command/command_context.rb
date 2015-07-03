@@ -58,6 +58,9 @@ module Cliqr
 
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
+
+        # check and disable colors if needed
+        check_color_setting
       end
 
       # List of parsed options
@@ -139,12 +142,23 @@ module Cliqr
       # @return [Cliqr::Command::CommandContext]
       def root(environment_type = nil)
         environment_type = @environment if environment_type.nil?
-        root_config = @config
-        root_config = @config.root if @config.respond_to?(:root)
-        CommandContext.new(root_config, [], [], environment_type, @executor)
+        CommandContext.new(@config.root, [], [], environment_type, @executor)
       end
 
-      private :initialize, :default
+      # Check if color is disabled
+      #
+      # @return [Cliqr::Command::CommandContext]
+      def check_color_setting
+        return self if @config.root.color?
+
+        instance_eval do
+          def colorize(str, *_args)
+            str
+          end
+        end
+      end
+
+      private :initialize, :default, :check_color_setting
     end
 
     private
