@@ -17,9 +17,9 @@ module Cliqr
 
     # Build a help action for a parent config
     #
-    # @return [Cliqr::CLI::ActionConfig] New action config
+    # @return [Cliqr::CLI::Action] New action config
     def self.build_help_action(config)
-      Cliqr::Config::ActionConfig.new.tap do |action_config|
+      Cliqr::Config::Action.new.tap do |action_config|
         action_config.name = 'help'
         action_config.description = \
           "The help action for command \"#{config.command}\" which provides details " \
@@ -32,9 +32,9 @@ module Cliqr
 
     # Build a help option for a parent config
     #
-    # @return [Cliqr::CLI::OptionConfig] New option config
+    # @return [Cliqr::CLI::Option] New option config
     def self.build_help_option(config)
-      Cliqr::Config::OptionConfig.new.tap do |option_config|
+      Cliqr::Config::Option.new.tap do |option_config|
         option_config.name = 'help'
         option_config.short = 'h'
         option_config.description = "Get helpful information for action \"#{config.command}\" " \
@@ -47,9 +47,9 @@ module Cliqr
 
     # Build a version action for a parent config
     #
-    # @return [Cliqr::CLI::ActionConfig] New action config
+    # @return [Cliqr::CLI::Action] New action config
     def self.build_version_action(config)
-      Cliqr::Config::ActionConfig.new.tap do |action_config|
+      Cliqr::Config::Action.new.tap do |action_config|
         action_config.name = 'version'
         action_config.description = "Get version information for command \"#{config.command}\"."
         action_config.handler = proc do
@@ -61,9 +61,9 @@ module Cliqr
 
     # Build a version option for a parent config
     #
-    # @return [Cliqr::CLI::OptionConfig] New option config
+    # @return [Cliqr::CLI::Option] New option config
     def self.build_version_option(config)
-      Cliqr::Config::OptionConfig.new.tap do |option_config|
+      Cliqr::Config::Option.new.tap do |option_config|
         option_config.name = 'version'
         option_config.short = 'v'
         option_config.description = "Get version information for command \"#{config.command}\"."
@@ -87,9 +87,9 @@ module Cliqr
 
     # Build a shell action for a parent config
     #
-    # @return [Cliqr::CLI::ActionConfig] New action config
+    # @return [Cliqr::CLI::Action] New action config
     def self.build_shell_action(config, shell_config)
-      Cliqr::Config::ActionConfig.new.tap do |action_config|
+      Cliqr::Config::Action.new.tap do |action_config|
         action_config.name = 'shell'
         action_config.description = "Execute a shell in the context of \"#{config.command}\" command."
         action_config.handler = Cliqr::Command::ShellCommand.new(shell_config)
@@ -99,9 +99,9 @@ module Cliqr
 
     # Build shell config for a parent config
     #
-    # @return [Cliqr::CLI::ShellConfig] New action config
+    # @return [Cliqr::CLI::Shell] New action config
     def self.build_shell_config(config)
-      Cliqr::Config::ShellConfig.new.tap do |shell_config|
+      Cliqr::Config::Shell.new.tap do |shell_config|
         shell_config.enabled = config.actions?
         shell_config.prompt = Command::ShellPromptBuilder.new(config)
         shell_config.banner = Command::ShellBannerBuilder::DEFAULT_BANNER

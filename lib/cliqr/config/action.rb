@@ -2,15 +2,15 @@
 
 require 'cliqr/util'
 require 'cliqr/command/base_command'
-require 'cliqr/config/base_config'
-require 'cliqr/config/option_config'
+require 'cliqr/config/base'
+require 'cliqr/config/option'
 
 module Cliqr
   module Config
     # Configuration setting for an action
     #
     # @api private
-    class ActionConfig < Cliqr::Config::NamedConfig
+    class Action < Cliqr::Config::Named
       # Command handler for the base command
       #
       # @return [Class<Cliqr::Command::BaseCommand>]
@@ -71,7 +71,7 @@ module Cliqr
 
       # Finalize config by adding default values for unset values
       #
-      # @return [Cliqr::Config::CommandConfig]
+      # @return [Cliqr::Config::Command]
       def finalize
         super
 
@@ -84,7 +84,7 @@ module Cliqr
 
       # Set up default attributes for this configuration
       #
-      # @return [Cliqr::Config::CommandConfig] Update config
+      # @return [Cliqr::Config::Command] Update config
       def setup_defaults
         add_help
         @handler = Cliqr::Util.forward_to_help_handler if @handler.nil? && help? && actions?
@@ -98,7 +98,7 @@ module Cliqr
       # @param [Proc] block Function which populates configuration for a sub-attribute
       #
       # @return [Object] if setting a attribute's value
-      # @return [Cliqr::Config::BaseConfig] if adding a new action or option
+      # @return [Cliqr::Config::Base] if adding a new action or option
       def set_config(name, value, &block)
         case name
         when :option
@@ -156,7 +156,7 @@ module Cliqr
       #
       # @param [String] name Name of the action
       #
-      # @return [Cliqr::Config::ActionConfig] Configuration of the action
+      # @return [Cliqr::Config::Action] Configuration of the action
       def action(name)
         @action_index[name.to_sym]
       end
@@ -197,16 +197,16 @@ module Cliqr
       # @param [Symbol] name Long name of the option
       # @param [Proc] block Populate the option's config in this function block
       #
-      # @return [Cliqr::Config::OptionConfig] Newly created option's config
+      # @return [Cliqr::Config::Option] Newly created option's config
       def handle_option(name, &block)
-        option_config = OptionConfig.build(&block)
+        option_config = Option.build(&block)
         option_config.name = name
         add_option(option_config)
       end
 
       # Add a new option for the command
       #
-      # @return [Cliqr::Config::OptionConfig] Newly added option's config
+      # @return [Cliqr::Config::Option] Newly added option's config
       def add_option(option_config)
         validate_option_name(option_config)
 
@@ -222,16 +222,16 @@ module Cliqr
       # @param [String] name Name of the action
       # @param [Function] block The block which configures this action
       #
-      # @return [Cliqr::Config::ActionConfig] The newly configured action
+      # @return [Cliqr::Config::Action] The newly configured action
       def handle_action(name, &block)
-        action_config = ActionConfig.build(&block)
+        action_config = Action.build(&block)
         action_config.name = name
         add_action(action_config)
       end
 
       # Add a new action
       #
-      # @return [Cliqr::Config::ActionConfig] The newly added action
+      # @return [Cliqr::Config::Action] The newly added action
       def add_action(action_config)
         parent = self
         action_config.parent = parent
@@ -252,9 +252,9 @@ module Cliqr
 
       # Make sure that the option's name is unique
       #
-      # @param [Cliqr::Config::OptionConfig] option_config Config for this particular option
+      # @param [Cliqr::Config::Option] option_config Config for this particular option
       #
-      # @return [Cliqr::Config::OptionConfig] Validated OptionConfig instance
+      # @return [Cliqr::Config::Option] Validated OptionConfig instance
       def validate_option_name(option_config)
         fail Cliqr::Error::DuplicateOptions,
              "multiple options with long name \"#{option_config.name}\"" \
@@ -269,9 +269,9 @@ module Cliqr
 
       # Make sure that the action's name is unique
       #
-      # @param [Cliqr::Config::ActionConfig] action_config Config for this particular action
+      # @param [Cliqr::Config::Action] action_config Config for this particular action
       #
-      # @return [Cliqr::Config::ActionConfig] Validated action's Config instance
+      # @return [Cliqr::Config::Action] Validated action's Config instance
       def validate_action_name(action_config)
         fail Cliqr::Error::DuplicateActions,
              "multiple actions named \"#{action_config.name}\"" \
@@ -282,7 +282,7 @@ module Cliqr
 
       # Add help command and option to this config
       #
-      # @return [Cliqr::Config::BaseConfig] Updated config
+      # @return [Cliqr::Config::Base] Updated config
       def add_help
         return self unless help?
         add_action(Cliqr::Util.build_help_action(self)) unless action?('help')

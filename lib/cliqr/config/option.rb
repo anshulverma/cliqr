@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'cliqr/config/named_config'
+require 'cliqr/config/named'
 require 'cliqr/command/argument_operator'
 
 module Cliqr
@@ -8,7 +8,7 @@ module Cliqr
     # Config attributes for a command's option
     #
     # @api private
-    class OptionConfig < Cliqr::Config::NamedConfig
+    class Option < Cliqr::Config::Named
       # Optional short name for the option
       #
       # @return [String]
@@ -50,14 +50,14 @@ module Cliqr
 
       # Finalize option's config by adding default values for unset values
       #
-      # @return [Cliqr::Config::OptionConfig]
+      # @return [Cliqr::Config::Option]
       def finalize
         super
 
         @short = Config.get_if_unset(@short, nil)
         @type = Config.get_if_unset(@type, ANY_ARGUMENT_TYPE)
         @operator = Util.ensure_instance(
-          Config.get_if_unset(@operator, Command::ArgumentOperator.for_type(@type)))
+          Config.get_if_unset(@operator, Cliqr::Command::ArgumentOperator.for_type(@type)))
         @default = Config.get_if_unset(@default, ARGUMENT_DEFAULTS[@type])
 
         self

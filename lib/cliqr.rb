@@ -3,7 +3,7 @@
 require 'cliqr/interface'
 require 'cliqr/version'
 require 'cliqr/error'
-require 'cliqr/config/command_config'
+require 'cliqr/config/command'
 require 'cliqr/command/shell_prompt_builder'
 
 # Top level namespace for the Cliqr gem
@@ -26,7 +26,7 @@ module Cliqr
     #
     # @api public
     def interface(&block)
-      config = Cliqr::Config::CommandConfig.build(&block)
+      config = Cliqr::Config::Command.build(&block)
       config.setup_defaults
       Cliqr::Interface.build(config)
     end

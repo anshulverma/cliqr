@@ -8,7 +8,7 @@ module Cliqr
     # Config attributes for shell
     #
     # @api private
-    class ShellConfig < Cliqr::Config::BaseConfig
+    class Shell < Cliqr::Config::Base
       # Enable or disable the shell action
       #
       # @return [Symbol]
@@ -50,7 +50,7 @@ module Cliqr
 
       # Finalize shell's config by adding default values for unset values
       #
-      # @return [Cliqr::Config::OptionConfig]
+      # @return [Cliqr::Config::Option]
       def finalize
         case @enabled
         when Cliqr::Config::ENABLE_CONFIG
@@ -60,8 +60,8 @@ module Cliqr
         when UNSET
           @enabled = true
         end
-        @prompt = Config.get_if_unset(@prompt, Command::ShellPromptBuilder::DEFAULT_PROMPT)
-        @banner = Config.get_if_unset(@banner, Command::ShellBannerBuilder::DEFAULT_BANNER)
+        @prompt = Config.get_if_unset(@prompt, Cliqr::Command::ShellPromptBuilder::DEFAULT_PROMPT)
+        @banner = Config.get_if_unset(@banner, Cliqr::Command::ShellBannerBuilder::DEFAULT_BANNER)
 
         self
       end

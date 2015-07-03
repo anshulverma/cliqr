@@ -9,7 +9,7 @@ module Cliqr
   # @api private
   module Config
     # The configuration setting to build a named configuration instance
-    class NamedConfig < Cliqr::Config::BaseConfig
+    class Named < Cliqr::Config::Base
       # Name of the config instance
       #
       # @return [String]
@@ -30,7 +30,7 @@ module Cliqr
 
       # Finalize config by adding default values for unset values
       #
-      # @return [Cliqr::Config::BaseConfig]
+      # @return [Cliqr::Config::Base]
       def finalize
         @name = Config.get_if_unset(@name, '')
         @description = Config.get_if_unset(@description, '')

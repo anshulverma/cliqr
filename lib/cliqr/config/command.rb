@@ -1,15 +1,15 @@
 # encoding: utf-8
 
 require 'cliqr/command/base_command'
-require 'cliqr/config/action_config'
-require 'cliqr/config/shell_config'
+require 'cliqr/config/action'
+require 'cliqr/config/shell'
 
 module Cliqr
   module Config
     # Configuration setting for a command
     #
     # @api private
-    class CommandConfig < Cliqr::Config::ActionConfig
+    class Command < Cliqr::Config::Action
       # Configuration for the shell for this command
       #
       # @return [Cliqr::Command::ShellConfig]
@@ -40,7 +40,7 @@ module Cliqr
 
       # Finalize config by adding default values for unset values
       #
-      # @return [Cliqr::Config::CommandConfig]
+      # @return [Cliqr::Config::Command]
       def finalize
         super
 
@@ -72,7 +72,7 @@ module Cliqr
 
       # Set up default attributes for this configuration
       #
-      # @return [Cliqr::Config::CommandConfig] Update config
+      # @return [Cliqr::Config::Command] Update config
       def setup_defaults
         super
 
@@ -96,7 +96,7 @@ module Cliqr
 
       # The root of command config is itself
       #
-      # @return [Cliqr::Config::CommandConfig]
+      # @return [Cliqr::Config::Command]
       def root
         self
       end
@@ -113,9 +113,9 @@ module Cliqr
       # @param [Symbol] setting Enabled shell if the setting is <tt>BaseConfig::ENABLE_CONFIG</tt>
       # @param [Proc] block Populate the shell's config in this block
       #
-      # @return [Cliqr::Config::ShellConfig] Newly created shell config
+      # @return [Cliqr::Config::Shell] Newly created shell config
       def handle_shell(setting, &block)
-        @shell = ShellConfig.build(&block).tap do |shell_config|
+        @shell = Shell.build(&block).tap do |shell_config|
           unless setting.nil?
             shell_config.enabled = setting
             shell_config.finalize
@@ -125,7 +125,7 @@ module Cliqr
 
       # Add version command and option to this config
       #
-      # @return [Cliqr::Config::CommandConfig] Updated config
+      # @return [Cliqr::Config::Command] Updated config
       def add_version
         return self unless version?
         add_action(Cliqr::Util.build_version_action(self)) unless action?('version')
@@ -134,7 +134,7 @@ module Cliqr
 
       # Add shell command
       #
-      # @return [Cliqr::Config::CommandConfig] Updated config
+      # @return [Cliqr::Config::Command] Updated config
       def add_shell
         return self unless shell?
         add_action(Cliqr::Util.build_shell_action(self, @shell)) unless action?('shell')

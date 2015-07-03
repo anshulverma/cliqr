@@ -33,5 +33,5 @@ Metrics/ClassLength:
   CountComments: false
   Max: 100
   Exclude:
-    - 'lib/cliqr/config/action_config.rb'
+    - 'lib/cliqr/config/action.rb'
     - 'lib/cliqr/util.rb'

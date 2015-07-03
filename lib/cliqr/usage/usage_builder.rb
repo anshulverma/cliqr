@@ -25,7 +25,7 @@ module Cliqr
 
       # Build the usage information
       #
-      # @param [Cliqr::Config::CommandConfig] config Configuration of the command line interface
+      # @param [Cliqr::Config::Command] config Configuration of the command line interface
       #
       # @return [String]
       def build(config)

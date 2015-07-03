@@ -17,7 +17,7 @@ module Cliqr
 
     # Create a new interface instance with a config
     #
-    # @param [Cliqr::Config::CommandConfig] config Config used to create this interface
+    # @param [Cliqr::Config::Command] config Config used to create this interface
     def initialize(config)
       @config = config
       @runner = Executor::Runner.new(config)

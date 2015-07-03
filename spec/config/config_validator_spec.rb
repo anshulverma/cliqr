@@ -63,7 +63,7 @@ describe Cliqr::Config do
   end
 
   it 'expects that config options should not be nil' do
-    config = Cliqr::Config::CommandConfig.new
+    config = Cliqr::Config::Command.new
     config.name = 'my-command'
     config.handler = TestCommand
     config.options = nil
@@ -89,7 +89,7 @@ describe Cliqr::Config do
   end
 
   it 'expects that shell be non-nil for command config' do
-    config = Cliqr::Config::CommandConfig.new
+    config = Cliqr::Config::Command.new
     config.name = 'my-command'
     config.handler = TestCommand
     config.shell = nil

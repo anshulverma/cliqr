@@ -10,7 +10,7 @@ module Cliqr
     class Router
       # Create a new Router instance
       #
-      # @param [Cliqr::Config::CommandConfig] config Command line configuration
+      # @param [Cliqr::Config::Command] config Command line configuration
       #
       # @return [Cliqr::Interface::Router]
       def initialize(config)

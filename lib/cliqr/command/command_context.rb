@@ -34,7 +34,7 @@ module Cliqr
 
       # Build a instance of command context based on the parsed set of arguments
       #
-      # @param [Cliqr::Config::CommandConfig] config The configuration settings
+      # @param [Cliqr::Config::Command] config The configuration settings
       # @param [Cliqr::Parser::ParsedInput] parsed_input Parsed input object
       # @param [Hash] options Options for command execution
       # @param [Proc] executor Executes forwarded commands
@@ -200,7 +200,7 @@ module Cliqr
       # Create a new command line option instance
       #
       # @param [Array] option Parsed arguments for creating a command line option
-      # @param [Cliqr::Config::OptionConfig] option_config Option's config settings
+      # @param [Cliqr::Config::Option] option_config Option's config settings
       #
       # @return [Cliqr::Command::CommandContext] A new CommandOption object
       def initialize(option, option_config)

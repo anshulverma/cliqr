@@ -61,7 +61,7 @@ module Cliqr
       # @param [String] name Long name of the option
       # @param [String] arg THe argument that was parsed to get the option name
       #
-      # @return [Cliqr::CLI::OptionConfig] Requested option configuration
+      # @return [Cliqr::CLI::Option] Requested option configuration
       def get_option_config(name, arg)
         fail Cliqr::Error::UnknownCommandOption,
              "unknown option \"#{arg}\"" unless @config.option?(name)

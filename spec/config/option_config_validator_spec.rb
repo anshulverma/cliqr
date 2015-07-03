@@ -2,7 +2,7 @@
 
 require 'fixtures/test_command'
 
-describe Cliqr::Config::OptionConfig do
+describe Cliqr::Config::Option do
   it 'does not allow multiple options with same long name' do
     expect do
       Cliqr.interface do

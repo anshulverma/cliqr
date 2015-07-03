@@ -41,7 +41,7 @@ module Cliqr
     end
 
     # The base configuration setting to build a cli application with its own dsl
-    class BaseConfig
+    class Base
       include Cliqr::Config::DSL
       include Cliqr::Config::Validation
 
