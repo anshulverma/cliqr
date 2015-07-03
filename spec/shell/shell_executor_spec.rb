@@ -4,6 +4,7 @@ require 'spec_helper'
 
 require 'fixtures/test_command'
 require 'fixtures/test_shell_prompt'
+require 'fixtures/test_color_shell_prompt'
 require 'fixtures/test_shell_banner'
 
 describe Cliqr::Command::ShellCommand do
@@ -128,6 +129,7 @@ shell exited with code 0
     cli = Cliqr.interface do
       name 'my-command'
       arguments :disable
+      color :disable
 
       action :foo do
         handler do
@@ -171,6 +173,7 @@ shell exited with code 0
     it 'does not allow shell in shell for base command' do
       cli = Cliqr.interface do
         name 'my-command'
+        color :disable
 
         action :foo do
           action :bar
@@ -194,6 +197,7 @@ shell exited with code 0
     it 'does not allow shell in shell for sub action' do
       cli = Cliqr.interface do
         name 'my-command'
+        color :disable
 
         action :foo do
           action :bar
@@ -338,6 +342,114 @@ my-command > .
 my-command > exit.
 shell exited with code 0
         EOS
+      end
+    end
+
+    describe 'prompt colors' do
+      it 'can show colors using default prompt builder' do
+        cli = Cliqr.interface do
+          name 'my-command'
+          arguments :disable
+
+          action :foo do
+            handler do
+              fail StandardError, 'I failed!'
+            end
+
+            action :bar
+          end
+        end
+
+        with_input(['unknown', '--opt-1 val', 'foo']) do
+          result = cli.execute_internal %w(my-command shell), output: :buffer
+          expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+[36mmy-command[0m [1m>[22m unknown.
+unknown action "unknown"
+[36mmy-command[0m [1m>[22m --opt-1 val.
+unknown action "--opt-1"
+[36mmy-command[0m [1m>[22m foo.
+command 'my-command foo' failed
+
+Cause: StandardError - I failed!
+[36mmy-command[0m [1m>[22m exit.
+shell exited with code 0
+          EOS
+        end
+      end
+
+      it 'can show colors using custom prompt builder' do
+        cli = Cliqr.interface do
+          name 'my-command'
+          arguments :disable
+
+          shell do
+            prompt TestColorShellPrompt
+          end
+
+          action :foo do
+            handler do
+              fail StandardError, 'I failed!'
+            end
+
+            action :bar
+          end
+        end
+
+        with_input(['unknown', '--opt-1 val', 'foo']) do
+          result = cli.execute_internal %w(my-command shell), output: :buffer
+          expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+[31mtest-prompt [1] > [0munknown.
+unknown action "unknown"
+[31mtest-prompt [2] > [0m--opt-1 val.
+unknown action "--opt-1"
+[31mtest-prompt [3] > [0mfoo.
+command 'my-command foo' failed
+
+Cause: StandardError - I failed!
+[31mtest-prompt [4] > [0mexit.
+shell exited with code 0
+          EOS
+        end
+      end
+
+      it 'can show colors using custom prompt builder' do
+        cli = Cliqr.interface do
+          name 'my-command'
+          arguments :disable
+
+          shell do
+            prompt do
+              green('green prompt > ')
+            end
+          end
+
+          action :foo do
+            handler do
+              fail StandardError, 'I failed!'
+            end
+
+            action :bar
+          end
+        end
+
+        with_input(['unknown', '--opt-1 val', 'foo']) do
+          result = cli.execute_internal %w(my-command shell), output: :buffer
+          expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+[32mgreen prompt > [0munknown.
+unknown action "unknown"
+[32mgreen prompt > [0m--opt-1 val.
+unknown action "--opt-1"
+[32mgreen prompt > [0mfoo.
+command 'my-command foo' failed
+
+Cause: StandardError - I failed!
+[32mgreen prompt > [0mexit.
+shell exited with code 0
+          EOS
+        end
       end
     end
   end

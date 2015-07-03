@@ -412,7 +412,6 @@ Available actions:
         option 'test-option-2'
 
         action 'my-action-1' do
-
           action 'my-action-1' do
             option 'test-option-1'
             option 'test-option-2'

@@ -70,6 +70,13 @@ module Cliqr
       def enabled?
         @enabled
       end
+
+      # Disable colors in shell
+      #
+      # @return [Cliqr::Command::Color]
+      def disable_color
+        @prompt.disable_color if @prompt.respond_to?(:disable_color)
+      end
     end
   end
 end

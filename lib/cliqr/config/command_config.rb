@@ -44,9 +44,12 @@ module Cliqr
       def finalize
         super
 
+        @color = Config.get_if_unset(@color, Cliqr::Config::ENABLE_CONFIG)
         @shell = Config.get_if_unset(@shell, Cliqr::Util.build_shell_config(self))
         @version = Config.get_if_unset(@version, nil)
-        @color = Config.get_if_unset(@color, Cliqr::Config::ENABLE_CONFIG)
+
+        # disable colors in shell if colors are disabled here
+        @shell.disable_color unless color?
 
         self
       end

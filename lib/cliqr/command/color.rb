@@ -6,9 +6,12 @@ module Cliqr
     #
     # @api private
     module Color
-      def initialize(config)
+      # Create a new color instance
+      #
+      # @return [Cliqr::Command::Color]
+      def initialize(config = nil)
         # check and disable colors if needed
-        check_color_setting(config)
+        check_color_setting(config) unless config.nil?
       end
 
       # Colorize a string with black color
@@ -137,6 +140,17 @@ module Cliqr
         colorize(str, 7, 27)
       end
 
+      # Disable colors
+      #
+      # @return [Cliqr::Command::Color]
+      def disable_color
+        instance_eval do
+          def colorize(str, *_args)
+            str
+          end
+        end
+      end
+
       protected
 
       # Check if color is disabled
@@ -144,12 +158,7 @@ module Cliqr
       # @return [Cliqr::Command::CommandContext]
       def check_color_setting(config)
         return self if config.root.color?
-
-        instance_eval do
-          def colorize(str, *_args)
-            str
-          end
-        end
+        disable_color
       end
 
       private
