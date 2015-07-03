@@ -29,7 +29,7 @@ describe Cliqr::Command::ShellCommand do
       result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-my-command > help.
+[my-command][1] $ help.
 my-command -- this is a test command
 
 Available actions:
@@ -38,9 +38,9 @@ Available actions:
     foo -- the foo action
     bar -- bar command
     help -- The help action for command "my-command" which provides details and usage information on how to use the command.
-my-command > -h.
+[my-command][2] $ -h.
 unknown action "-h"
-my-command > exit.
+[my-command][3] $ exit.
 shell exited with code 0
       EOS
     end
@@ -49,7 +49,7 @@ shell exited with code 0
       result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-my-command > help bar.
+[my-command][4] $ help bar.
 my-command bar -- bar command
 
 Available actions:
@@ -57,7 +57,7 @@ Available actions:
 
     baz
     help -- The help action for command "my-command bar" which provides details and usage information on how to use the command.
-my-command > exit.
+[my-command][5] $ exit.
 shell exited with code 0
       EOS
     end
@@ -92,24 +92,24 @@ shell exited with code 0
       result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-my-command > .
-my-command > my-command.
+[my-command][1] $ .
+[my-command][2] $ my-command.
 unknown action "my-command"
-my-command > foo.
+[my-command][3] $ foo.
 foo executed
-my-command > foo bar.
+[my-command][4] $ foo bar.
 bar executed
-my-command > foo bar --opt yes.
+[my-command][5] $ foo bar --opt yes.
 bar executed
 option: yes
-my-command > foo bar help.
+[my-command][6] $ foo bar help.
 my-command foo bar
 
 Available actions:
 [ Type "help [action-name]" to get more information about that action ]
 
     help -- The help action for command "my-command foo bar" which provides details and usage information on how to use the command.
-my-command > exit.
+[my-command][7] $ exit.
 shell exited with code 0
       EOS
     end
@@ -144,15 +144,15 @@ shell exited with code 0
       result = cli.execute_internal %w(my-command shell), output: :buffer
       expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-my-command > unknown.
+[my-command][1] $ unknown.
 unknown action "unknown"
-my-command > --opt-1 val.
+[my-command][2] $ --opt-1 val.
 unknown action "--opt-1"
-my-command > foo.
+[my-command][3] $ foo.
 command 'my-command foo' failed
 
 Cause: StandardError - I failed!
-my-command > exit.
+[my-command][4] $ exit.
 shell exited with code 0
       EOS
     end
@@ -184,11 +184,11 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-my-command > shell.
+[my-command][1] $ shell.
 command 'my-command shell' failed
 
 Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell
-my-command > exit.
+[my-command][2] $ exit.
 shell exited with code 0
         EOS
       end
@@ -212,11 +212,11 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-my-command > foo shell.
+[my-command][1] $ foo shell.
 command 'my-command foo' failed
 
 Cause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action
-my-command > exit.
+[my-command][2] $ exit.
 shell exited with code 0
         EOS
       end
@@ -334,12 +334,12 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-my-command > .
-my-command > .
-my-command > foo.
+[my-command][1] $ .
+[my-command][2] $ .
+[my-command][3] $ foo.
 foo executed
-my-command > .
-my-command > exit.
+[my-command][4] $ .
+[my-command][5] $ exit.
 shell exited with code 0
         EOS
       end
@@ -364,15 +364,15 @@ shell exited with code 0
           result = cli.execute_internal %w(my-command shell), output: :buffer
           expect(result[:stdout]).to eq <<-EOS
 Starting shell for command "my-command"
-[36mmy-command[0m [1m>[22m unknown.
+[[36mmy-command[0m][1] [1m$[22m unknown.
 unknown action "unknown"
-[36mmy-command[0m [1m>[22m --opt-1 val.
+[[36mmy-command[0m][2] [1m$[22m --opt-1 val.
 unknown action "--opt-1"
-[36mmy-command[0m [1m>[22m foo.
+[[36mmy-command[0m][3] [1m$[22m foo.
 command 'my-command foo' failed
 
 Cause: StandardError - I failed!
-[36mmy-command[0m [1m>[22m exit.
+[[36mmy-command[0m][4] [1m$[22m exit.
 shell exited with code 0
           EOS
         end
@@ -474,11 +474,11 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Welcome to my-command!!!
-my-command > .
-my-command > .
-my-command > foo.
+[my-command][6] $ .
+[my-command][7] $ .
+[my-command][8] $ foo.
 foo executed
-my-command > exit.
+[my-command][9] $ exit.
 shell exited with code 0
         EOS
       end
@@ -505,12 +505,12 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 welcome to my-command
-my-command > .
-my-command > .
-my-command > foo.
+[my-command][10] $ .
+[my-command][11] $ .
+[my-command][12] $ foo.
 foo executed
-my-command > .
-my-command > exit.
+[my-command][13] $ .
+[my-command][14] $ exit.
 shell exited with code 0
         EOS
       end
@@ -535,12 +535,12 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 welcome to the command my-command
-my-command > .
-my-command > .
-my-command > foo.
+[my-command][15] $ .
+[my-command][16] $ .
+[my-command][17] $ foo.
 foo executed
-my-command > .
-my-command > exit.
+[my-command][18] $ .
+[my-command][19] $ exit.
 shell exited with code 0
         EOS
       end

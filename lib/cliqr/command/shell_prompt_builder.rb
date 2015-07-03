@@ -8,20 +8,22 @@ module Cliqr
     class ShellPromptBuilder
       include Cliqr::Command::Color
 
-      # Default shell prompt
-      DEFAULT_PROMPT = ShellPromptBuilder.new
-
       # Create a new shell prompt builder with optional command config
       def initialize(config = nil)
         super
+        @count = 0
       end
 
       # Build a prompt for current command
       #
       # @return [String]
       def build(context)
-        "#{cyan(context.command)} #{bold('>')} "
+        @count += 1
+        "[#{cyan(context.command)}][#{@count}] #{bold('$')} "
       end
+
+      # Default shell prompt
+      DEFAULT_PROMPT = ShellPromptBuilder.new
     end
   end
 end
