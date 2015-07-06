@@ -24,7 +24,6 @@ cli = Cliqr.interface do
 
   action :sort do
     description 'Sort a set of random numbers'
-    shell :disable
 
     handler do
       fail StandardError, 'count should be a non-zero positive number' unless count > 0
