@@ -454,6 +454,60 @@ Available actions:
       end
       expect { define_interface }.to(raise_error(NoMethodError))
     end
+
+    describe 'shell action' do
+      it 'adds shell action to the base command only when there are sub actions' do
+        cli = Cliqr.interface do
+          name 'my-command'
+          handler TestCommand
+          help :disable
+          color :disable
+
+          action :bla
+        end
+
+        expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [actions] [arguments]
+
+Available actions:
+
+    bla
+    shell -- Execute a shell in the context of "my-command" command.
+        EOS
+      end
+
+      it 'does not add shell action to the base command if it does not have actions' do
+        cli = Cliqr.interface do
+          name 'my-command'
+          handler TestCommand
+          help :disable
+          color :disable
+        end
+
+        expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [arguments]
+        EOS
+      end
+
+      it 'can not add shell action to a sub-action' do
+        def define_interface
+          Cliqr.interface do
+            name 'my-command'
+
+            action :bla do
+              shell :enable
+            end
+          end
+        end
+        expect { define_interface }.to(raise_error(NoMethodError))
+      end
+    end
   end
 
   describe 'actions and options' do
@@ -612,60 +666,6 @@ Available actions:
     my-action-1
     another-action
       EOS
-    end
-  end
-
-  describe 'shell action' do
-    it 'adds shell action to the base command only when there are sub actions' do
-      cli = Cliqr.interface do
-        name 'my-command'
-        handler TestCommand
-        help :disable
-        color :disable
-
-        action :bla
-      end
-
-      expect(cli.usage).to eq <<-EOS
-my-command
-
-USAGE:
-    my-command [actions] [arguments]
-
-Available actions:
-
-    bla
-    shell -- Execute a shell in the context of "my-command" command.
-      EOS
-    end
-
-    it 'does not add shell action to the base command if it does not have actions' do
-      cli = Cliqr.interface do
-        name 'my-command'
-        handler TestCommand
-        help :disable
-        color :disable
-      end
-
-      expect(cli.usage).to eq <<-EOS
-my-command
-
-USAGE:
-    my-command [arguments]
-      EOS
-    end
-
-    it 'can not add shell action to a sub-action' do
-      def define_interface
-        Cliqr.interface do
-          name 'my-command'
-
-          action :bla do
-            shell :enable
-          end
-        end
-      end
-      expect { define_interface }.to(raise_error(NoMethodError))
     end
   end
 end
