@@ -73,7 +73,7 @@ module Cliqr
         #
         # @return [Object] The return value of the proxied method
         def method_missing(name, *args, &block)
-          __getobj__.set_config name, args[0], &block
+          __getobj__.set_config(name, args[0], *args[1..-1], &block)
         end
       end
     end

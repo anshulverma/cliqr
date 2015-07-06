@@ -61,7 +61,7 @@ module Cliqr
       # @param [Proc] block Function which populates configuration for a sub-attribute
       #
       # @return [Object] attribute's value
-      def set_config(name, value, &block)
+      def set_config(name, value, *args, &block)
         case name
         when :shell
           handle_shell(value, &block)
@@ -92,13 +92,6 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if help is enabled
       def version?
         !@version.nil?
-      end
-
-      # The root of command config is itself
-      #
-      # @return [Cliqr::Config::Command]
-      def root
-        self
       end
 
       # Check if colors are enabled for this setting

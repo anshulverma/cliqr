@@ -52,7 +52,7 @@ module Cliqr
       # @param [Proc] block Function which populates configuration for a sub-attribute
       #
       # @return [Object] new attribute's value
-      def set_config(name, value, &block)
+      def set_config(name, value, *_args, &block)
         value = block if block_given?
         handle_config(name, value)
       end

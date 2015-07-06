@@ -62,8 +62,8 @@ module Cliqr
     # A custom shell prompt builder must extend from this
     #
     # @example
-    #   class MyOperator < Cliqr.shell_prompt
-    #     def prompt(context)
+    #   class MyCustomPrompt < Cliqr.shell_prompt
+    #     def build(context)
     #       # build a prompt string
     #     end
     #   end
@@ -76,8 +76,8 @@ module Cliqr
     # A custom shell banner builder must extend from this
     #
     # @example
-    #   class MyOperator < Cliqr.shell_banner
-    #     def prompt(context)
+    #   class MyCustomBanner < Cliqr.shell_banner
+    #     def build(context)
     #       # build a banner string
     #     end
     #   end
@@ -85,6 +85,20 @@ module Cliqr
     # @return [Cliqr::Command::ShellBannerBuilder]
     def shell_banner
       Command::ShellBannerBuilder
+    end
+
+    # A custom event handler must extend from this
+    #
+    # @example
+    #   class MyEventHandler < Cliqr.event_handler
+    #     def handle(context, event)
+    #       # handle event
+    #     end
+    #   end
+    #
+    # @return [Cliqr::Events::Handler]
+    def event_handler
+      Events::Handler
     end
   end
 end

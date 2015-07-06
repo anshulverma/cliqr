@@ -99,7 +99,7 @@ module Cliqr
       #
       # @return [Object] if setting a attribute's value
       # @return [Cliqr::Config::Base] if adding a new action or option
-      def set_config(name, value, &block)
+      def set_config(name, value, *args, &block)
         case name
         when :option
           handle_option(value, &block) # value is the long name for the option
@@ -188,6 +188,18 @@ module Cliqr
       # @return [Boolean] <tt>true</tt> if help is enabled
       def help?
         @help == ENABLE_CONFIG
+      end
+
+      # The root of action config is itself unless otherwise configured
+      #
+      # @return [Cliqr::Config::Action]
+      def root
+        self
+      end
+
+      # Check if this action is the root
+      def root?
+        self == root
       end
 
       private

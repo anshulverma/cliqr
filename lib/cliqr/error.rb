@@ -99,5 +99,8 @@ module Cliqr
 
     # Raised when a command is executed that is not supposed to run
     class IllegalCommandError < CliqrError; end
+
+    # Raised if event invocation is in invalid state
+    class InvocationError < CliqrError; end
   end
 end

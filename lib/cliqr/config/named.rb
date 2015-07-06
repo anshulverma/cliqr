@@ -1,7 +1,6 @@
 # encoding: utf-8
 
-require 'cliqr/config/dsl'
-require 'cliqr/config/validation/verifiable'
+require 'cliqr/config/event_based'
 
 module Cliqr
   # A extension for CLI module to group all config classes
@@ -9,7 +8,7 @@ module Cliqr
   # @api private
   module Config
     # The configuration setting to build a named configuration instance
-    class Named < Cliqr::Config::Base
+    class Named < Cliqr::Config::EventBased
       # Name of the config instance
       #
       # @return [String]
@@ -24,13 +23,15 @@ module Cliqr
 
       # New config instance with all attributes set as UNSET
       def initialize
+        super
+
         @name = UNSET
         @description = UNSET
       end
 
       # Finalize config by adding default values for unset values
       #
-      # @return [Cliqr::Config::Base]
+      # @return [Cliqr::Config::Named]
       def finalize
         @name = Config.get_if_unset(@name, '')
         @description = Config.get_if_unset(@description, '')

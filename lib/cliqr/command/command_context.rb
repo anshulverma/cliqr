@@ -2,6 +2,7 @@
 
 require 'cliqr/command/color'
 require 'cliqr/command/argument_operator_context'
+require 'cliqr/events/invoker'
 
 module Cliqr
   # Definition and builder for command context
@@ -56,6 +57,7 @@ module Cliqr
         @action_name = config.name
         @environment = environment
         @executor = executor
+        @event_invoker = Events::Invoker.new(config)
 
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
@@ -106,6 +108,13 @@ module Cliqr
       # @return [Integer] Exit code
       def forward(args, options = {})
         @executor.call(args, options)
+      end
+
+      # Invoke an event
+      #
+      # @return [Boolean] <tt>true</tt> if the event was handled by any event handler
+      def invoke(event_name, *args)
+        @event_invoker.invoke(event_name, nil, *args)
       end
 
       # Handle the case when a method is invoked to get an option value

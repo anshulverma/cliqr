@@ -207,8 +207,8 @@ module Cliqr
         # Validates each element inside a collection
         class CollectionValidator < TypeHierarchyValidator
           # Create a new collection validator
-          def initialize(_config)
-            super(Array)
+          def initialize(_config, type = nil)
+            super(type || Array)
           end
 
           protected
@@ -218,17 +218,48 @@ module Cliqr
           # @return [Boolean] <tt>true</tt> if there were any errors during validation
           def do_validate(name, values, errors)
             valid = true
-            values.each_with_index do |value, index|
+            iterator(values) do |value, key|
               valid = false unless value.valid?
               value.errors.each do |error|
                 if value.name.nil? || value.name.empty?
-                  errors.add("#{name}[#{index + 1}] - #{error}")
+                  errors.add("#{name}[#{key}] - #{error}")
                 else
                   errors.add("#{name.to_s.gsub(/s$/, '')} \"#{value.name}\" - #{error}")
                 end
               end
             end
             valid
+          end
+
+          # Iterator for each item in the array
+          #
+          # @return [Array]
+          def iterator(array, &block)
+            array.each_with_index { |value, index| block.call(value, index + 1) }
+          end
+        end
+
+        # Validates each element inside a hash map
+        class HashValidator < CollectionValidator
+          # Create a new hash validator
+          def initialize(config)
+            super(config, Hash)
+          end
+
+          protected
+
+          # Validate each element inside a hash and prepend key to error
+          #
+          # @return [Boolean] <tt>true</tt> if there were any errors during validation
+          def do_validate(_name, _values, _errors)
+            true
+          end
+
+          # Iterate over each key value pair in the hash
+          #
+          # @return [Hash]
+          def iterator(hash, &block)
+            hash.each_key { |key| block.call(hash[key], key) }
           end
         end
 
@@ -266,7 +297,18 @@ module Cliqr
           # @return [Nothing]
           def do_validate(name, value, errors)
             errors.add("#{name} should be a '#{@type}' not '#{value.class}'") \
-              unless value.class == @type
+              unless matches?(value)
+          end
+
+          # Check if a value matches a type
+          def matches?(value)
+            begin
+              return true if value.class == @type
+              return value < @type if value.respond_to?(:<)
+            rescue ArgumentError
+              # nothing to do here just return false below
+            end
+            false
           end
         end
 
@@ -327,6 +369,7 @@ module Cliqr
             :format => FormatValidator,
             :extend => TypeHierarchyValidator,
             :collection => CollectionValidator,
+            :hash => HashValidator,
             :inclusion => InclusionValidator,
             :one_of => OneOfValidator,
             :type_of => TypeOfValidator,
