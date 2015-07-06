@@ -107,7 +107,7 @@ module Cliqr
           return Cliqr::Executor::ExitCode.code(nil)
         end
         @context.forward("#{@base_command} #{command}", :environment => @context.environment)
-      rescue ArgumentError => e
+      rescue StandardError => e
         puts e.message
       end
 

@@ -115,7 +115,7 @@ module Cliqr
       Cliqr::Config::Shell.new.tap do |shell_config|
         shell_config.enabled = config.actions?
         shell_config.prompt = Command::ShellPromptBuilder.new(config)
-        shell_config.banner = Command::ShellBannerBuilder::DEFAULT_BANNER
+        shell_config.banner = Command::ShellBannerBuilder.new
         shell_config.finalize
       end
     end

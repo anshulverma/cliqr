@@ -504,11 +504,11 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 Welcome to my-command!!!
-[my-command][6] $ .
-[my-command][7] $ .
-[my-command][8] $ foo.
+[my-command][1] $ .
+[my-command][2] $ .
+[my-command][3] $ foo.
 foo executed
-[my-command][9] $ exit.
+[my-command][4] $ exit.
 shell exited with code 0
         EOS
       end
@@ -535,12 +535,12 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 welcome to my-command
-[my-command][10] $ .
-[my-command][11] $ .
-[my-command][12] $ foo.
+[my-command][1] $ .
+[my-command][2] $ .
+[my-command][3] $ foo.
 foo executed
-[my-command][13] $ .
-[my-command][14] $ exit.
+[my-command][4] $ .
+[my-command][5] $ exit.
 shell exited with code 0
         EOS
       end
@@ -565,12 +565,12 @@ shell exited with code 0
         result = cli.execute_internal %w(my-command shell), output: :buffer
         expect(result[:stdout]).to eq <<-EOS
 welcome to the command my-command
-[my-command][15] $ .
-[my-command][16] $ .
-[my-command][17] $ foo.
+[my-command][1] $ .
+[my-command][2] $ .
+[my-command][3] $ foo.
 foo executed
-[my-command][18] $ .
-[my-command][19] $ exit.
+[my-command][4] $ .
+[my-command][5] $ exit.
 shell exited with code 0
         EOS
       end

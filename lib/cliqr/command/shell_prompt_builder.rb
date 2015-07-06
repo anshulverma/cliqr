@@ -21,9 +21,6 @@ module Cliqr
         @count += 1
         "[#{cyan(context.command)}][#{@count}] #{bold('$')} "
       end
-
-      # Default shell prompt
-      DEFAULT_PROMPT = ShellPromptBuilder.new
     end
   end
 end

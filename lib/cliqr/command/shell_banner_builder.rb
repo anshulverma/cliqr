@@ -6,9 +6,6 @@ module Cliqr
     #
     # @api private
     class ShellBannerBuilder
-      # Default shell banner
-      DEFAULT_BANNER = ShellBannerBuilder.new
-
       # Build the banner based on current context
       #
       # @return [String]

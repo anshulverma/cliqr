@@ -62,8 +62,8 @@ module Cliqr
         when UNSET
           @enabled = true
         end
-        @prompt = Config.get_if_unset(@prompt, Cliqr::Command::ShellPromptBuilder::DEFAULT_PROMPT)
-        @banner = Config.get_if_unset(@banner, Cliqr::Command::ShellBannerBuilder::DEFAULT_BANNER)
+        @prompt = Config.get_if_unset(@prompt, Cliqr::Command::ShellPromptBuilder.new)
+        @banner = Config.get_if_unset(@banner, Cliqr::Command::ShellBannerBuilder.new)
 
         # set default name for the shell action
         @name = 'shell' if @name.is_a?(String) && @name.empty?
