@@ -356,8 +356,10 @@ val
       end
     end
 
-    result = cli.execute_internal ['my-command --opt 123'], output: :buffer
+    result = cli.execute_internal ['my-command'], output: :buffer
     expect(result[:stdout]).to eq <<-EOS
+invoked foo
+
     EOS
   end
 end
