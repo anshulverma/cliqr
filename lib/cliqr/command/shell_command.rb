@@ -33,7 +33,7 @@ module Cliqr
       #
       # @return [Cliqr::Command::ShellRunner]
       def build_runner(context, root_context)
-        ShellRunner.new(context.command[0...(context.command.rindex('shell'))].strip,
+        ShellRunner.new(context.base_command,
                         root_context,
                         build_proc(@shell_config.prompt))
       end
@@ -107,7 +107,7 @@ module Cliqr
           return Cliqr::Executor::ExitCode.code(nil)
         end
         @context.forward("#{@base_command} #{command}", :environment => @context.environment)
-      rescue StandardError => e
+      rescue ArgumentError => e
         puts e.message
       end
 

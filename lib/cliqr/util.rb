@@ -90,9 +90,20 @@ module Cliqr
     # @return [Cliqr::CLI::Action] New action config
     def self.build_shell_action(config, shell_config)
       Cliqr::Config::Action.new.tap do |action_config|
-        action_config.name = 'shell'
-        action_config.description = "Execute a shell in the context of \"#{config.command}\" command."
+        if shell_config.name?
+          action_config.name = shell_config.name
+        else
+          action_config.name = 'shell'
+        end
+
         action_config.handler = Cliqr::Command::ShellCommand.new(shell_config)
+
+        # allow description to be overridden
+        description = shell_config.description
+        description = "Execute a shell in the context of \"#{config.command}\" command." \
+          unless shell_config.description?
+        action_config.description = description
+
         action_config.finalize
       end
     end
@@ -105,6 +116,7 @@ module Cliqr
         shell_config.enabled = config.actions?
         shell_config.prompt = Command::ShellPromptBuilder.new(config)
         shell_config.banner = Command::ShellBannerBuilder::DEFAULT_BANNER
+        shell_config.finalize
       end
     end
 

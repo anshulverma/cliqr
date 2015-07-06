@@ -45,6 +45,11 @@ module Cliqr
       def description?
         !(@description.nil? || @description.empty?)
       end
+
+      # Check if this config has a valid name
+      def name?
+        @name.is_a?(String) && !@name.empty?
+      end
     end
   end
 end

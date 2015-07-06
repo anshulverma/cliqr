@@ -125,8 +125,14 @@ module Cliqr
           def do_validate(name, value, errors)
             errors.add("value for '#{name}' must match /#{@format.source}/; " \
                        "actual: #{value.inspect}") \
-                if !value.nil? && @format.match(value).nil?
+                if !value.nil? && !match?(value)
             errors
+          end
+
+          # Check if the value matches a particular format
+          def match?(value)
+            return false unless value.is_a?(String) || value.is_a?(Symbol)
+            !@format.match(value).nil?
           end
         end
 

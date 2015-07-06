@@ -37,7 +37,12 @@ module Cliqr
     #
     # @return [Object]
     def self.get_if_unset(attribute_value, default_value)
-      attribute_value == UNSET ? default_value : attribute_value
+      return attribute_value unless attribute_value == UNSET
+      if default_value.is_a?(Proc)
+        default_value.call
+      else
+        default_value
+      end
     end
 
     # The base configuration setting to build a cli application with its own dsl

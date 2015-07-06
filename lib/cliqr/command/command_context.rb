@@ -13,6 +13,11 @@ module Cliqr
     class CommandContext
       include Cliqr::Command::Color
 
+      # Base command name
+      #
+      # @return [String]
+      attr_accessor :base_command
+
       # Command name
       #
       # @return [String]
@@ -52,6 +57,7 @@ module Cliqr
         super(config)
 
         @config = config
+        @base_command = config.root.name
         @command = config.command
         @arguments = arguments
         @action_name = config.name

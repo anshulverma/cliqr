@@ -63,6 +63,36 @@ shell exited with code 0
     end
   end
 
+  it 'can execute help in shell with a different name' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      description 'this is a test command'
+      color :disable
+
+      shell do
+        name 'custom-shell'
+        description 'this is a custom shell'
+      end
+    end
+
+    with_input(%w(help)) do
+      result = cli.execute_internal %w(my-command custom-shell), output: :buffer
+      expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+[my-command][1] $ help.
+my-command -- this is a test command
+
+Available actions:
+[ Type "help [action-name]" to get more information about that action ]
+
+    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
+    custom-shell -- this is a custom shell
+[my-command][2] $ exit.
+shell exited with code 0
+      EOS
+    end
+  end
+
   it 'can execute a sub action from shell' do
     cli = Cliqr.interface do
       name 'my-command'

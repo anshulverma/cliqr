@@ -507,6 +507,36 @@ USAGE:
         end
         expect { define_interface }.to(raise_error(NoMethodError))
       end
+
+      it 'can name a shell action as something else' do
+        cli = Cliqr.interface do
+          name 'my-command'
+          handler TestCommand
+          color :disable
+
+          shell do
+            name 'my-custom-shell'
+            description 'this is a custom shell implementation'
+          end
+        end
+
+        expect(cli.usage).to eq <<-EOS
+my-command
+
+USAGE:
+    my-command [actions] [options] [arguments]
+
+Available options:
+
+    --help, -h  :  Get helpful information for action "my-command" along with its usage information.
+
+Available actions:
+[ Type "my-command help [action-name]" to get more information about that action ]
+
+    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
+    my-custom-shell -- this is a custom shell implementation
+        EOS
+      end
     end
   end
 

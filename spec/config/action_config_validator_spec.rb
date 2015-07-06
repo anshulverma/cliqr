@@ -230,4 +230,19 @@ describe Cliqr::Config do
                                                    "handler should be a 'Cliqr::Events::Handler' not 'Array', " \
                                                    "handler should be a 'Proc' not 'Array']]"))
   end
+
+  it 'does not allow invalid name for shell config' do
+    def define_interface
+      Cliqr.interface do
+        name 'my-command'
+
+        shell do
+          name Object
+        end
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               'invalid Cliqr interface configuration - [' \
+                                                 "shell - value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: Object]"))
+  end
 end

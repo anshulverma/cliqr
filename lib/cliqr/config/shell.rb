@@ -8,7 +8,7 @@ module Cliqr
     # Config attributes for shell
     #
     # @api private
-    class Shell < Cliqr::Config::Base
+    class Shell < Cliqr::Config::Named
       # Enable or disable the shell action
       #
       # @return [Symbol]
@@ -52,6 +52,8 @@ module Cliqr
       #
       # @return [Cliqr::Config::Option]
       def finalize
+        super
+
         case @enabled
         when Cliqr::Config::ENABLE_CONFIG
           @enabled = true
@@ -62,6 +64,9 @@ module Cliqr
         end
         @prompt = Config.get_if_unset(@prompt, Cliqr::Command::ShellPromptBuilder::DEFAULT_PROMPT)
         @banner = Config.get_if_unset(@banner, Cliqr::Command::ShellBannerBuilder::DEFAULT_BANNER)
+
+        # set default name for the shell action
+        @name = 'shell' if @name.is_a?(String) && @name.empty?
 
         self
       end
