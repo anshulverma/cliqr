@@ -63,7 +63,7 @@ module Cliqr
         @action_name = config.name
         @environment = environment
         @executor = executor
-        @event_invoker = Events::Invoker.new(config)
+        @event_invoker = Events::Invoker.new(config, self)
 
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
@@ -76,7 +76,7 @@ module Cliqr
         @options.values
       end
 
-      # Get a option by name
+      # Get an option by name
       #
       # @param [String] name Name of the option
       #
@@ -86,7 +86,7 @@ module Cliqr
         default(name)
       end
 
-      # Check if a option with a specified name has been passed
+      # Check if an option with a specified name has been passed
       #
       # @param [String] name Name of the option
       #
@@ -127,6 +127,13 @@ module Cliqr
       #
       # @return [Object] Option's value
       def method_missing(name, *_args, &_block)
+        get_or_check_option(name)
+      end
+
+      # Get option value or check if it exists
+      #
+      # @return [Object]
+      def get_or_check_option(name)
         option_name = name.to_s.chomp('?')
         existence_check = name.to_s.end_with?('?')
         existence_check ? option?(option_name) : option(option_name).value \

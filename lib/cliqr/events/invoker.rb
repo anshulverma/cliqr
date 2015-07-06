@@ -12,8 +12,9 @@ module Cliqr
       # Create a new event invoker instance
       #
       # @param [Cliqr::Config::Action] config
-      def initialize(config)
+      def initialize(config, context)
         @config = config
+        @context = context
       end
 
       # Invoke a event in the context of the configuration set in this invoker
@@ -48,7 +49,7 @@ module Cliqr
       #
       # @return [Nothing]
       def handle(event, event_config, *args)
-        context = Events::EventContext.new(self, event)
+        context = Events::EventContext.new(self, @context, event)
         context.instance_exec(event, *args, &wrap(event_config.handler, context))
       rescue StandardError => e
         raise Cliqr::Error::InvocationError.new("failed invocation for #{event.name}", e)

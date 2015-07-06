@@ -303,4 +303,61 @@ invoked second : my-command foo baz : e : 5
 should be invoked
     EOS
   end
+
+  it 'can access options in event handler' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      on :foo do
+        puts 'invoked foo'
+        puts opt?
+        puts abc?
+        puts xyz?
+        puts opt
+      end
+
+      action :my_action do
+        on :bar do
+          puts 'invoked bar'
+          puts opt?
+          puts abc?
+          puts xyz?
+          puts opt
+        end
+
+        handler do
+          invoke :bar, 'a', 1
+        end
+
+        option :opt
+        option :abc
+      end
+    end
+    result = cli.execute_internal ['my-command my_action --opt val'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+invoked bar
+true
+false
+
+val
+    EOS
+  end
+
+  it 'cannot get option value for non-configured option' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      on :foo do
+        puts 'invoked foo'
+        puts opt
+      end
+
+      handler do
+        invoke :foo
+      end
+    end
+
+    result = cli.execute_internal ['my-command --opt 123'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+    EOS
+  end
 end
