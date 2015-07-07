@@ -156,4 +156,34 @@ describe Cliqr::Config do
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                "invalid Cliqr interface configuration - [invalid type 'Object']"))
   end
+
+  it 'validates options inside shell config' do
+    def define_interface
+      Cliqr.interface do
+        name 'test-command'
+        handler TestCommand
+        shell do
+          option :foo do
+            type :blah
+          end
+
+          option :bar do
+            short ''
+          end
+
+          option nil do
+            operator Object
+          end
+        end
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               'invalid Cliqr interface configuration - [' \
+                                                 "shell - option \"foo\" - invalid type 'blah', " \
+                                                 "shell - option \"bar\" - 'short' cannot be empty, " \
+                                                 "shell - options[3] - 'name' cannot be nil, " \
+                                                 'shell - options[3] - invalid value for operator; fix one of - [' \
+                                                   "operator of type 'Object' does not extend from 'Cliqr::Command::ArgumentOperator', " \
+                                                   "operator should be a 'Proc' not 'Object']]"))
+  end
 end

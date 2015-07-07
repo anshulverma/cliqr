@@ -22,7 +22,9 @@ module Cliqr
 
         puts banner(root_context, build_proc(@shell_config.banner))
 
+        context.invoke(:shell_start)
         exit_code = build_runner(context, root_context).run
+        context.invoke(:shell_stop)
         puts "shell exited with code #{exit_code}"
         exit_code
       end

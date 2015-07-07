@@ -203,10 +203,10 @@ describe Cliqr::Config do
     end
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - [' \
-                                                 "events[] - 'name' cannot be empty, " \
-                                                 "events[] - invalid value for handler; fix one of - ['handler' cannot be nil], " \
-                                                 "action \"my-action\" - events[] - 'name' cannot be empty, " \
-                                                 "action \"my-action\" - events[] - invalid value for handler; fix one of - ['handler' cannot be nil]]"))
+                                                 "events[1] - 'name' cannot be empty, " \
+                                                 "events[1] - invalid value for handler; fix one of - ['handler' cannot be nil], " \
+                                                 "action \"my-action\" - events[1] - 'name' cannot be empty, " \
+                                                 "action \"my-action\" - events[1] - invalid value for handler; fix one of - ['handler' cannot be nil]]"))
   end
 
   it 'does not allow event handler of any type other than string or symbol' do
@@ -244,5 +244,25 @@ describe Cliqr::Config do
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - [' \
                                                  "shell - value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: Object]"))
+  end
+
+  it 'validates events inside shell config' do
+    def define_interface
+      Cliqr.interface do
+        name 'test-command'
+
+        shell do
+          on :third, []
+          on TestArgPrinterEventHandler
+        end
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               'invalid Cliqr interface configuration - [' \
+                                                 "shell - event \"third\" - invalid value for handler; fix one of - [" \
+                                                   "handler should be a 'Cliqr::Events::Handler' not 'Array', " \
+                                                   "handler should be a 'Proc' not 'Array'], " \
+                                                 "shell - events[2] - 'name' cannot be empty, " \
+                                                 "shell - events[2] - invalid value for handler; fix one of - ['handler' cannot be nil]]"))
   end
 end

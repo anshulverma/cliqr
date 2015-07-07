@@ -25,9 +25,9 @@ module Cliqr
       # @return [Cliqr::Parser::ParsedInput] Validated parsed input
       def validate(args, config)
         errors = ValidationErrors.new
-        config.options.each do |option|
-          validate_argument(args.option(option.name), option, errors) \
-            if args.options.key?(option.name.to_s)
+        config.options.each do |(name, option)|
+          validate_argument(args.option(name), option, errors) \
+            if args.options.key?(name.to_s)
         end
         fail(Cliqr::Error::IllegalArgumentError, "illegal argument error - #{errors}") \
           unless errors.empty?

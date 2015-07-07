@@ -62,6 +62,11 @@ module Cliqr
         handle_config(name, value)
       end
 
+      # Skip validation if this is <tt>true</tt>
+      def skip_validation?
+        false
+      end
+
       private
 
       # Set value for an attribute by evaluating a block

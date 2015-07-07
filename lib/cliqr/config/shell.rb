@@ -8,7 +8,7 @@ module Cliqr
     # Config attributes for shell
     #
     # @api private
-    class Shell < Cliqr::Config::Named
+    class Shell < Cliqr::Config::OptionBased
       # Enable or disable the shell action
       #
       # @return [Symbol]

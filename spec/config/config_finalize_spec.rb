@@ -9,6 +9,6 @@ describe Cliqr::Config do
     expect(config.name).to eq('')
     expect(config.description).to eq('')
     expect(config.handler).to eq(nil)
-    expect(config.options).to eq([])
+    expect(config.options).to eq({})
   end
 end

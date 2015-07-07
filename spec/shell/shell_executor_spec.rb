@@ -188,6 +188,106 @@ shell exited with code 0
     end
   end
 
+  it 'can pass options to shell command' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      color :disable
+
+      on :shell_start do
+        puts 'base: shell started'
+        puts foo?
+        puts foo
+        puts bar?
+        puts bar
+        puts baz?
+        puts baz
+      end
+
+      on :shell_stop do
+        puts 'base: shell stopped'
+        puts foo?
+        puts foo
+        puts bar?
+        puts bar
+        puts baz?
+        puts baz
+      end
+
+      shell :enable do
+        on :shell_start do
+          puts 'shell started'
+          puts foo?
+          puts foo
+          puts bar?
+          puts bar
+          puts baz?
+          puts baz
+        end
+
+        on :shell_stop do
+          puts 'shell stopped'
+          puts foo?
+          puts foo
+          puts bar?
+          puts bar
+          puts baz?
+          puts baz
+        end
+
+        option :foo do
+          short 'f'
+        end
+
+        option :bar do
+          type :boolean
+        end
+
+        option :baz do
+          type :numeric
+          default 10
+        end
+      end
+    end
+
+    with_input(['']) do
+      result = cli.execute_internal %w(my-command shell -f qwerty --no-bar), output: :buffer
+      expect(result[:stdout]).to eq <<-EOS
+Starting shell for command "my-command"
+shell started
+true
+qwerty
+true
+false
+false
+10
+base: shell started
+true
+qwerty
+true
+false
+false
+10
+[my-command][1] $ .
+[my-command][2] $ exit.
+shell stopped
+true
+qwerty
+true
+false
+false
+10
+base: shell stopped
+true
+qwerty
+true
+false
+false
+10
+shell exited with code 0
+      EOS
+    end
+  end
+
   describe 'illegal shell operations' do
     it 'does not allow shell action if there are no sub-actions' do
       cli = Cliqr.interface do

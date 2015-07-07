@@ -4,6 +4,8 @@ require 'spec_helper'
 
 require 'cliqr/error'
 
+require 'fixtures/test_command'
+
 describe Cliqr::Executor do
   it 'can execute help action to get help for base command' do
     cli = Cliqr.interface do
@@ -365,6 +367,46 @@ Available actions:
 [30m[ Type "my_command foo bar help [action-name]" to get more information about that action ]
 [0m
     [32mhelp[0m -- The help action for command "my_command foo bar" which provides details and usage information on how to use the command.
+    EOS
+  end
+
+  it 'can use options in shell config' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      handler TestCommand
+      color :disable
+
+      shell do
+        name 'b00m'
+        description 'this is a custom shell implementation'
+
+        option :foo
+
+        option :bar do
+          type :boolean
+          default true
+          description 'some bar'
+        end
+
+        option :baz do
+          type :numeric
+          default 10
+        end
+      end
+    end
+
+    result = cli.execute_internal %w(help b00m), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+my-command b00m -- this is a custom shell implementation
+
+USAGE:
+    my-command b00m [options] [arguments]
+
+Available options:
+
+    --foo
+    --[no-]bar  :  <boolean> some bar (default => true)
+    --baz  :  <numeric> (default => 10)
     EOS
   end
 end

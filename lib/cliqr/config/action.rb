@@ -3,14 +3,14 @@
 require 'cliqr/util'
 require 'cliqr/command/base_command'
 require 'cliqr/config/base'
-require 'cliqr/config/option'
+require 'cliqr/config/option_based'
 
 module Cliqr
   module Config
     # Configuration setting for an action
     #
     # @api private
-    class Action < Cliqr::Config::Named
+    class Action < Cliqr::Config::OptionBased
       # Command handler for the base command
       #
       # @return [Class<Cliqr::Command::BaseCommand>]
@@ -27,13 +27,6 @@ module Cliqr
       attr_accessor :arguments
       validates :arguments,
                 inclusion: [ENABLE_CONFIG, DISABLE_CONFIG]
-
-      # Array of options applied to the base command
-      #
-      # @return [Array<OptionConfig>]
-      attr_accessor :options
-      validates :options,
-                collection: true
 
       # Array of children action configs for this action
       #
@@ -62,16 +55,13 @@ module Cliqr
         @arguments = UNSET
         @help = UNSET
 
-        @options = []
-        @option_index = {}
-
         @actions = []
         @action_index = {}
       end
 
       # Finalize config by adding default values for unset values
       #
-      # @return [Cliqr::Config::Command]
+      # @return [Cliqr::Config::Action]
       def finalize
         super
 
@@ -101,38 +91,11 @@ module Cliqr
       # @return [Cliqr::Config::Base] if adding a new action or option
       def set_config(name, value, *args, &block)
         case name
-        when :option
-          handle_option(value, &block) # value is the long name for the option
         when :action
           handle_action(value, &block) # value is action's name
         else
           super
         end
-      end
-
-      # Check if options are set
-      #
-      # @return [Boolean] <tt>true</tt> if the CLI config's options have been set
-      def options?
-        @options != UNSET
-      end
-
-      # Check if particular option is set
-      #
-      # @param [String] name Name of the option to check
-      #
-      # @return [Boolean] <tt>true</tt> if the CLI config's option is set
-      def option?(name)
-        @option_index.key?(name.to_s)
-      end
-
-      # Get value of a option
-      #
-      # @param [String] name Name of the option
-      #
-      # @return [String] value for the option
-      def option(name)
-        @option_index[name.to_s]
       end
 
       # Check if particular action exists
@@ -204,31 +167,6 @@ module Cliqr
 
       private
 
-      # Handle configuration for a new option
-      #
-      # @param [Symbol] name Long name of the option
-      # @param [Proc] block Populate the option's config in this function block
-      #
-      # @return [Cliqr::Config::Option] Newly created option's config
-      def handle_option(name, &block)
-        option_config = Option.build(&block)
-        option_config.name = name
-        add_option(option_config)
-      end
-
-      # Add a new option for the command
-      #
-      # @return [Cliqr::Config::Option] Newly added option's config
-      def add_option(option_config)
-        validate_option_name(option_config)
-
-        @options.push(option_config)
-        @option_index[option_config.name.to_s] = option_config
-        @option_index[option_config.short.to_s] = option_config if option_config.short?
-
-        option_config
-      end
-
       # Handle configuration for a new action
       #
       # @param [String] name Name of the action
@@ -260,23 +198,6 @@ module Cliqr
           unless action_config.name.nil?
 
         action_config
-      end
-
-      # Make sure that the option's name is unique
-      #
-      # @param [Cliqr::Config::Option] option_config Config for this particular option
-      #
-      # @return [Cliqr::Config::Option] Validated OptionConfig instance
-      def validate_option_name(option_config)
-        fail Cliqr::Error::DuplicateOptions,
-             "multiple options with long name \"#{option_config.name}\"" \
-             if option?(option_config.name)
-
-        fail Cliqr::Error::DuplicateOptions,
-             "multiple options with short name \"#{option_config.short}\"" \
-              if option?(option_config.short)
-
-        option_config
       end
 
       # Make sure that the action's name is unique

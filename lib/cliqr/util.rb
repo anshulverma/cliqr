@@ -104,6 +104,15 @@ module Cliqr
           unless shell_config.description?
         action_config.description = description
 
+        action_config.options = shell_config.options
+        action_config.events = shell_config.events
+
+        action_config.instance_eval do
+          def skip_validation?
+            true
+          end
+        end
+
         action_config.finalize
       end
     end

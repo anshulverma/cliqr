@@ -241,7 +241,9 @@ module Cliqr
           #
           # @return [Array]
           def iterator(array, &block)
-            array.each_with_index { |value, index| block.call(value, index + 1) }
+            array.each_with_index do |value, index|
+              block.call(value, index + 1) unless value.skip_validation?
+            end
           end
         end
 
@@ -265,7 +267,9 @@ module Cliqr
           #
           # @return [Hash]
           def iterator(hash, &block)
-            hash.each_key { |key| block.call(hash[key], key) }
+            hash.each_with_index do |(key, value), index|
+              block.call(value, key.empty? ? (index + 1) : key)
+            end
           end
         end
 

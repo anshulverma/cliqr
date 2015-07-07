@@ -47,7 +47,7 @@ module Cliqr
         @actions = @config.actions
                    .map { |action| CommandUsageContext.new(type, action) }
                    .select { |action|  type == :shell ? action.name != 'shell' : true }
-        @options = @config.options.map { |option| Usage::OptionUsageContext.new(option) }
+        @options = @config.options.values.map { |option| Usage::OptionUsageContext.new(option) }
         @command = @config.command
       end
 
