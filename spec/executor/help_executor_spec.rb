@@ -409,4 +409,20 @@ Available options:
     --baz  :  <numeric> (default => 10)
     EOS
   end
+
+  it 'does not allow version command to have arguments' do
+    cli = Cliqr.interface do
+      name 'my-command'
+      color :disable
+      version '1.2.3.4'
+    end
+
+    result = cli.execute_internal %w(help version), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+my-command version -- Get version information for command "my-command".
+
+USAGE:
+    my-command version
+    EOS
+  end
 end

@@ -52,6 +52,7 @@ module Cliqr
       Cliqr::Config::Action.new.tap do |action_config|
         action_config.name = 'version'
         action_config.description = "Get version information for command \"#{config.command}\"."
+        action_config.arguments = Cliqr::Config::DISABLE_CONFIG
         action_config.handler = proc do
           puts config.version
         end
