@@ -45,7 +45,7 @@ how to use `cliqr`.
 ## Quickstart
 
 To get things started quickly here is an example of a basic `cliqr`
-based CLI application (lets call this script `numbers`):
+based CLI application (lets call this script `greet`):
 
 ``` ruby
 #!/usr/bin/env ruby
@@ -53,50 +53,18 @@ based CLI application (lets call this script `numbers`):
 require 'cliqr'
 
 cli = Cliqr.interface do
-  name 'numbers'
-  description 'A simplistic example for quickly getting started with cliqr.'
+  name 'greet'
+  description 'A "hello world" app to demonstrate cliqr.'
   version '0.0.1' # optional; adds a version action to our simple command
 
   # main command handler
   handler do
     puts "Hi #{name}" if name? # name is command's option defined below
-    puts 'Nothing to do here. Please try the sort action.'
+    puts "Please tell me your name" unless name?
   end
 
   option :name do
     description 'Your name.'
-    operator do
-      value.split(' ').first # only get the first name
-    end
-  end
-
-  action :sort do
-    description 'Sort a set of random numbers'
-    shell :disable
-
-    handler do
-      fail StandardError, 'count should be a non-zero positive number' unless count > 0
-      result = [].tap { |numbers| count.times { numbers << rand(9999) } }.sort
-      result = result.reverse if order? && order == :descending
-      puts result
-    end
-
-    option :count do
-      short 'c' # optional, but usually a good idea to have it
-      description 'Count of something.'
-      type :numeric # restricts values for this option to numbers
-    end
-
-    option :order do
-      short 'o'
-      description 'Order of sort (either :ascending or :descending).'
-
-      # This is how you can make sure that the input is valid.
-      operator do
-        fail StandardError, "Unknown order #{value}" unless [:ascending, :descending].include?(value.to_sym)
-        value.to_sym
-      end
-    end
   end
 end
 
@@ -106,57 +74,10 @@ cli.execute(ARGV)
 Now you can execute this script:
 
 ``` bash
-$ ./numbers
-Nothing to do here. Please try the sort action.
-$ ./numbers  --name "Anshul Verma"
-Hi Anshul
-Nothing to do here. Please try the sort action.
-$ ./numbers sort -c 5
-4519
-5612
-6038
-6872
-8259
-$ ./numbers sort -c 5 --order descending
-8742
-7995
-6593
-2730
-806
-```
-
-A shell command is auto generated for you by `cliqr`. Here is how it works:
-
-``` bash
-$ ./numbers shell
-Starting shell for command "numbers"
-numbers > sort -c 5
-1259
-2031
-4864
-8355
-9824
-```
-
-You can get help info on the sort action:
-
-``` bash
-$ ./numbers help sort
-numbers sort -- Sort a set of random numbers
-
-USAGE:
-    numbers sort [actions] [options] [arguments]
-
-Available options:
-
-    --count, -c  :  <numeric> Count of something. (default => 0)
-    --order, -o  :  Order of sort (either :ascending or :descending).
-    --help, -h  :  Get helpful information for action "numbers sort" along with its usage information.
-
-Available actions:
-[ Type "numbers sort help [action-name]" to get more information about that action ]
-
-    help -- The help action for command "numbers sort" which provides details and usage information on how to use the command.
+$ ./greet
+Please tell me your name
+$ ./greet --name "Anshul Verma"
+Hi Anshul Verma
 ```
 
 ## Installation
