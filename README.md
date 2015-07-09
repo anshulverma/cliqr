@@ -73,7 +73,7 @@ cli.execute(ARGV)
 
 Here is a screen capture of this script in action:
 ![greet script demo]
-(https://raw.githubusercontent.com/anshulverma/as-star-tree/master/screenshots/greet.gif
+(https://raw.githubusercontent.com/anshulverma/cliqr/master/screenshots/greet.gif
  "Binary tree example")
 
 ## Installation
