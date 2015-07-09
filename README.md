@@ -71,14 +71,10 @@ end
 cli.execute(ARGV)
 ```
 
-Now you can execute this script:
-
-``` bash
-$ ./greet
-Please tell me your name
-$ ./greet --name "Anshul Verma"
-Hi Anshul Verma
-```
+Here is a screen capture of this script in action:
+![greet script demo]
+(https://raw.githubusercontent.com/anshulverma/as-star-tree/master/screenshots/greet.gif
+ "Binary tree example")
 
 ## Installation
 
