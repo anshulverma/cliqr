@@ -98,6 +98,7 @@ module Cliqr
         end
 
         action_config.handler = Cliqr::Command::ShellCommand.new(shell_config)
+        action_config.arguments = Cliqr::Config::DISABLE_CONFIG
 
         # allow description to be overridden
         description = shell_config.description
