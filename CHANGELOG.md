@@ -91,6 +91,101 @@ item in this nested table for further details.
 
 <!-- markdown-toc end -->
 
+2.0.0 / 2015-07-09
+==================
+
+Another big release!
+
+## Features
+
+### Event handling
+
+Added ability to invoke arbitiary events and define handlers to handle certain kind of events.
+
+Here is an example:
+``` ruby
+Cliqr.interface do
+  name 'my-command'
+  on :bar do |event, ch, num|
+    puts 'invoked event in base'
+    puts "option = #{opt}"
+    puts "ch = #{ch}; num = #{num}"
+  end
+
+  action :my_action do
+    on :bar do |event, ch, num|
+      puts 'invoked event in action'
+      puts "option = #{opt}"
+      puts "ch = #{ch}; num = #{num}"
+    end
+
+    handler do
+      invoke :bar, 'a', 10
+    end
+
+    option :opt
+  end
+end
+```
+Upon execution:
+``` bash
+$ my-command my_action --opt qwerty
+invoked event in action
+option = qwerty
+ch = a; num = 10
+invoked event in base
+option = qwerty
+ch = a; num = 10
+```
+
+Events can be chained as above example shows.
+
+#### Default events for shell
+
+When a shell starts a `shell_start` event is invoked. Upon exit, a `shell_exit` event is invoked.
+
+### Colors
+
+Enabled colors in command handlers and usage output. Just call a function with the name of the color you want. Colors can also be disabled.
+
+### Customizable banner and prompt for shell 
+
+The shell action now allows you to configure the banner displayed in the beginning and define a method to build the prompt.
+
+## Backward incompatible changes
+
+The shell action can only be used in the base command config.
+
+## Improvements
+
+### Partial templated
+
+Templates are reused to build help doc by incorporation of partial erb templating.
+
+### Improve default prompt
+
+Count is shown in the default prompt.
+
+### Screen capture in README
+
+A screen capture of the example is added to readme now.
+
+## Minor changes
+
+### Shorten the quickstart example
+
+### Re-organize code and move specs around
+
+### Multi OS testing suprted added to CI
+
+CI now runs all specs for Linux and OSX
+
+## Bugfixes
+
+### Fix examples to follow new breaking shell config change
+
+### Do not put allow arguments in shell config
+
 1.2.0 / 2015-06-18
 ==================
 
