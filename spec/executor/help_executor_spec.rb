@@ -400,7 +400,7 @@ Available actions:
 my-command b00m -- this is a custom shell implementation
 
 USAGE:
-    my-command b00m [options] [arguments]
+    my-command b00m [options]
 
 Available options:
 
