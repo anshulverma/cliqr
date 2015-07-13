@@ -72,9 +72,7 @@ cli.execute(ARGV)
 ```
 
 Here is a screen capture of this script in action:
-![greet script demo]
-(https://goo.gl/sJgxFX
- "Binary tree example")
+![greet script demo](https://goo.gl/sJgxFX "Binary tree example")
 
 ## Installation
 
