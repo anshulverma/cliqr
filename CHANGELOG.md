@@ -5,6 +5,24 @@ item in this nested table for further details.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
+- [2.0.0 / 2015-07-09](#200--2015-07-09)
+    - [Features](#features)
+        - [Event handling](#event-handling)
+            - [Default events for shell](#default-events-for-shell)
+        - [Colors](#colors)
+        - [Customizable banner and prompt for shell](#customizable-banner-and-prompt-for-shell)
+    - [Backward incompatible changes](#backward-incompatible-changes)
+    - [Improvements](#improvements)
+        - [Partial templated](#partial-templated)
+        - [Improve default prompt](#improve-default-prompt)
+        - [Screen capture in README](#screen-capture-in-readme)
+    - [Minor changes](#minor-changes)
+        - [Shorten the quickstart example](#shorten-the-quickstart-example)
+        - [Re-organize code and move specs around](#re-organize-code-and-move-specs-around)
+        - [Multi OS testing suprted added to CI](#multi-os-testing-suprted-added-to-ci)
+    - [Bugfixes](#bugfixes)
+        - [Fix examples to follow new breaking shell config change](#fix-examples-to-follow-new-breaking-shell-config-change)
+        - [Do not put allow arguments in shell config](#do-not-put-allow-arguments-in-shell-config)
 - [1.2.0 / 2015-06-18](#120--2015-06-18)
     - [Features](#features)
         - [Nested actions](#nested-actions)
@@ -148,7 +166,7 @@ When a shell starts a `shell_start` event is invoked. Upon exit, a `shell_exit` 
 
 Enabled colors in command handlers and usage output. Just call a function with the name of the color you want. Colors can also be disabled.
 
-### Customizable banner and prompt for shell 
+### Customizable banner and prompt for shell
 
 The shell action now allows you to configure the banner displayed in the beginning and define a method to build the prompt.
 
