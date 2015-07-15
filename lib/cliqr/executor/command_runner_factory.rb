@@ -16,13 +16,10 @@ module Cliqr
       # @return [Cliqr::Executor::BufferedCommandRunner] If command's output needs to be buffered
       def self.get(**options)
         case options[:output]
-        when :default
-          StandardCommandRunner.new
         when :buffer
           BufferedCommandRunner.new
         else
-          fail Cliqr::Error::UnknownCommandRunnerException,
-               'cannot find a command runner for the given options'
+          StandardCommandRunner.new
         end
       end
     end

@@ -3,6 +3,8 @@
 require 'cliqr/command/color'
 require 'cliqr/command/argument_operator_context'
 require 'cliqr/events/invoker'
+require 'cliqr/command/output/standard_output_stream'
+require 'cliqr/command/output/file_output_stream'
 
 module Cliqr
   # Definition and builder for command context
@@ -53,7 +55,7 @@ module Cliqr
       # Initialize the command context (called by the CommandContextBuilder)
       #
       # @return [Cliqr::Command::CommandContext]
-      def initialize(config, options, arguments, environment, executor)
+      def initialize(config, options, arguments, environment, executor, output_stream)
         super(config)
 
         @config = config
@@ -64,6 +66,7 @@ module Cliqr
         @environment = environment
         @executor = executor
         @event_invoker = Events::Invoker.new(config, self)
+        @output_stream = output_stream
 
         # make option map from array
         @options = Hash[*options.collect { |option| [option.name, option] }.flatten]
@@ -162,7 +165,14 @@ module Cliqr
       # @return [Cliqr::Command::CommandContext]
       def root(environment_type = nil)
         environment_type = @environment if environment_type.nil?
-        CommandContext.new(@config.root, [], [], environment_type, @executor)
+        CommandContext.new(@config.root, [], [], environment_type, @executor, @output_stream)
+      end
+
+      # Override the default puts implementation to enable output buffering
+      #
+      # @return [Nothing]
+      def puts(message)
+        @output_stream.write(message)
       end
 
       private :initialize, :default
@@ -201,7 +211,22 @@ module Cliqr
                            option_contexts,
                            @parsed_input.arguments,
                            @options[:environment],
-                           @executor
+                           @executor,
+                           build_output_stream(@options)
+      end
+
+      private
+
+      # Build a output stream object to be used in the command handler
+      #
+      # @return [OutputStream]
+      def build_output_stream(options)
+        case options[:output]
+        when :file
+          Command::Output::FileOutputStream.new
+        else
+          Command::Output::StandardOutputStream.new
+        end
       end
     end
 

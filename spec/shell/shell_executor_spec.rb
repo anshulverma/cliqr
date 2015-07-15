@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'tempfile'
+
 require 'spec_helper'
 
 require 'fixtures/test_command'
@@ -25,40 +27,40 @@ describe Cliqr::Command::ShellCommand do
       end
     end
 
-    with_input(%w(help -h)) do
-      result = cli.execute_internal %w(my-command shell), output: :buffer
-      expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+    with_input_output(%w(help -h)) do |output|
+      cli.execute_internal %w(my-command shell), output: :file
+      expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ help.
-my-command -- this is a test command
-
-Available actions:
-[ Type "help [action-name]" to get more information about that action ]
-
-    foo -- the foo action
-    bar -- bar command
-    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
+my-command -- this is a test command.
+.
+Available actions:.
+[ Type "help [action-name]" to get more information about that action ].
+.
+    foo -- the foo action.
+    bar -- bar command.
+    help -- The help action for command "my-command" which provides details and usage information on how to use the command..
 [my-command][2] $ -h.
-unknown action "-h"
+unknown action "-h".
 [my-command][3] $ exit.
-shell exited with code 0
+shell exited with code 0.
       EOS
     end
 
-    with_input(['help bar']) do
-      result = cli.execute_internal %w(my-command shell), output: :buffer
-      expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+    with_input_output(['help bar']) do |output|
+      cli.execute_internal %w(my-command shell), output: :file
+      expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][4] $ help bar.
-my-command bar -- bar command
-
-Available actions:
-[ Type "help [action-name]" to get more information about that action ]
-
-    baz
-    help -- The help action for command "my-command bar" which provides details and usage information on how to use the command.
+my-command bar -- bar command.
+.
+Available actions:.
+[ Type "help [action-name]" to get more information about that action ].
+.
+    baz.
+    help -- The help action for command "my-command bar" which provides details and usage information on how to use the command..
 [my-command][5] $ exit.
-shell exited with code 0
+shell exited with code 0.
       EOS
     end
   end
@@ -75,20 +77,20 @@ shell exited with code 0
       end
     end
 
-    with_input(%w(help)) do
-      result = cli.execute_internal %w(my-command custom-shell), output: :buffer
-      expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+    with_input_output(%w(help)) do |output|
+      cli.execute_internal %w(my-command custom-shell), output: :file
+      expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ help.
-my-command -- this is a test command
-
-Available actions:
-[ Type "help [action-name]" to get more information about that action ]
-
-    help -- The help action for command "my-command" which provides details and usage information on how to use the command.
-    custom-shell -- this is a custom shell
+my-command -- this is a test command.
+.
+Available actions:.
+[ Type "help [action-name]" to get more information about that action ].
+.
+    help -- The help action for command "my-command" which provides details and usage information on how to use the command..
+    custom-shell -- this is a custom shell.
 [my-command][2] $ exit.
-shell exited with code 0
+shell exited with code 0.
       EOS
     end
   end
@@ -118,29 +120,29 @@ shell exited with code 0
       end
     end
 
-    with_input(['', 'my-command', 'foo', 'foo bar', 'foo bar --opt yes', 'foo bar help']) do
-      result = cli.execute_internal %w(my-command shell), output: :buffer
-      expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+    with_input_output(['', 'my-command', 'foo', 'foo bar', 'foo bar --opt yes', 'foo bar help']) do |output|
+      cli.execute_internal %w(my-command shell), output: :file
+      expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ .
 [my-command][2] $ my-command.
-unknown action "my-command"
+unknown action "my-command".
 [my-command][3] $ foo.
-foo executed
+foo executed.
 [my-command][4] $ foo bar.
-bar executed
+bar executed.
 [my-command][5] $ foo bar --opt yes.
-bar executed
-option: yes
+bar executed.
+option: yes.
 [my-command][6] $ foo bar help.
-my-command foo bar
-
-Available actions:
-[ Type "help [action-name]" to get more information about that action ]
-
-    help -- The help action for command "my-command foo bar" which provides details and usage information on how to use the command.
+my-command foo bar.
+.
+Available actions:.
+[ Type "help [action-name]" to get more information about that action ].
+.
+    help -- The help action for command "my-command foo bar" which provides details and usage information on how to use the command..
 [my-command][7] $ exit.
-shell exited with code 0
+shell exited with code 0.
       EOS
     end
   end
@@ -170,20 +172,20 @@ shell exited with code 0
       end
     end
 
-    with_input(['unknown', '--opt-1 val', 'foo']) do
-      result = cli.execute_internal %w(my-command shell), output: :buffer
-      expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+    with_input_output(['unknown', '--opt-1 val', 'foo']) do |output|
+      cli.execute_internal %w(my-command shell), output: :file
+      expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ unknown.
-unknown action "unknown"
+unknown action "unknown".
 [my-command][2] $ --opt-1 val.
-unknown action "--opt-1"
+unknown action "--opt-1".
 [my-command][3] $ foo.
-command 'my-command foo' failed
-
-Cause: StandardError - I failed!
+command 'my-command foo' failed.
+.
+Cause: StandardError - I failed!.
 [my-command][4] $ exit.
-shell exited with code 0
+shell exited with code 0.
       EOS
     end
   end
@@ -249,41 +251,41 @@ shell exited with code 0
       end
     end
 
-    with_input(['']) do
-      result = cli.execute_internal %w(my-command shell -f qwerty --no-bar), output: :buffer
-      expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
-shell started
-true
-qwerty
-true
-false
-false
-10
-base: shell started
-true
-qwerty
-true
-false
-false
-10
+    with_input_output(['']) do |output|
+      cli.execute_internal %w(my-command shell -f qwerty --no-bar), output: :file
+      expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ .
 [my-command][2] $ exit.
-shell stopped
-true
-qwerty
-true
-false
-false
-10
-base: shell stopped
-true
-qwerty
-true
-false
-false
-10
-shell exited with code 0
+shell started.
+true.
+qwerty.
+true.
+false.
+false.
+10.
+base: shell started.
+true.
+qwerty.
+true.
+false.
+false.
+10.
+shell stopped.
+true.
+qwerty.
+true.
+false.
+false.
+10.
+base: shell stopped.
+true.
+qwerty.
+true.
+false.
+false.
+10.
+shell exited with code 0.
       EOS
     end
   end
@@ -310,16 +312,16 @@ shell exited with code 0
         end
       end
 
-      with_input(['shell']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+      with_input_output(['shell']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ shell.
-command 'my-command shell' failed
-
-Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell
+command 'my-command shell' failed.
+.
+Cause: Cliqr::Error::IllegalCommandError - Cannot run another shell within an already running shell.
 [my-command][2] $ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -338,16 +340,16 @@ shell exited with code 0
         raise_error(Cliqr::Error::CommandRuntimeError,
                     "command 'my-command foo' failed\n\nCause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action\n"))
 
-      with_input(['foo shell']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+      with_input_output(['foo shell']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ foo shell.
-command 'my-command foo' failed
-
-Cause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action
+command 'my-command foo' failed.
+.
+Cause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action.
 [my-command][2] $ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -369,16 +371,16 @@ shell exited with code 0
         end
       end
 
-      with_input(['', '', 'foo']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+      with_input_output(['', '', 'foo']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 test-prompt $ .
 test-prompt $ .
 test-prompt $ foo.
-foo executed
+foo executed.
 test-prompt $ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -402,17 +404,17 @@ shell exited with code 0
         end
       end
 
-      with_input(['', '', 'foo', '']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+      with_input_output(['', '', 'foo', '']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 my-command [1]$ .
 my-command [2]$ .
 my-command [3]$ foo.
-foo executed
+foo executed.
 my-command [4]$ .
 my-command [5]$ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -432,17 +434,17 @@ shell exited with code 0
         end
       end
 
-      with_input(['', '', 'foo', '']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+      with_input_output(['', '', 'foo', '']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 test-prompt [1] > .
 test-prompt [2] > .
 test-prompt [3] > foo.
-foo executed
+foo executed.
 test-prompt [4] > .
 test-prompt [5] > exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -460,17 +462,17 @@ shell exited with code 0
         end
       end
 
-      with_input(['', '', 'foo', '']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+      with_input_output(['', '', 'foo', '']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [my-command][1] $ .
 [my-command][2] $ .
 [my-command][3] $ foo.
-foo executed
+foo executed.
 [my-command][4] $ .
 [my-command][5] $ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -490,20 +492,20 @@ shell exited with code 0
           end
         end
 
-        with_input(['unknown', '--opt-1 val', 'foo']) do
-          result = cli.execute_internal %w(my-command shell), output: :buffer
-          expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+        with_input_output(['unknown', '--opt-1 val', 'foo']) do |output|
+          cli.execute_internal %w(my-command shell), output: :file
+          expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [[36mmy-command[0m][1] [1m$[22m unknown.
-unknown action "unknown"
+unknown action "unknown".
 [[36mmy-command[0m][2] [1m$[22m --opt-1 val.
-unknown action "--opt-1"
+unknown action "--opt-1".
 [[36mmy-command[0m][3] [1m$[22m foo.
-command 'my-command foo' failed
-
-Cause: StandardError - I failed!
+command 'my-command foo' failed.
+.
+Cause: StandardError - I failed!.
 [[36mmy-command[0m][4] [1m$[22m exit.
-shell exited with code 0
+shell exited with code 0.
           EOS
         end
       end
@@ -526,20 +528,20 @@ shell exited with code 0
           end
         end
 
-        with_input(['unknown', '--opt-1 val', 'foo']) do
-          result = cli.execute_internal %w(my-command shell), output: :buffer
-          expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+        with_input_output(['unknown', '--opt-1 val', 'foo']) do |output|
+          cli.execute_internal %w(my-command shell), output: :file
+          expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [31mtest-prompt [1] > [0munknown.
-unknown action "unknown"
+unknown action "unknown".
 [31mtest-prompt [2] > [0m--opt-1 val.
-unknown action "--opt-1"
+unknown action "--opt-1".
 [31mtest-prompt [3] > [0mfoo.
-command 'my-command foo' failed
-
-Cause: StandardError - I failed!
+command 'my-command foo' failed.
+.
+Cause: StandardError - I failed!.
 [31mtest-prompt [4] > [0mexit.
-shell exited with code 0
+shell exited with code 0.
           EOS
         end
       end
@@ -564,20 +566,20 @@ shell exited with code 0
           end
         end
 
-        with_input(['unknown', '--opt-1 val', 'foo']) do
-          result = cli.execute_internal %w(my-command shell), output: :buffer
-          expect(result[:stdout]).to eq <<-EOS
-Starting shell for command "my-command"
+        with_input_output(['unknown', '--opt-1 val', 'foo']) do |output|
+          cli.execute_internal %w(my-command shell), output: :file
+          expect(output.call).to eq <<-EOS
+Starting shell for command "my-command".
 [32mgreen prompt > [0munknown.
-unknown action "unknown"
+unknown action "unknown".
 [32mgreen prompt > [0m--opt-1 val.
-unknown action "--opt-1"
+unknown action "--opt-1".
 [32mgreen prompt > [0mfoo.
-command 'my-command foo' failed
-
-Cause: StandardError - I failed!
+command 'my-command foo' failed.
+.
+Cause: StandardError - I failed!.
 [32mgreen prompt > [0mexit.
-shell exited with code 0
+shell exited with code 0.
           EOS
         end
       end
@@ -600,16 +602,16 @@ shell exited with code 0
         end
       end
 
-      with_input(['', '', 'foo']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-Welcome to my-command!!!
+      with_input_output(['', '', 'foo']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+Welcome to my-command!!!.
 [my-command][1] $ .
 [my-command][2] $ .
 [my-command][3] $ foo.
-foo executed
+foo executed.
 [my-command][4] $ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -631,17 +633,17 @@ shell exited with code 0
         end
       end
 
-      with_input(['', '', 'foo', '']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-welcome to my-command
+      with_input_output(['', '', 'foo', '']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+welcome to my-command.
 [my-command][1] $ .
 [my-command][2] $ .
 [my-command][3] $ foo.
-foo executed
+foo executed.
 [my-command][4] $ .
 [my-command][5] $ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
@@ -661,40 +663,43 @@ shell exited with code 0
         end
       end
 
-      with_input(['', '', 'foo', '']) do
-        result = cli.execute_internal %w(my-command shell), output: :buffer
-        expect(result[:stdout]).to eq <<-EOS
-welcome to the command my-command
+      with_input_output(['', '', 'foo', '']) do |output|
+        cli.execute_internal %w(my-command shell), output: :file
+        expect(output.call).to eq <<-EOS
+welcome to the command my-command.
 [my-command][1] $ .
 [my-command][2] $ .
 [my-command][3] $ foo.
-foo executed
+foo executed.
 [my-command][4] $ .
 [my-command][5] $ exit.
-shell exited with code 0
+shell exited with code 0.
         EOS
       end
     end
   end
 end
 
-def with_input(lines, &block)
+def with_input_output(lines, &block)
   old_stdin = $stdin
-  $stdin = TestIO.new(lines)
-  block.call
-ensure
-  $stdin = old_stdin
-end
-
-# A test class for wrapping stdin
-class TestIO
-  def initialize(lines)
-    @lines = lines.reverse
+  old_stdout = $stdout
+  input_file = Tempfile.new('cliqr').tap do |file|
+    lines.push('exit').each { |line| file.write("#{line}\n") }
   end
-
-  def gets
-    input = "#{@lines.length > 0 ? @lines.pop : 'exit'}"
-    puts "#{input}."
-    "#{input}\n"
+  output_file = Tempfile.new('cliqr')
+  begin
+    $stdin = input_file.open
+    $stdout = output_file.open
+    output_getter = proc  do
+      IO.read(output_file.path).gsub(/(.*)\n/, "\\1.\n")
+    end
+    block.call(output_getter)
+  ensure
+    $stdin = old_stdin
+    $stdout = old_stdout
+    input_file.close
+    output_file.close
+    input_file.unlink
+    output_file.unlink
   end
 end

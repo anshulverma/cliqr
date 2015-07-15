@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'readline'
+
 module Cliqr
   # @api private
   module Command
@@ -20,12 +22,12 @@ module Cliqr
 
         root_context = context.root(:shell)
 
-        puts banner(root_context, build_proc(@shell_config.banner))
+        context.puts banner(root_context, build_proc(@shell_config.banner))
 
         context.invoke(:shell_start)
         exit_code = build_runner(context, root_context).run
         context.invoke(:shell_stop)
-        puts "shell exited with code #{exit_code}"
+        context.puts "shell exited with code #{exit_code}"
         exit_code
       end
 
@@ -105,20 +107,21 @@ module Cliqr
         return if command.empty?
         action_name = command.split(' ').first
         unless @context.action?(action_name)
-          puts "unknown action \"#{action_name}\""
+          @context.puts "unknown action \"#{action_name}\""
           return Cliqr::Executor::ExitCode.code(nil)
         end
         @context.forward("#{@base_command} #{command}", :environment => @context.environment)
       rescue StandardError => e
-        puts e.message
+        @context.puts e.message
       end
 
       # Show a prompt and ask for input
       #
       # @return [String]
       def prompt
-        print @context.instance_eval(&@prompt)
-        $stdin.gets.chomp
+        Readline.input = $stdin
+        Readline.output = $stdout
+        Readline.readline(@context.instance_eval(&@prompt), true)
       end
     end
   end

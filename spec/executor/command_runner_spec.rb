@@ -14,8 +14,7 @@ describe Cliqr::Executor::CommandRunnerFactory do
   end
 
   it 'throws error for default output type' do
-    expect { Cliqr::Executor::CommandRunnerFactory.get(output: :unknown) }.to(
-      raise_error(be_kind_of(Cliqr::Error::UnknownCommandRunnerException))
-    )
+    runner = Cliqr::Executor::CommandRunnerFactory.get(output: :unknown)
+    expect(runner).to be_kind_of(Cliqr::Executor::StandardCommandRunner)
   end
 end

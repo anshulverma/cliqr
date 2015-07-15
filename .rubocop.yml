@@ -36,3 +36,6 @@ Metrics/ClassLength:
   Exclude:
     - 'lib/cliqr/config/action.rb'
     - 'lib/cliqr/util.rb'
+
+Metrics/ParameterLists:
+  Max: 6
