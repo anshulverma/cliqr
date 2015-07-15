@@ -162,7 +162,7 @@ Time
         end
       end
     end
-    result = cli.execute_internal ['my-command my_action'], output: :buffer
+    result = cli.execute_internal 'my-command my_action', output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 invoked action
 invoked bar : my-command my_action : a : 1
@@ -198,7 +198,7 @@ action ending
         end
       end
     end
-    result = cli.execute_internal ['my-command my_action'], output: :buffer
+    result = cli.execute_internal 'my-command my_action', output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 invoked bar : my-command my_action : a : 1
 invoked foo : my-command my_action : b : 2 : {:t=>1}
@@ -256,16 +256,16 @@ bar
         end
       end
     end
-    result = cli.execute_internal ['my-command'], output: :buffer
+    result = cli.execute_internal 'my-command', output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 invoked first : my-command : a : 1
     EOS
-    result = cli.execute_internal ['my-command foo'], output: :buffer
+    result = cli.execute_internal 'my-command foo', output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 invoked second : my-command foo : b : 2
 invoked second : my-command foo : b : 2
     EOS
-    result = cli.execute_internal ['my-command foo bar'], output: :buffer
+    result = cli.execute_internal 'my-command foo bar', output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 invoked first : my-command foo bar : b : 2
 invoked first : my-command foo bar : b : 2
@@ -273,7 +273,7 @@ invoked first : my-command foo bar : b : 2
 invoked third : my-command foo bar : d : 4
 invoked third : my-command foo bar : d : 4
     EOS
-    result = cli.execute_internal ['my-command foo baz'], output: :buffer
+    result = cli.execute_internal 'my-command foo baz', output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 invoked second : my-command foo baz : e : 5
 invoked second : my-command foo baz : e : 5
@@ -298,7 +298,7 @@ invoked second : my-command foo baz : e : 5
         end
       end
     end
-    result = cli.execute_internal ['my-command foo'], output: :buffer
+    result = cli.execute_internal %w(my-command foo), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 should be invoked
     EOS
@@ -332,7 +332,7 @@ should be invoked
         option :abc
       end
     end
-    result = cli.execute_internal ['my-command my_action --opt val'], output: :buffer
+    result = cli.execute_internal 'my-command my_action --opt val', output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 invoked bar
 true

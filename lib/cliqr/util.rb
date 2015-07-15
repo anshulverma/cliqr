@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'shellwords'
 require 'cliqr/command/shell_command'
 
 module Cliqr
@@ -137,9 +138,9 @@ module Cliqr
     def self.sanitize_args(args, config = nil)
       sanitized = []
       if args.is_a?(Array)
-        args.each { |arg| sanitized.concat(sanitize_args(arg)) }
+        sanitized = args
       elsif args.is_a?(String)
-        sanitized = args.split(' ')
+        sanitized = Shellwords.shellwords(args)
       end
       remove_base_command(sanitized, config)
     end

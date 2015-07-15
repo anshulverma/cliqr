@@ -491,6 +491,34 @@ back in action_1
     EOS
   end
 
+  it 'can forward command with space in arguments' do
+    cli = Cliqr.interface do
+      name :my_command
+
+      action :foo do
+        handler do
+          forward 'bar --opt1 "simple value" --opt2 "a question"?'
+        end
+      end
+
+      action :bar do
+        option :opt1
+        option :opt2
+
+        handler do
+          puts opt1
+          puts opt2
+        end
+      end
+    end
+
+    result = cli.execute_internal ['foo'], output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+simple value
+a question?
+    EOS
+  end
+
   describe 'error handling' do
     it 'returns 0 if no error' do
       cli = Cliqr.interface do

@@ -67,7 +67,7 @@ describe Cliqr::Command::Color do
         end
       end
     end
-    result = cli.execute_internal ['my-command foo'], output: :buffer
+    result = cli.execute_internal %w(my-command foo), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 \e[31mthis should be colorized in red\e[0m
     EOS
@@ -98,7 +98,7 @@ this should not be colorized
         end
       end
     end
-    result = cli.execute_internal ['my-command foo'], output: :buffer
+    result = cli.execute_internal %w(my-command foo), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 this should not be colorized
     EOS
@@ -117,7 +117,7 @@ this should not be colorized
         end
       end
     end
-    result = cli.execute_internal ['my-command foo bar'], output: :buffer
+    result = cli.execute_internal %w(my-command foo bar), output: :buffer
     expect(result[:stdout]).to eq <<-EOS
 this should not be colorized
     EOS
