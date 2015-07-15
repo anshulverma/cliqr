@@ -5,6 +5,8 @@ item in this nested table for further details.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
+- [2.1.1 / 2015-07-15](#211--2015-07-15)
+    - [Bugfix](#bugfix)
 - [2.1.0 / 2015-07-15](#210--2015-07-15)
     - [Features](#features)
         - [Make use of `readline` lib for shell mode.](#make-use-of-readline-lib-for-shell-mode)
@@ -116,6 +118,12 @@ item in this nested table for further details.
 
 <!-- markdown-toc end -->
 
+2.1.1 / 2015-07-15
+==================
+
+## Bugfix
+
+Fix the version tag in gem
 
 2.1.0 / 2015-07-15
 ==================
