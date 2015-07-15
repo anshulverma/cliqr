@@ -5,6 +5,13 @@ item in this nested table for further details.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
+- [2.1.0 / 2015-07-15](#210--2015-07-15)
+    - [Features](#features)
+        - [Make use of `readline` lib for shell mode.](#make-use-of-readline-lib-for-shell-mode)
+    - [Bugfix](#bugfix)
+        - [Handle spaces in command arguments](#handle-spaces-in-command-arguments)
+    - [Minor improvements](#minor-improvements)
+        - [Use shortened URl for gif in README](#use-shortened-url-for-gif-in-readme)
 - [2.0.0 / 2015-07-09](#200--2015-07-09)
     - [Features](#features)
         - [Event handling](#event-handling)
@@ -109,6 +116,34 @@ item in this nested table for further details.
 
 <!-- markdown-toc end -->
 
+
+2.1.0 / 2015-07-15
+==================
+
+## Features
+
+### Make use of `readline` lib for shell mode.
+
+This gives us a huge advantage by supporting command history and meta
+character handling out of the box.
+
+Some tweaks will come in smaller patches soon.
+
+## Bugfix
+
+### Handle spaces in command arguments
+
+Reported by @AlgyTaylor.
+
+We were not able to parse a argument as a continuous value if it had a
+space in it. This was fixed by using `shellwords`.
+
+## Minor improvements
+
+### Use shortened URl for gif in README
+
+This allows a little bit of analytics for the trafic to the git repo.
+
 2.0.0 / 2015-07-09
 ==================
 
@@ -118,7 +153,8 @@ Another big release!
 
 ### Event handling
 
-Added ability to invoke arbitiary events and define handlers to handle certain kind of events.
+Added ability to invoke arbitiary events and define handlers to handle
+certain kind of events.
 
 Here is an example:
 ``` ruby
@@ -160,15 +196,19 @@ Events can be chained as above example shows.
 
 #### Default events for shell
 
-When a shell starts a `shell_start` event is invoked. Upon exit, a `shell_exit` event is invoked.
+When a shell starts a `shell_start` event is invoked. Upon exit, a
+`shell_exit` event is invoked.
 
 ### Colors
 
-Enabled colors in command handlers and usage output. Just call a function with the name of the color you want. Colors can also be disabled.
+Enabled colors in command handlers and usage output. Just call a
+function with the name of the color you want. Colors can also be
+disabled.
 
 ### Customizable banner and prompt for shell
 
-The shell action now allows you to configure the banner displayed in the beginning and define a method to build the prompt.
+The shell action now allows you to configure the banner displayed in the
+beginning and define a method to build the prompt.
 
 ## Backward incompatible changes
 
@@ -178,7 +218,8 @@ The shell action can only be used in the base command config.
 
 ### Partial templated
 
-Templates are reused to build help doc by incorporation of partial erb templating.
+Templates are reused to build help doc by incorporation of partial erb
+templating.
 
 ### Improve default prompt
 
