@@ -31,3 +31,7 @@ Style/PercentLiteralDelimiters:
 # Cop supports --auto-correct.
 Style/UnneededPercentQ:
   Enabled: false
+
+# Offense count: 4
+Lint/NestedMethodDefinition:
+  Enabled: false
