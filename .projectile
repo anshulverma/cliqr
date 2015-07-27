@@ -4,6 +4,7 @@
 # Temporary files
 *~
 *#*
+.DS_Store
 
 # Log files
 *.log
