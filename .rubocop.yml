@@ -20,6 +20,7 @@ Metrics/MethodLength:
   Max: 15
   Exclude:
     - 'spec/**/*_spec.rb'
+    - 'spec/spec_util.rb'
     - 'lib/cliqr/config/dsl.rb'
     - 'lib/cliqr/util.rb'
 
@@ -27,6 +28,7 @@ Metrics/AbcSize:
   Max: 16.16
   Exclude:
     - 'spec/**/*_spec.rb'
+    - 'spec/spec_util.rb'
     - 'lib/cliqr/util.rb'
 
 
