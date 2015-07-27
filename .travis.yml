@@ -1,6 +1,6 @@
 language: ruby
 bundler_args: --without guard
-script: "bundle exec rake ci"
+script: "CI=true COVERAGE=true rake"
 rvm:
   - 1.9.3
   - 2.0
