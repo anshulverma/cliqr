@@ -13,7 +13,7 @@ FileList['tasks/*.rake'].each(&method(:import))
 desc 'run code coverage checker'
 task :coverage do
   ENV['COVERAGE'] = 'true'
-  Rake::Task['spec'].execute
+  Rake::Task['spec'].invoke
 end
 
 desc 'default rake task'
