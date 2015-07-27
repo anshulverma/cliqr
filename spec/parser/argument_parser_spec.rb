@@ -15,30 +15,30 @@ describe Cliqr::Parser do
   CONFIG = TEST_CLI.config
 
   it 'can parse no argument command' do
-    assert_results(CONFIG, [], Cliqr::Parser::ParsedInput.new(:command => 'my-command', :options => []))
+    assert_results(CONFIG, [], Cliqr::Parser::ParsedInput.new(command: 'my-command', options: []))
   end
 
   it 'can parse command with option using long name' do
-    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
-                                                  :options => [
+    parsed_input = Cliqr::Parser::ParsedInput.new(command: 'my-command',
+                                                  options: [
                                                     {
-                                                        :name => 'test-option',
-                                                        :value => 'abcd'
+                                                      name: 'test-option',
+                                                      value: 'abcd'
                                                     }
                                                   ])
     assert_results(CONFIG, %w(--test-option abcd), parsed_input)
   end
 
   it 'can parse multiple options' do
-    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
-                                                  :options => [
+    parsed_input = Cliqr::Parser::ParsedInput.new(command: 'my-command',
+                                                  options: [
                                                     {
-                                                        :name => 'test-option-1',
-                                                        :value => 'abcd'
+                                                      name: 'test-option-1',
+                                                      value: 'abcd'
                                                     },
                                                     {
-                                                        :name => 'test-option-2',
-                                                        :value => 'xyz'
+                                                      name: 'test-option-2',
+                                                      value: 'xyz'
                                                     }
                                                   ])
     cli = Cliqr.interface do
@@ -52,11 +52,11 @@ describe Cliqr::Parser do
   end
 
   it 'can parse command with option using short name' do
-    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
-                                                  :options => [
+    parsed_input = Cliqr::Parser::ParsedInput.new(command: 'my-command',
+                                                  options: [
                                                     {
-                                                        :name => 'test-option',
-                                                        :value => 'abcd'
+                                                      name: 'test-option',
+                                                      value: 'abcd'
                                                     }
                                                   ])
     assert_results(CONFIG, %w(-t abcd), parsed_input)
@@ -96,20 +96,20 @@ describe Cliqr::Parser do
         short 't'
       end
     end
-    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
-                                                  :options => {},
-                                                  :arguments => ['value1'])
+    parsed_input = Cliqr::Parser::ParsedInput.new(command: 'my-command',
+                                                  options: {},
+                                                  arguments: ['value1'])
     assert_results(cli.config, ['value1'], parsed_input)
   end
 
   it 'can parse command with one option and one argument' do
-    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
-                                                  :options => [
+    parsed_input = Cliqr::Parser::ParsedInput.new(command: 'my-command',
+                                                  options: [
                                                     {
-                                                        :name => 'test-option',
-                                                        :value => 'abcd'
+                                                      name: 'test-option',
+                                                      value: 'abcd'
                                                     }],
-                                                  :arguments => ['value1'])
+                                                  arguments: ['value1'])
     cli = Cliqr.interface do
       name 'my-command'
       handler TestCommand
@@ -139,16 +139,16 @@ describe Cliqr::Parser do
       end
     end
     config = cli.config
-    parsed_input = Cliqr::Parser::ParsedInput.new(:command => 'my-command',
-                                                  :arguments => %w(value1 value2),
-                                                  :options => [
+    parsed_input = Cliqr::Parser::ParsedInput.new(command: 'my-command',
+                                                  arguments: %w(value1 value2),
+                                                  options: [
                                                     {
-                                                        :name => 'test-option-1',
-                                                        :value => 'abcd'
+                                                      name: 'test-option-1',
+                                                      value: 'abcd'
                                                     },
                                                     {
-                                                        :name => 'test-option-2',
-                                                        :value => 'qwe'
+                                                      name: 'test-option-2',
+                                                      value: 'qwe'
                                                     }
                                                   ])
     assert_results(config, %w(-t abcd -p qwe value1 value2), parsed_input)

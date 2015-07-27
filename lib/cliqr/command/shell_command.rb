@@ -110,7 +110,7 @@ module Cliqr
           @context.puts "unknown action \"#{action_name}\""
           return Cliqr::Executor::ExitCode.code(nil)
         end
-        @context.forward("#{@base_command} #{command}", :environment => @context.environment)
+        @context.forward("#{@base_command} #{command}", environment: @context.environment)
       rescue StandardError => e
         @context.puts e.message
       end

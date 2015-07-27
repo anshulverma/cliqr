@@ -28,9 +28,9 @@ module Cliqr
 
     # Default values based on argument type
     ARGUMENT_DEFAULTS = {
-        NUMERIC_ARGUMENT_TYPE => 0,
-        BOOLEAN_ARGUMENT_TYPE => false,
-        ANY_ARGUMENT_TYPE => nil
+      NUMERIC_ARGUMENT_TYPE => 0,
+      BOOLEAN_ARGUMENT_TYPE => false,
+      ANY_ARGUMENT_TYPE => nil
     }
 
     # Get the passed param value if current attribute is unset

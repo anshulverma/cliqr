@@ -49,8 +49,8 @@ module Cliqr
     # @return [Integer] Exit code
     def execute_internal(args = [], **options)
       options = {
-          :output => :default,
-          :environment => :cli
+        output: :default,
+        environment: :cli
       }.merge(options)
       @runner.execute(args, options)
     end

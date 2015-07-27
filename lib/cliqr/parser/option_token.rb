@@ -32,8 +32,8 @@ module Cliqr
       # @return [Hash] A hash of the option name and its value
       def build
         {
-            :name => @name.to_s,
-            :value => @value
+          name: @name.to_s,
+          value: @value
         }
       end
 

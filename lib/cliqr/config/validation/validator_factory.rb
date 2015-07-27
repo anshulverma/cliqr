@@ -373,17 +373,17 @@ module Cliqr
 
         # A hash of validator type id to validator class
         VALIDATORS = {
-            :non_empty => NonEmptyValidator,
-            :non_empty_format => NonEmptyFormatValidator,
-            :non_empty_nil_ok_format => NonEmptyNilOkFormatValidator,
-            :format => FormatValidator,
-            :extend => TypeHierarchyValidator,
-            :collection => CollectionValidator,
-            :hash => HashValidator,
-            :inclusion => InclusionValidator,
-            :one_of => OneOfValidator,
-            :type_of => TypeOfValidator,
-            :child => ChildValidator
+          non_empty: NonEmptyValidator,
+          non_empty_format: NonEmptyFormatValidator,
+          non_empty_nil_ok_format: NonEmptyNilOkFormatValidator,
+          format: FormatValidator,
+          extend: TypeHierarchyValidator,
+          collection: CollectionValidator,
+          hash: HashValidator,
+          inclusion: InclusionValidator,
+          one_of: OneOfValidator,
+          type_of: TypeOfValidator,
+          child: ChildValidator
         }
 
         # Get a new validator based on the type and config param

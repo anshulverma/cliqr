@@ -13,8 +13,8 @@ module Cliqr
       TEMPLATES_PATH = "#{File.expand_path(File.dirname(__FILE__))}/templates"
 
       USAGE_TYPES = {
-          :cli => "#{TEMPLATES_PATH}/usage/cli.erb",
-          :shell => "#{TEMPLATES_PATH}/usage/shell.erb"
+        cli: "#{TEMPLATES_PATH}/usage/cli.erb",
+        shell: "#{TEMPLATES_PATH}/usage/shell.erb"
       }
 
       # Create a new usage builder

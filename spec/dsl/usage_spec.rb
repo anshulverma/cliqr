@@ -247,7 +247,7 @@ Available options:
           end
 
           option 'hash-option' do
-            default(:key => 'val')
+            default(key: 'val')
           end
         end
 

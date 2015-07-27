@@ -52,10 +52,10 @@ module Cliqr
       #
       # @return [Cliqr::Parser::ParsedInput] Parsed arguments wrapper
       def build
-        ParsedInput.new(:command => @config.name,
-                        :actions => @actions,
-                        :options => @options,
-                        :arguments => @arguments)
+        ParsedInput.new(command: @config.name,
+                        actions: @actions,
+                        options: @options,
+                        arguments: @arguments)
       end
 
       private

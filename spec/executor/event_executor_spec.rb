@@ -143,7 +143,7 @@ Time
           puts "invoked #{event.name} : #{event.command} : #{ch} : #{num}"
           puts "#{event.name} #{(event.parent? ? "has parent => #{event.parent.name}" : 'does not have parent')}"
           sleep 1
-          invoke :baz, 'b', 2, :t => 1
+          invoke :baz, 'b', 2, t: 1
           puts "#{event.name} ending"
         end
         on :baz do |event, ch, num, hash|
@@ -152,7 +152,7 @@ Time
           puts "parent: #{event.parent.name} : #{event.parent.command}"
           puts "diff => #{event.timestamp.to_i - event.parent.timestamp.to_i}"
           sleep 1
-          invoke :foo, 'c', 3, :s => 2
+          invoke :foo, 'c', 3, s: 2
           puts "#{event.name} ending"
         end
         handler do

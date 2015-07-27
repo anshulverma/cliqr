@@ -50,9 +50,9 @@ module Cliqr
         $stderr = old_stderr.is_a?(StringIO) ? old_stderr : StringIO.new('', 'w')
         yield
         {
-            :stdout => $stdout.string,
-            :stderr => $stderr.string,
-            :status => 0
+          stdout: $stdout.string,
+          stderr: $stderr.string,
+          status: 0
         }
       ensure
         $stdout = old_stdout

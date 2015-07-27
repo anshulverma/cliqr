@@ -41,3 +41,18 @@ Metrics/ClassLength:
 
 Metrics/ParameterLists:
   Max: 6
+
+Style/HashSyntax:
+  Enabled: true
+
+Style/IndentHash:
+  Enabled: true
+
+Style/PercentLiteralDelimiters:
+  Enabled: true
+
+Style/UnneededPercentQ:
+  Enabled: true
+
+Style/Encoding:
+  Enabled: true
