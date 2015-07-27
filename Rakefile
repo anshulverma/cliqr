@@ -22,7 +22,7 @@ task default: [:clean, :coverage, :rubocop, :verify_measurements, :yardstick_mea
 desc 'run CI tasks'
 task :ci do
   ENV['CI'] = 'true'
-  Rake::Task['default'].execute
+  Rake::Task['default'].invoke
 end
 
 desc 'Load gem inside irb console'
