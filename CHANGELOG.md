@@ -5,6 +5,17 @@ item in this nested table for further details.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
+- [2.2.0 / 2015-07-28](#220--2015-07-28)
+    - [Features](#features)
+        - [Ability to hook into sawaal for selection](#ability-to-hook-into-sawaal-for-selection)
+        - [Ability to specify multiple values for an option](#ability-to-specify-multiple-values-for-an-option)
+    - [Compatibility upgrades](#compatibility-upgrades)
+        - [Not supporting ruby versions 1.9.3 and jruby-19mode](#not-supporting-ruby-versions-193-and-jruby-19mode)
+    - [Bugfix](#bugfix)
+        - [Make sure specs are executing in CI](#make-sure-specs-are-executing-in-ci)
+        - [Upgrade and fix style issues in rubocop](#upgrade-and-fix-style-issues-in-rubocop)
+    - [Minor Improvements](#minor-improvements)
+        - [Enable all auto fixable rubocops](#enable-all-auto-fixable-rubocops)
 - [2.1.1 / 2015-07-15](#211--2015-07-15)
     - [Bugfix](#bugfix)
 - [2.1.0 / 2015-07-15](#210--2015-07-15)
@@ -117,6 +128,38 @@ item in this nested table for further details.
         - [Incorporate `RSpec` for unit tests](#incorporate-rspec-for-unit-tests)
 
 <!-- markdown-toc end -->
+
+
+2.2.0 / 2015-07-28
+==================
+
+Some shiny new features coming in this release.
+
+## Features
+
+### Ability to hook into sawaal for selection
+
+`[Sawaal](https://github.com/anshulverma/sawaal)` allows us to allow
+users to use arrow keys to make selection in a list of items.
+
+### Ability to specify multiple values for an option
+
+Now we can specify multiple values for a option. Simple set
+`multi_valued` property to true for a option to make it multi_valued.
+
+## Compatibility upgrades
+
+### Not supporting ruby versions 1.9.3 and jruby-19mode
+
+## Bugfix
+
+### Make sure specs are executing in CI
+
+### Upgrade and fix style issues in rubocop
+
+## Minor Improvements
+
+### Enable all auto fixable rubocops
 
 2.1.1 / 2015-07-15
 ==================
