@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
 
   # runtime dependencies
   {
-      :log4r => '~> 1.1'
+      :sawaal => '~> 1.0.0'
   }.each { |dependency, version| spec.add_dependency dependency.to_s, version }
 
   # development dependencies

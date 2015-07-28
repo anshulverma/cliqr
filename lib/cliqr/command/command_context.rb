@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'sawaal'
+
 require 'cliqr/command/color'
 require 'cliqr/command/argument_operator_context'
 require 'cliqr/events/invoker'
@@ -117,6 +119,13 @@ module Cliqr
       # @return [Integer] Exit code
       def forward(args, options = {})
         @executor.call(args, options)
+      end
+
+      # Run the [Sawaal] selector on a set of options
+      #
+      # @return [Object] Selected key
+      def ask(question, options)
+        Sawaal.select(question, options)
       end
 
       # Invoke an event
