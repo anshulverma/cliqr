@@ -39,9 +39,9 @@ module Cliqr
       # Validate a argument for an option and return errors
       #
       # @return [Cliqr::ValidationErrors]
-      def validate_argument(argument, option, errors)
+      def validate_argument(values, option, errors)
         option_validator = get_option_validator(option)
-        option_validator.validate(argument, option, errors)
+        option_validator.validate(values, option, errors)
         errors
       end
 

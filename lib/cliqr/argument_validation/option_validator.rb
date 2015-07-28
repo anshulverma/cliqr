@@ -18,8 +18,10 @@ module Cliqr
       # Run all the validators for a option
       #
       # @return [Cliqr::ValidationErrors]
-      def validate(argument, option, errors)
-        @validators.each { |validator| validator.validate(argument, option, errors) }
+      def validate(values, option, errors)
+        @validators.each do |validator|
+          values.each { |value| validator.validate(value, option, errors) }
+        end
         errors
       end
     end

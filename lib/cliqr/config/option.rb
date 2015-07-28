@@ -33,6 +33,13 @@ module Cliqr
                   { type_of: Proc }
                 ]
 
+      # Enable or disable multiple values for this option
+      #
+      # @return [Boolean]
+      attr_accessor :multi_valued
+      validates :multi_valued,
+                inclusion: [true, false]
+
       # Default value for this option
       #
       # @return [Object]
@@ -46,6 +53,7 @@ module Cliqr
         @type = UNSET
         @operator = UNSET
         @default = UNSET
+        @multi_valued = UNSET
       end
 
       # Finalize option's config by adding default values for unset values
@@ -59,6 +67,7 @@ module Cliqr
         @operator = Util.ensure_instance(
           Config.get_if_unset(@operator, Cliqr::Command::ArgumentOperator.for_type(@type)))
         @default = Config.get_if_unset(@default, ARGUMENT_DEFAULTS[@type])
+        @multi_valued = Config.get_if_unset(@multi_valued, false)
 
         self
       end
@@ -89,6 +98,11 @@ module Cliqr
       # @return [Boolean]
       def default?
         !@default.nil?
+      end
+
+      # Check if this option supports multiple values
+      def multi_valued?
+        @multi_valued
       end
     end
   end

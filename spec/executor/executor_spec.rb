@@ -572,4 +572,61 @@ a question?
       end
     end
   end
+
+  it 'can get multiple values for an option' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      option 'foo' do
+        multi_valued true
+      end
+
+      handler do
+        puts foo
+        puts foo.value
+        puts foo.values.first
+      end
+    end
+
+    result = cli.execute_internal %w(--foo v1 --foo v2 --foo v3), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+v1,v2,v3
+v1,v2,v3
+v1
+    EOS
+  end
+
+  it 'operates on multi option values' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      option 'foo' do
+        multi_valued true
+        type :numeric
+      end
+
+      option 'bar' do
+        multi_valued true
+        type :boolean
+      end
+
+      handler do
+        puts foo
+        puts foo.values.map(&:class)
+        puts bar
+        puts bar.values.map(&:class)
+      end
+    end
+
+    result = cli.execute_internal %w(--foo 123 --foo 987 --bar --bar --no-bar), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+123,987
+Fixnum
+Fixnum
+true,true,false
+TrueClass
+TrueClass
+FalseClass
+    EOS
+  end
 end

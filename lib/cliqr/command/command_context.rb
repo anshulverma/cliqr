@@ -139,7 +139,7 @@ module Cliqr
       def get_or_check_option(name)
         option_name = name.to_s.chomp('?')
         existence_check = name.to_s.end_with?('?')
-        existence_check ? option?(option_name) : option(option_name).value \
+        existence_check ? option?(option_name) : option(option_name) \
           if @config.option?(option_name)
       end
 
@@ -148,7 +148,7 @@ module Cliqr
       # @return [Object]
       def default(name)
         option_config = @config.option(name)
-        CommandOption.new([name, option_config.default], option_config)
+        CommandOption.new(name, [option_config.default], option_config)
       end
 
       # Check if running in a bash environment
@@ -203,8 +203,8 @@ module Cliqr
       #
       # @return [Cliqr::Command::CommandContext] A newly created CommandContext instance
       def build
-        option_contexts = @parsed_input.options.map do |option|
-          CommandOption.new(option, @config.option(option.first))
+        option_contexts = @parsed_input.options.map do |option_name, option_values|
+          CommandOption.new(option_name, option_values, @config.option(option_name))
         end
 
         CommandContext.new @config,
@@ -239,27 +239,43 @@ module Cliqr
       # @return [String]
       attr_accessor :name
 
-      # Value for the command line argument's option
+      # Value array for the command line argument's option
       #
-      # @return [Object]
-      attr_accessor :value
+      # @return [Array]
+      attr_accessor :values
 
       # Create a new command line option instance
       #
-      # @param [Array] option Parsed arguments for creating a command line option
+      # @param [String] name Name of the option
+      # @param [Array] values Parsed values for this option
       # @param [Cliqr::Config::Option] option_config Option's config settings
       #
       # @return [Cliqr::Command::CommandContext] A new CommandOption object
-      def initialize(option, option_config)
-        @value = run_value_operator(option.pop, option_config.operator)
-        @name = option.pop
+      def initialize(name, values, option_config)
+        @name = name
+        @values = values.map { |value| run_value_operator(value, option_config.operator) }
+      end
+
+      # Get value for this option
+      #
+      # @return [Object] Joins in a CSV format if multiple
+      def value
+        return values.first if values.length == 1
+        values.join(',')
+      end
+
+      # Get string representation for this option
+      #
+      # @return [String]
+      def to_s
+        value.to_s
       end
 
       private
 
-      # Run the operator for a named attribute for a value
+      # Run the operator for a named attribute for option's values
       #
-      # @return [Nothing]
+      # @return [Array]
       def run_value_operator(value, operator)
         if operator.is_a?(Proc)
           Command::ArgumentOperatorContext.new(value).instance_eval(&operator)

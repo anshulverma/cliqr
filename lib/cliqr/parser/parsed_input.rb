@@ -23,11 +23,7 @@ module Cliqr
       # Initialize a new parsed input
       def initialize(parsed_arguments)
         @command = parsed_arguments[:command]
-
-        @options = Hash[parsed_arguments[:options].collect \
-            { |option| [option[:name].to_s, option[:value]] }]\
-            if parsed_arguments.key?(:options)
-
+        @options = parsed_arguments[:options]
         @arguments = parsed_arguments[:arguments]
       end
 

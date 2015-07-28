@@ -140,4 +140,17 @@ describe Cliqr::Config::Option do
     end.to(raise_error(Cliqr::Error::ValidationError,
                        "invalid Cliqr interface configuration - [option \"option-1\" - invalid type '']"))
   end
+
+  it 'only allows boolean values for multi_valued field' do
+    def define_interface
+      Cliqr.interface do
+        name 'my-command'
+        option 'test' do
+          multi_valued Object
+        end
+      end
+    end
+    expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
+                                               "invalid Cliqr interface configuration - [option \"test\" - invalid type 'Object']"))
+  end
 end

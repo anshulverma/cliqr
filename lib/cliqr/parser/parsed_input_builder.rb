@@ -54,11 +54,22 @@ module Cliqr
       def build
         ParsedInput.new(command: @config.name,
                         actions: @actions,
-                        options: @options,
+                        options: grouped_options,
                         arguments: @arguments)
       end
 
       private
+
+      # Group options in a hash of option name to an array of its values
+      #
+      # @return [Hash]
+      def grouped_options
+        @options.group_by { |option| option[:name] }.each_with_object({}) do |(name, group), hash|
+          hash[name] ||= []
+          group.each { |item| hash[name].push(item[:value]) }
+          hash
+        end
+      end
 
       # Add option's name to a list of already added options and fail if duplicate
       #
@@ -68,8 +79,8 @@ module Cliqr
       def add_option_name(token)
         option_config = @action_config.option(token.name)
         old_config = @option_names.add?(option_config.name)
-        fail Cliqr::Error::MultipleOptionValues,
-             "multiple values for option \"#{token.arg}\"" if old_config.nil?
+        fail Cliqr::Error::MultipleOptionValues, "multiple values for option \"#{token.arg}\"" \
+          if old_config.nil? && !option_config.multi_valued?
         @option_names.add(option_config.short) if option_config.short?
         @option_names
       end
