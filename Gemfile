@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
 
 # Specify your gem's dependencies in cliqr.gemspec
@@ -6,7 +7,7 @@ gemspec
 group :development do
   gem 'rake', '~> 10.4'
   gem 'rspec', '~> 3.2'
-  gem 'yard', '~> 0.8.7'
+  gem 'yard', '~> 0.9'
 end
 
 group :metrics do

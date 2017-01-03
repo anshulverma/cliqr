@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version     = '>= 1.9.3'
+  spec.required_ruby_version     = '>= 2.0.0'
   spec.required_rubygems_version = '>= 1.3.6'
 
   # runtime dependencies
@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   {
     bundler: '~> 1.6',
     rubocop: '~> 0.46.0',
-    pry: '~> 0.10.4'
+    pry: '~> 0.10.4',
+    'pry-doc': '~> 0.10.0'
   }.each { |dependency, version| spec.add_development_dependency dependency.to_s, version }
 end
