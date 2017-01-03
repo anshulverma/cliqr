@@ -1,7 +1,7 @@
 # cliqr [![Version](http://img.shields.io/gem/v/cliqr.svg?style=flat-square)](https://rubygems.org/gems/cliqr)
 
 [![Build](http://img.shields.io/travis-ci/anshulverma/cliqr.svg?style=flat-square)](https://travis-ci.org/anshulverma/cliqr)
-[![Coveralls](https://coveralls.io/repos/github/anshulverma/cliqr/badge.svg?style=flat-square)](https://coveralls.io/github/anshulverma/cliqr)
+[![Coveralls](https://img.shields.io/coveralls/anshulverma/cliqr.svg?style=flat-square)](https://coveralls.io/github/anshulverma/cliqr)
 [![Quality](http://img.shields.io/codeclimate/github/anshulverma/cliqr.svg?style=flat-square)](https://codeclimate.com/github/anshulverma/cliqr)
 [![Dependencies](http://img.shields.io/gemnasium/anshulverma/cliqr.svg?style=flat-square)](https://gemnasium.com/anshulverma/cliqr)
 [![Inline docs](http://inch-ci.org/github/anshulverma/cliqr.svg?style=flat-square)](http://inch-ci.org/github/anshulverma/cliqr)
