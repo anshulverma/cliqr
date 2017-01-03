@@ -5,6 +5,8 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
     - 'lib/cliqr/usage/templates/**/*'
+    - 'examples/*'
+  TargetRubyVersion: 2.3
 
 Style/Encoding:
   Enabled: true
