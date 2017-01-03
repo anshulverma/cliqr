@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'cliqr/version'
 
 # rubocop:disable Metrics/BlockLength
+# rubocop:disable Style/HashSyntax
 Gem::Specification.new do |spec|
   spec.name          = 'cliqr'
   spec.version       = Cliqr::VERSION
@@ -33,14 +34,14 @@ Gem::Specification.new do |spec|
 
   # runtime dependencies
   {
-    sawaal: '~> 1.1.0'
+    :sawaal => '~> 1.1.0'
   }.each { |dependency, version| spec.add_dependency dependency.to_s, version }
 
   # development dependencies
   {
-    bundler: '~> 1.6',
-    rubocop: '~> 0.46.0',
-    pry: '~> 0.10.4',
-    'pry-doc': '~> 0.10.0'
+    :bundler  => '~> 1.6',
+    :rubocop  => '~> 0.46.0',
+    :pry      => '~> 0.10.4',
+    'pry-doc' => '~> 0.10.0'
   }.each { |dependency, version| spec.add_development_dependency dependency.to_s, version }
 end
