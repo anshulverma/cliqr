@@ -64,11 +64,10 @@ module Cliqr
       # @return [Symbol] Name of the default action or <tt>nil</tt> if not present
       def default_action(action_config)
         if option('help') && action_config.help?
-          return :help
+          :help
         elsif option('version') && action_config.version?
-          return :version
+          :version
         end
-        nil
       end
     end
   end

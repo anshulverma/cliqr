@@ -64,8 +64,6 @@ module Cliqr
     end
   end
 
-  private
-
   # Builder for [Cliqr::CLI::Interface]
   #
   # @api private

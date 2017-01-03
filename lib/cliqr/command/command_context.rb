@@ -137,25 +137,58 @@ module Cliqr
       # Handle the case when a method is invoked to get an option value
       #
       # @return [Object] Option's value
-      def method_missing(name, *_args, &_block)
-        get_or_check_option(name)
+      # rubocop:disable Style/MethodMissing
+      def method_missing(method_name, *_args, &_block)
+        get_or_check_option(method_name)
+      end
+
+      # Check if we should respond to a missing method
+      #
+      # @param [String] method_name Name of a method
+      #
+      # @return [Boolean] <tt>true</tt> if <tt>method_name</tt> is same as an option
+      def respond_to_missing?(method_name, _include_private = false)
+        raise(Cliqr::Error::UnknownOptionError, "'#{method_name}' is not defined") \
+          unless @config.option?(option_name(method_name))
+        true
       end
 
       # Get option value or check if it exists
       #
       # @return [Object]
-      def get_or_check_option(name)
-        option_name = name.to_s.chomp('?')
-        existence_check = name.to_s.end_with?('?')
-        existence_check ? option?(option_name) : option(option_name) \
-          if @config.option?(option_name)
+      def get_or_check_option(method_name)
+        respond_to_missing?(method_name)
+        name = option_name(method_name)
+        if existance_check?(method_name)
+          option?(name)
+        else
+          option(name)
+        end
+      end
+
+      # Extract option name from method name
+      #
+      # @param [String] method_name Name of a method
+      #
+      # @return [String] Name of the option
+      def option_name(method_name)
+        method_name.to_s.chomp('?')
+      end
+
+      # Check if a method invocation is for existence query of an option
+      #
+      # @return [Boolean] <tt>true</tt> if method invocation is a existence query for an option
+      def existance_check?(method_name)
+        method_name.to_s.end_with?('?')
       end
 
       # Get default value for a option
       #
       # @return [Object]
       def default(name)
+        $stderr.puts "name: #{name}"
         option_config = @config.option(name)
+        $stderr.puts option_config
         CommandOption.new(name, [option_config.default], option_config)
       end
 
@@ -185,8 +218,6 @@ module Cliqr
 
       private :initialize, :default
     end
-
-    private
 
     # Builder for creating a instance of CommandContext from parsed cli arguments
     #

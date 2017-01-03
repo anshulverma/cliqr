@@ -45,10 +45,9 @@ module Cliqr
       #
       # @return Nothing
       def validate_environment(context)
-        unless context.bash?
-          raise(Cliqr::Error::IllegalCommandError,
-                'Cannot run another shell within an already running shell')
-        end
+        return if context.bash?
+        raise(Cliqr::Error::IllegalCommandError,
+              'Cannot run another shell within an already running shell')
       end
 
       # Banner string for current command
@@ -75,8 +74,6 @@ module Cliqr
         end
       end
     end
-
-    private
 
     # The runner for shell command
     class ShellRunner

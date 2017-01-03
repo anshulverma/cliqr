@@ -71,6 +71,7 @@ module Cliqr
         # @param [Function] block A function to evaluate in the context of the method's arguments
         #
         # @return [Object] The return value of the proxied method
+        # rubocop:disable Style/MethodMissing
         def method_missing(name, *args, &block)
           __getobj__.set_config(name, args[0], *args[1..-1], &block)
         end

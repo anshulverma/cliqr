@@ -630,4 +630,53 @@ TrueClass
 FalseClass
     EOS
   end
+
+  it 'can get method by the name of option' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      option 'foo'
+
+      handler do
+        puts method(:foo).name
+        puts foo
+      end
+    end
+
+    result = cli.execute_internal %w(--foo 123), output: :buffer
+    expect(result[:stdout]).to eq <<-EOS
+foo
+123
+    EOS
+  end
+
+  it 'can not get value for an unknown option' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts foo
+      end
+    end
+
+    expect { cli.execute_internal [] }.to(
+      raise_error(Cliqr::Error::CommandRuntimeError,
+                  "command 'my-command' failed\n\nCause: Cliqr::Error::UnknownOptionError - 'foo' is not defined\n")
+    )
+  end
+
+  it 'can not get method for an unknown option' do
+    cli = Cliqr.interface do
+      name 'my-command'
+
+      handler do
+        puts method(:foo)
+      end
+    end
+
+    expect { cli.execute_internal [] }.to(
+      raise_error(Cliqr::Error::CommandRuntimeError,
+                  "command 'my-command' failed\n\nCause: Cliqr::Error::UnknownOptionError - 'foo' is not defined\n")
+    )
+  end
 end

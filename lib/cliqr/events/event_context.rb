@@ -22,6 +22,7 @@ module Cliqr
       # Handle the case when a method is invoked to get an option value
       #
       # @return [Object] Option's value
+      # rubocop:disable Style/MethodMissing
       def method_missing(name, *_args, &_block)
         @context.get_or_check_option(name)
       end

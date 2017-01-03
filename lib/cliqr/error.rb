@@ -101,5 +101,10 @@ module Cliqr
 
     # Raised if event invocation is in invalid state
     class InvocationError < CliqrError; end
+
+    # Raised when an unknown option is used in a handler
+    class UnknownOptionError < CliqrError
+      @error_code = 103
+    end
   end
 end

@@ -312,7 +312,6 @@ should be invoked
         puts 'invoked foo'
         puts opt?
         puts abc?
-        puts xyz?
         puts opt
       end
 
@@ -321,7 +320,6 @@ should be invoked
           puts 'invoked bar'
           puts opt?
           puts abc?
-          puts xyz?
           puts opt
         end
 
@@ -338,12 +336,11 @@ should be invoked
 invoked bar
 true
 false
-
 val
     EOS
   end
 
-  it 'cannot get option value for non-configured option' do
+  it 'cannot get option value for non-configured option in event handler' do
     cli = Cliqr.interface do
       name 'my-command'
 
@@ -357,10 +354,11 @@ val
       end
     end
 
-    result = cli.execute_internal ['my-command'], output: :buffer
-    expect(result[:stdout]).to eq <<-EOS
-invoked foo
-
-    EOS
+    expect { cli.execute_internal ['my-command'] }.to(
+      raise_error(Cliqr::Error::CommandRuntimeError,
+                  "command 'my-command' failed\n\n" \
+                    "Cause: Cliqr::Error::InvocationError - failed invocation for foo\n\n" \
+                      "Cause: Cliqr::Error::UnknownOptionError - 'opt' is not defined\n\n")
+    )
   end
 end
