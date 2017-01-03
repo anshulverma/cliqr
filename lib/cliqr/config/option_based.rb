@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/util'
 require 'cliqr/command/base_command'
 require 'cliqr/config/base'
@@ -115,13 +114,15 @@ module Cliqr
       #
       # @return [Cliqr::Config::Option] Validated OptionConfig instance
       def validate_option_name(option_config)
-        fail Cliqr::Error::DuplicateOptions,
-             "multiple options with long name \"#{option_config.name}\"" \
-             if option?(option_config.name)
+        if option?(option_config.name)
+          raise Cliqr::Error::DuplicateOptions,
+                "multiple options with long name \"#{option_config.name}\""
+        end
 
-        fail Cliqr::Error::DuplicateOptions,
-             "multiple options with short name \"#{option_config.short}\"" \
-              if option?(option_config.short)
+        if option?(option_config.short)
+          raise Cliqr::Error::DuplicateOptions,
+                "multiple options with short name \"#{option_config.short}\""
+        end
 
         option_config
       end

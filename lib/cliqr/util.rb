@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'shellwords'
 require 'cliqr/command/shell_command'
 
@@ -80,9 +79,11 @@ module Cliqr
     # @return [Proc]
     def self.help_action_handler(config)
       proc do
-        fail Cliqr::Error::IllegalArgumentError,
-             "too many arguments for \"#{command}\" command" if arguments.length > 1
-        action_config = arguments.length == 0 ? config : config.action(arguments.first)
+        if arguments.length > 1
+          raise Cliqr::Error::IllegalArgumentError,
+                "too many arguments for \"#{command}\" command"
+        end
+        action_config = arguments.empty? ? config : config.action(arguments.first)
         puts Cliqr::Usage::UsageBuilder.new(environment).build(action_config)
       end
     end
@@ -92,11 +93,11 @@ module Cliqr
     # @return [Cliqr::CLI::Action] New action config
     def self.build_shell_action(config, shell_config)
       Cliqr::Config::Action.new.tap do |action_config|
-        if shell_config.name?
-          action_config.name = shell_config.name
-        else
-          action_config.name = 'shell'
-        end
+        action_config.name = if shell_config.name?
+                               shell_config.name
+                             else
+                               'shell'
+                             end
 
         action_config.handler = Cliqr::Command::ShellCommand.new(shell_config)
         action_config.arguments = Cliqr::Config::DISABLE_CONFIG
@@ -161,8 +162,10 @@ module Cliqr
     # @return [Proc]
     def self.forward_to_help_handler
       proc do
-        fail Cliqr::Error::IllegalArgumentError,
-             'no arguments allowed for default help action' unless arguments.empty?
+        unless arguments.empty?
+          raise Cliqr::Error::IllegalArgumentError,
+                'no arguments allowed for default help action'
+        end
         forward "#{command} help"
       end
     end

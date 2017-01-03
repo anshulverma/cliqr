@@ -1,4 +1,4 @@
-# encoding: utf-8
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'spec_helper'
 
@@ -44,7 +44,8 @@ describe Cliqr::Executor::Runner do
     end
     expect { cli.execute_internal [] }.to(
       raise_error(Cliqr::Error::CommandRuntimeError,
-                  "command 'my-command' failed\n\nCause: StandardError - I always throw an error\n"))
+                  "command 'my-command' failed\n\nCause: StandardError - I always throw an error\n")
+    )
   end
 
   it 'routes a command with option values' do
@@ -542,7 +543,7 @@ a question?
       cli = Cliqr.interface do
         name 'my-command'
         handler do
-          fail StandardError, 'I am not a happy handler!'
+          raise StandardError, 'I am not a happy handler!'
         end
       end
 

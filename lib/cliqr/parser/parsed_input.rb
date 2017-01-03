@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 module Cliqr
   module Parser
     # A wrapper to keep the parsed input arguments

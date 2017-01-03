@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 # A argument operator that splits the value by ','
 class CSVArgumentOperator < Cliqr.operator
   def operate(value)

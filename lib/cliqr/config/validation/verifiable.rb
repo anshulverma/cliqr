@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/validation_errors'
 require 'cliqr/config/validation/validator_factory'
 require 'cliqr/config/validation/validation_set'

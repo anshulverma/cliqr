@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/events/event'
 require 'cliqr/events/event_context'
 

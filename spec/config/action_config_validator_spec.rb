@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'spec_helper'
 
 require 'fixtures/test_command'
@@ -23,7 +22,8 @@ describe Cliqr::Config do
       end
     end
     expect { define_interface }.to(
-      raise_error(Cliqr::Error::DuplicateActions, 'multiple actions named "my-action"'))
+      raise_error(Cliqr::Error::DuplicateActions, 'multiple actions named "my-action"')
+    )
   end
 
   it 'does not allow empty name' do
@@ -72,7 +72,8 @@ describe Cliqr::Config do
     end
     expect { define_interface }.to(
       raise_error(Cliqr::Error::ValidationError,
-                  "invalid Cliqr interface configuration - [action \"invalid-char-!\" - value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-char-!\"]"))
+                  "invalid Cliqr interface configuration - [action \"invalid-char-!\" - value for 'name' must match /^[a-zA-Z0-9_\\-]+$/; actual: \"invalid-char-!\"]")
+    )
   end
 
   it 'does not allow command handler to be null if help is disabled and action present' do
@@ -106,7 +107,7 @@ describe Cliqr::Config do
     end
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - [' \
-                                                 "action \"my-action\" - invalid value for handler; fix one of - [" \
+                                                 'action "my-action" - invalid value for handler; fix one of - [' \
                                                    "handler of type 'Object' does not extend from 'Cliqr::Command::BaseCommand', " \
                                                    "handler should be a 'Proc' not 'Object']]"))
   end
@@ -137,12 +138,13 @@ describe Cliqr::Config do
                     'invalid value for handler; fix one of - [' \
                       "handler of type 'Object' does not extend from 'Cliqr::Command::BaseCommand', " \
                       "handler should be a 'Proc' not 'Object'], " \
-                    "action \"my-action\" - invalid value for handler; fix one of - [" \
+                    'action "my-action" - invalid value for handler; fix one of - [' \
                       "handler of type 'Object' does not extend from 'Cliqr::Command::BaseCommand', " \
                       "handler should be a 'Proc' not 'Object'], " \
                     "action \"my-action\" - actions[1] - 'name' cannot be nil, " \
                     "action \"my-action\" - actions[1] - invalid value for handler; fix one of - ['handler' cannot be nil], " \
-                    "action \"my-action\" - action \"bla\" - invalid value for handler; fix one of - ['handler' cannot be nil]]"))
+                    "action \"my-action\" - action \"bla\" - invalid value for handler; fix one of - ['handler' cannot be nil]]")
+    )
   end
 
   it 'does not allow event without handler' do
@@ -223,10 +225,10 @@ describe Cliqr::Config do
     end
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - [' \
-                                                 "event \"base\" - invalid value for handler; fix one of - [" \
+                                                 'event "base" - invalid value for handler; fix one of - [' \
                                                    "handler should be a 'Cliqr::Events::Handler' not 'Class', " \
                                                    "handler should be a 'Proc' not 'Class'], " \
-                                                 "action \"my-action\" - event \"third\" - invalid value for handler; fix one of - [" \
+                                                 'action "my-action" - event "third" - invalid value for handler; fix one of - [' \
                                                    "handler should be a 'Cliqr::Events::Handler' not 'Array', " \
                                                    "handler should be a 'Proc' not 'Array']]"))
   end
@@ -259,7 +261,7 @@ describe Cliqr::Config do
     end
     expect { define_interface }.to(raise_error(Cliqr::Error::ValidationError,
                                                'invalid Cliqr interface configuration - [' \
-                                                 "shell - event \"third\" - invalid value for handler; fix one of - [" \
+                                                 'shell - event "third" - invalid value for handler; fix one of - [' \
                                                    "handler should be a 'Cliqr::Events::Handler' not 'Array', " \
                                                    "handler should be a 'Proc' not 'Array'], " \
                                                  "shell - events[2] - 'name' cannot be empty, " \

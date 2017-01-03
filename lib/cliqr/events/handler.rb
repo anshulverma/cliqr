@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 module Cliqr
   # Set of classes to manage and facilitate event handling
   #
@@ -18,7 +17,7 @@ module Cliqr
       #
       # @return [Nothing]
       def handle(*_args)
-        fail Cliqr::Error::InvocationError, 'handle method not implemented by handler class'
+        raise Cliqr::Error::InvocationError, 'handle method not implemented by handler class'
       end
 
       # Invoker another event

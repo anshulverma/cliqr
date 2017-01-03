@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 module Cliqr
   module Command
     # Colors that can be used in a command to colorize strings

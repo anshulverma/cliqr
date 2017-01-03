@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'readline'
 
 module Cliqr
@@ -46,8 +45,10 @@ module Cliqr
       #
       # @return Nothing
       def validate_environment(context)
-        fail(Cliqr::Error::IllegalCommandError,
-             'Cannot run another shell within an already running shell') unless context.bash?
+        unless context.bash?
+          raise(Cliqr::Error::IllegalCommandError,
+                'Cannot run another shell within an already running shell')
+        end
       end
 
       # Banner string for current command
@@ -64,7 +65,7 @@ module Cliqr
         if value.is_a?(String)
           proc { value }
         elsif value.is_a?(Proc)
-          return value
+          value
         else
           builder = value
           builder = value.new if value.is_a?(Class)

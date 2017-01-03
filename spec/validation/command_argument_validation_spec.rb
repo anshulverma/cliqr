@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'spec_helper'
 
 require 'cliqr/argument_validation/validator'
@@ -121,7 +120,7 @@ false
     expect do
       cli.execute_internal %w(--opt qwe)
     end.to raise_error(Cliqr::Error::IllegalArgumentError,
-                       "invalid command argument \"qwe\"")
+                       'invalid command argument "qwe"')
   end
 
   it 'allows numeric options to be optional' do

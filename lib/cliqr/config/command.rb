@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/command/base_command'
 require 'cliqr/config/action'
 require 'cliqr/config/shell'

@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 if ENV['CI']
   # enable code climate
   require 'codeclimate-test-reporter'

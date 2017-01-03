@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'spec_helper'
 require 'spec_util'
 
@@ -153,7 +152,8 @@ shell exited with code 0.
       arguments :disable
     end
     expect { cli.execute_internal %w(my-command shell) }.to(
-      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"'))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"')
+    )
   end
 
   it 'can handle errors in shell' do
@@ -164,7 +164,7 @@ shell exited with code 0.
 
       action :foo do
         handler do
-          fail StandardError, 'I failed!'
+          raise StandardError, 'I failed!'
         end
 
         action :bar
@@ -298,7 +298,8 @@ shell exited with code 0.
         arguments :disable
       end
       expect { cli.execute_internal %w(my-command shell) }.to(
-        raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"'))
+        raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "shell"')
+      )
     end
 
     it 'does not allow shell in shell for base command' do
@@ -337,7 +338,8 @@ shell exited with code 0.
 
       expect { cli.execute_internal %w(my-command foo shell) }.to(
         raise_error(Cliqr::Error::CommandRuntimeError,
-                    "command 'my-command foo' failed\n\nCause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action\n"))
+                    "command 'my-command foo' failed\n\nCause: Cliqr::Error::IllegalArgumentError - no arguments allowed for default help action\n")
+      )
 
       with_input_output(['foo shell']) do |output|
         cli.execute_internal %w(my-command shell), output: :file
@@ -484,7 +486,7 @@ shell exited with code 0.
 
           action :foo do
             handler do
-              fail StandardError, 'I failed!'
+              raise StandardError, 'I failed!'
             end
 
             action :bar
@@ -520,7 +522,7 @@ shell exited with code 0.
 
           action :foo do
             handler do
-              fail StandardError, 'I failed!'
+              raise StandardError, 'I failed!'
             end
 
             action :bar
@@ -558,7 +560,7 @@ shell exited with code 0.
 
           action :foo do
             handler do
-              fail StandardError, 'I failed!'
+              raise StandardError, 'I failed!'
             end
 
             action :bar

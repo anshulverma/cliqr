@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 # A custom test command banner
 class TestShellBanner < Cliqr.shell_banner
   def build(context)

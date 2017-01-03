@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 # Versioned gem
 module Cliqr
   VERSION = '2.2.0'

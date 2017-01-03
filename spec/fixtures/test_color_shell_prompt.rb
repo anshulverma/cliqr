@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 # A custom colored test command prompt
 class TestColorShellPrompt < Cliqr.shell_prompt
   def initialize

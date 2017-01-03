@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/util'
 require 'cliqr/command/base_command'
 require 'cliqr/config/base'
@@ -206,9 +205,10 @@ module Cliqr
       #
       # @return [Cliqr::Config::Action] Validated action's Config instance
       def validate_action_name(action_config)
-        fail Cliqr::Error::DuplicateActions,
-             "multiple actions named \"#{action_config.name}\"" \
-             if action?(action_config.name)
+        if action?(action_config.name)
+          raise Cliqr::Error::DuplicateActions,
+                "multiple actions named \"#{action_config.name}\""
+        end
 
         action_config
       end

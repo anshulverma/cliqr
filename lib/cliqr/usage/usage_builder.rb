@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'erb'
 require 'cliqr/error'
 require 'cliqr/usage/command_usage_context'
@@ -15,7 +14,7 @@ module Cliqr
       USAGE_TYPES = {
         cli: "#{TEMPLATES_PATH}/usage/cli.erb",
         shell: "#{TEMPLATES_PATH}/usage/shell.erb"
-      }
+      }.freeze
 
       # Create a new usage builder
       def initialize(type)

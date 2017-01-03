@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/error'
 require 'cliqr/executor/runner'
 require 'cliqr/usage/usage_builder'
@@ -88,9 +87,11 @@ module Cliqr
     # @throws [Cliqr::Error::ConfigNotFound] if a config is <tt>nil</tt>
     # @throws [Cliqr::Error::ValidationError] if the validation for config fails
     def build
-      fail Cliqr::Error::ConfigNotFound, 'a valid config should be defined' if @config.nil?
-      fail Cliqr::Error::ValidationError, \
-           "invalid Cliqr interface configuration - [#{@config.errors}]" unless @config.valid?
+      raise Cliqr::Error::ConfigNotFound, 'a valid config should be defined' if @config.nil?
+      unless @config.valid?
+        raise Cliqr::Error::ValidationError, \
+              "invalid Cliqr interface configuration - [#{@config.errors}]"
+      end
 
       Interface.new(@config)
     end

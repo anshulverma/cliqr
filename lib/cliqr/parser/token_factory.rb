@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/parser/token'
 require 'cliqr/parser/single_valued_option_token'
 require 'cliqr/parser/boolean_option_token'
@@ -35,7 +34,7 @@ module Cliqr
             option_config = get_option_config(Regexp.last_match(2), arg)
             build_token(option_config, arg)
           else
-            fail Cliqr::Error::IllegalArgumentError, "invalid command argument \"#{arg}\"" \
+            raise Cliqr::Error::IllegalArgumentError, "invalid command argument \"#{arg}\"" \
               unless @config.arguments?
             ArgumentToken.new(arg)
           end
@@ -63,8 +62,10 @@ module Cliqr
       #
       # @return [Cliqr::CLI::Option] Requested option configuration
       def get_option_config(name, arg)
-        fail Cliqr::Error::UnknownCommandOption,
-             "unknown option \"#{arg}\"" unless @config.option?(name)
+        unless @config.option?(name)
+          raise Cliqr::Error::UnknownCommandOption,
+                "unknown option \"#{arg}\""
+        end
         @config.option(name)
       end
     end

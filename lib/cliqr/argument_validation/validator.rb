@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/error'
 require 'cliqr/argument_validation/option_validator'
 require 'cliqr/argument_validation/argument_type_validator'
@@ -29,7 +28,7 @@ module Cliqr
           validate_argument(args.option(name), option, errors) \
             if args.options.key?(name.to_s)
         end
-        fail(Cliqr::Error::IllegalArgumentError, "illegal argument error - #{errors}") \
+        raise(Cliqr::Error::IllegalArgumentError, "illegal argument error - #{errors}") \
           unless errors.empty?
         args
       end

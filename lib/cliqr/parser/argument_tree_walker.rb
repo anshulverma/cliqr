@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/parser/parsed_input_builder'
 require 'cliqr/parser/token_factory'
 
@@ -31,8 +30,10 @@ module Cliqr
         args.each do |arg|
           token = handle_argument(arg, token, token_factory, input_builder)
         end
-        fail Cliqr::Error::OptionValueMissing, \
-             "a value must be defined for argument \"#{token.arg}\"" if token.active?
+        if token.active?
+          raise Cliqr::Error::OptionValueMissing, \
+                "a value must be defined for argument \"#{token.arg}\""
+        end
         ensure_default_action(action_config, input_builder)
       end
 
@@ -59,11 +60,11 @@ module Cliqr
       # @return [Cliqr::CLI::Parser::Token] The new active token in case <tt>current_token</tt>
       # becomes inactive
       def handle_argument(arg, current_token, token_factory, input_builder)
-        if current_token.active?
-          token = current_token.append(arg)
-        else
-          token = token_factory.get_token(arg)
-        end
+        token = if current_token.active?
+                  current_token.append(arg)
+                else
+                  token_factory.get_token(arg)
+                end
 
         token.collect(input_builder)
 

@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 module Cliqr
   module Config
     module Validation
@@ -30,7 +29,7 @@ module Cliqr
 
             local_errors = ValidationErrors.new
             @class_stack.last.instance_method(:do_validate).bind(self)
-              .call(name, value, local_errors)
+                        .call(name, value, local_errors)
             errors.merge(local_errors)
             local_errors.empty?
           end
@@ -43,8 +42,10 @@ module Cliqr
             parent_class = (@class_stack.last || self.class).superclass
             @class_stack.push(parent_class)
             begin
-              return parent_class.instance_method(:validate).bind(self) \
-                .call(name, value, errors) if parent_class < Validator
+              if parent_class < Validator
+                return parent_class.instance_method(:validate).bind(self) \
+                                   .call(name, value, errors)
+              end
               true
             ensure
               @class_stack.pop
@@ -65,7 +66,7 @@ module Cliqr
           #
           # @return [Object]
           def do_validate(_name, _value, _errors)
-            fail Cliqr::Error::UnknownValidatorType, "unknown validation type: '#{@type}'"
+            raise Cliqr::Error::UnknownValidatorType, "unknown validation type: '#{@type}'"
           end
         end
 
@@ -123,9 +124,10 @@ module Cliqr
           #
           # @return [Boolean] <tt>true</tt> if there were any errors during validation
           def do_validate(name, value, errors)
-            errors.add("value for '#{name}' must match /#{@format.source}/; " \
-                       "actual: #{value.inspect}") \
-                if !value.nil? && !match?(value)
+            if !value.nil? && !match?(value)
+              errors.add("value for '#{name}' must match /#{@format.source}/; " \
+                         "actual: #{value.inspect}")
+            end
             errors
           end
 
@@ -240,9 +242,9 @@ module Cliqr
           # Iterator for each item in the array
           #
           # @return [Array]
-          def iterator(array, &block)
+          def iterator(array)
             array.each_with_index do |value, index|
-              block.call(value, index + 1) unless value.skip_validation?
+              yield(value, index + 1) unless value.skip_validation?
             end
           end
         end
@@ -266,9 +268,9 @@ module Cliqr
           # Iterate over each key value pair in the hash
           #
           # @return [Hash]
-          def iterator(hash, &block)
+          def iterator(hash)
             hash.each_with_index do |(key, value), index|
-              block.call(value, key.empty? ? (index + 1) : key)
+              yield(value, key.empty? ? (index + 1) : key)
             end
           end
         end
@@ -354,8 +356,7 @@ module Cliqr
         # Validates child element
         class ChildValidator < Validator
           # Create a new child validator
-          def initialize(_config)
-          end
+          def initialize(_config); end
 
           protected
 
@@ -384,7 +385,7 @@ module Cliqr
           one_of: OneOfValidator,
           type_of: TypeOfValidator,
           child: ChildValidator
-        }
+        }.freeze
 
         # Get a new validator based on the type and config param
         #

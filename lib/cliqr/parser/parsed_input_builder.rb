@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/parser/parsed_input'
 
 module Cliqr
@@ -79,7 +78,7 @@ module Cliqr
       def add_option_name(token)
         option_config = @action_config.option(token.name)
         old_config = @option_names.add?(option_config.name)
-        fail Cliqr::Error::MultipleOptionValues, "multiple values for option \"#{token.arg}\"" \
+        raise Cliqr::Error::MultipleOptionValues, "multiple values for option \"#{token.arg}\"" \
           if old_config.nil? && !option_config.multi_valued?
         @option_names.add(option_config.short) if option_config.short?
         @option_names

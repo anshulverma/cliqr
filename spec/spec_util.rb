@@ -1,8 +1,7 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'tempfile'
 
-def with_input_output(lines, &block)
+def with_input_output(lines)
   old_stdin = $stdin
   old_stdout = $stdout
   input_file = Tempfile.new('cliqr').tap do |file|
@@ -12,10 +11,10 @@ def with_input_output(lines, &block)
   begin
     $stdin = input_file.open
     $stdout = output_file.open
-    output_getter = proc  do
+    output_getter = proc do
       IO.read(output_file.path).gsub(/(.*)\n/, "\\1.\n")
     end
-    block.call(output_getter)
+    yield(output_getter)
   ensure
     $stdin = old_stdin
     $stdout = old_stdout

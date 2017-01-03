@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'spec_helper'
 
 require 'cliqr/events/handler'
@@ -50,14 +49,15 @@ true
       raise_error(Cliqr::Error::CommandRuntimeError,
                   "command 'my-command' failed\n\n" \
                     "Cause: Cliqr::Error::InvocationError - failed invocation for base\n\n" \
-                      "Cause: Cliqr::Error::InvocationError - handle method not implemented by handler class\n\n"))
+                      "Cause: Cliqr::Error::InvocationError - handle method not implemented by handler class\n\n")
+    )
   end
 
   it 'handles errors in invocation handlers' do
     cli = Cliqr.interface do
       name 'my-command'
       on :base do
-        fail StandardError, 'kaboom!'
+        raise StandardError, 'kaboom!'
       end
       handler do
         puts invoke :base
@@ -67,7 +67,8 @@ true
       raise_error(Cliqr::Error::CommandRuntimeError,
                   "command 'my-command' failed\n\n" \
                     "Cause: Cliqr::Error::InvocationError - failed invocation for base\n\n" \
-                      "Cause: StandardError - kaboom!\n\n"))
+                      "Cause: StandardError - kaboom!\n\n")
+    )
   end
 
   it 'allows a proc as event handler' do

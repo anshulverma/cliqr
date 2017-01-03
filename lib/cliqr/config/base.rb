@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/config/dsl'
 require 'cliqr/config/validation/verifiable'
 
@@ -31,7 +30,7 @@ module Cliqr
       NUMERIC_ARGUMENT_TYPE => 0,
       BOOLEAN_ARGUMENT_TYPE => false,
       ANY_ARGUMENT_TYPE => nil
-    }
+    }.freeze
 
     # Get the passed param value if current attribute is unset
     #

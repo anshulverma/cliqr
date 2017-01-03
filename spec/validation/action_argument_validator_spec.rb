@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'spec_helper'
 
 require 'fixtures/test_command'
@@ -20,7 +19,8 @@ describe Cliqr::ArgumentValidation::Validator do
       end
     end
     expect { cli.execute_internal %w(my-action another-action) }.to(
-      raise_error(Cliqr::Error::IllegalArgumentError, "invalid command argument \"another-action\""))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "another-action"')
+    )
   end
 
   it 'does not allow illegal nesting of actions in a command' do
@@ -45,6 +45,7 @@ describe Cliqr::ArgumentValidation::Validator do
       end
     end
     expect { cli.execute_internal %w(another-action third-action) }.to(
-      raise_error(Cliqr::Error::IllegalArgumentError, "invalid command argument \"third-action\""))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "third-action"')
+    )
   end
 end

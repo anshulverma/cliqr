@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/argument_validation/validator'
 require 'cliqr/parser/argument_parser'
 require 'cliqr/command/command_context'
@@ -35,7 +34,8 @@ module Cliqr
           Executor::Router.new(action_config).handle(command_context, **options)
         rescue StandardError => e
           raise Cliqr::Error::CommandRuntimeError.new(
-            "command '#{action_config.command}' failed", e)
+            "command '#{action_config.command}' failed", e
+          )
         end
       end
 

@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 module Cliqr
   module Command
     # Control how output is written out to the stream

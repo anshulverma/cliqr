@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/config/named'
 require 'cliqr/command/argument_operator'
 
@@ -65,7 +64,8 @@ module Cliqr
         @short = Config.get_if_unset(@short, nil)
         @type = Config.get_if_unset(@type, ANY_ARGUMENT_TYPE)
         @operator = Util.ensure_instance(
-          Config.get_if_unset(@operator, Cliqr::Command::ArgumentOperator.for_type(@type)))
+          Config.get_if_unset(@operator, Cliqr::Command::ArgumentOperator.for_type(@type))
+        )
         @default = Config.get_if_unset(@default, ARGUMENT_DEFAULTS[@type])
         @multi_valued = Config.get_if_unset(@multi_valued, false)
 

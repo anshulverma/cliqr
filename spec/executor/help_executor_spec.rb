@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'spec_helper'
 
 require 'cliqr/error'
@@ -274,7 +273,8 @@ USAGE:
     expect { cli.execute_internal %w(help action_1 arg2), output: :buffer }.to(
       raise_error(Cliqr::Error::CommandRuntimeError,
                   "command 'my_command help' failed\n\n" \
-                  "Cause: Cliqr::Error::IllegalArgumentError - too many arguments for \"my_command help\" command\n"))
+                  "Cause: Cliqr::Error::IllegalArgumentError - too many arguments for \"my_command help\" command\n")
+    )
   end
 
   it 'executes help for action without handler' do

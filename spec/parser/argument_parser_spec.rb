@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'argument_parser_spec_helper'
 
 describe Cliqr::Parser do
@@ -52,26 +51,32 @@ describe Cliqr::Parser do
 
   it 'cannot parse unknown options' do
     expect { Cliqr::Parser.parse(CONFIG, %w(--unknown-option abcd)) }.to(
-      raise_error(Cliqr::Error::UnknownCommandOption, 'unknown option "--unknown-option"'))
+      raise_error(Cliqr::Error::UnknownCommandOption, 'unknown option "--unknown-option"')
+    )
     expect { Cliqr::Parser.parse(CONFIG, %w(-u abcd)) }.to(
-      raise_error(Cliqr::Error::UnknownCommandOption, 'unknown option "-u"'))
+      raise_error(Cliqr::Error::UnknownCommandOption, 'unknown option "-u"')
+    )
   end
 
   it 'cannot parse invalid options' do
     expect { Cliqr::Parser.parse(CONFIG, %w(--1)) }.to(
-      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "--1"'))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "--1"')
+    )
     expect { Cliqr::Parser.parse(CONFIG, %w(-$)) }.to(
-      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "-$"'))
+      raise_error(Cliqr::Error::IllegalArgumentError, 'invalid command argument "-$"')
+    )
   end
 
   it 'cannot parse option without value if required' do
     expect { Cliqr::Parser.parse(CONFIG, %w(--test-option)) }.to(
-      raise_error(Cliqr::Error::OptionValueMissing, 'a value must be defined for argument "--test-option"'))
+      raise_error(Cliqr::Error::OptionValueMissing, 'a value must be defined for argument "--test-option"')
+    )
   end
 
   it 'cannot parse option if it has multiple values' do
     expect { Cliqr::Parser.parse(CONFIG, %w(--test-option val1 --test-option val2)) }.to(
-      raise_error(Cliqr::Error::MultipleOptionValues, 'multiple values for option "--test-option"'))
+      raise_error(Cliqr::Error::MultipleOptionValues, 'multiple values for option "--test-option"')
+    )
   end
 
   it 'can parse command with arguments' do

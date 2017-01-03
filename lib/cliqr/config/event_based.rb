@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/config/event'
 
 module Cliqr
@@ -54,7 +53,7 @@ module Cliqr
       #
       # @return [Cliqr::Events::Event]
       def handle_event(event_name, event_class, &event_block)
-        fail Cliqr::Error::ValidationError, 'only one of event_class or event_block are allowed' \
+        raise Cliqr::Error::ValidationError, 'only one of event_class or event_block are allowed' \
           if !event_class.nil? && block_given?
 
         event_handler = event_class

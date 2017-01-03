@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 # Test command for the router_spec
 class TestCommand < Cliqr.command
   def execute(_context)

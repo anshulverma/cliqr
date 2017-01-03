@@ -1,4 +1,4 @@
-# encoding: utf-8
+# rubocop:disable Style/FrozenStringLiteralComment
 
 require 'stringio'
 

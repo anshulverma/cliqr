@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'spec_helper'
 
 require 'fixtures/test_command'
@@ -69,7 +68,8 @@ describe Cliqr::Config do
     config.options = nil
     config.finalize
     expect { Cliqr::Interface.build(config) }.to(
-      raise_error(Cliqr::Error::ValidationError, "invalid Cliqr interface configuration - ['options' cannot be nil]"))
+      raise_error(Cliqr::Error::ValidationError, "invalid Cliqr interface configuration - ['options' cannot be nil]")
+    )
   end
 
   it 'throws multiple errors if more than one issue exists in config' do
@@ -95,7 +95,8 @@ describe Cliqr::Config do
     config.shell = nil
     config.finalize
     expect { Cliqr::Interface.build(config) }.to(
-      raise_error(NoMethodError, "undefined method `valid?' for nil:NilClass"))
+      raise_error(NoMethodError, "undefined method `valid?' for nil:NilClass")
+    )
   end
 
   it 'validates shell enable setting' do

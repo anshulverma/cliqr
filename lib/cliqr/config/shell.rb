@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/command/shell_prompt_builder'
 require 'cliqr/command/shell_banner_builder'
 

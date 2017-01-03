@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 require 'cliqr/usage/option_usage_context'
 
 module Cliqr
@@ -45,8 +44,8 @@ module Cliqr
         @name = config.name
         @description = config.description
         @actions = @config.actions
-                   .map { |action| CommandUsageContext.new(type, action) }
-                   .select { |action|  type == :shell ? action.name != 'shell' : true }
+                          .map { |action| CommandUsageContext.new(type, action) }
+                          .select { |action| type == :shell ? action.name != 'shell' : true }
         @options = @config.options.values.map { |option| Usage::OptionUsageContext.new(option) }
         @command = @config.command
       end

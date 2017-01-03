@@ -1,4 +1,4 @@
-# encoding: utf-8
+# frozen_string_literal: true
 module Cliqr
   module ArgumentValidation
     # Validates type of a argument
@@ -20,7 +20,7 @@ module Cliqr
         when Config::NUMERIC_ARGUMENT_TYPE
           Integer(argument)
         when Config::BOOLEAN_ARGUMENT_TYPE
-          fail ArgumentError unless argument.class == TrueClass || argument.class == FalseClass
+          raise ArgumentError unless argument.class == TrueClass || argument.class == FalseClass
         end
         true
       rescue ArgumentError

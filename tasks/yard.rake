@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+# frozen_string_literal: true
 begin
   require 'yardstick/rake/measurement'
   require 'yardstick/rake/verify'
