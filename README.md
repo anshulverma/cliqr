@@ -97,7 +97,7 @@ to be satisfied for a successful build. Here is a list:
 
 - `rubocop` to make sure the code style checks are maintained
 - `yardstick` to measure document coverage
-- `codeclimate` to make we ship quality code
+- `codeclimate` to make sure we ship quality code
 - `coveralls` to measure code coverage
 - `rdoc` to build and measure documentation
 
